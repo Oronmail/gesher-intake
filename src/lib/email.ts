@@ -36,7 +36,7 @@ export async function sendConsentEmail({
     const { data, error } = await resend.emails.send({
       from: 'גשר אל הנוער <onboarding@resend.dev>',
       to: parentEmail,
-      subject: `מועמדות במסגרת עמותת ״גשר אל הנוער״`,
+      subject: `טופס ויתור סודיות - גשר אל הנוער`,
       html: `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #2563eb;">מועמדות במסגרת עמותת ״גשר אל הנוער״</h2>
