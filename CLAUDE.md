@@ -393,7 +393,7 @@ NEXT_PUBLIC_APP_URL=https://gesher-intake.vercel.app
 
 #### Metadata Fields
 - `Referral_Number__c` - Text(50) - Unique referral ID
-- `Status__c` - Picklist - ['Pending Review', 'In Review', 'Approved', 'Rejected']
+- `Status__c` - Picklist - ['Pending Consent', 'Consent Signed', 'Data Submitted', 'Pending Review', 'In Review', 'Approved', 'Rejected']
 - `Priority__c` - Picklist - ['High', 'Medium', 'Low']
 - `Submission_Date__c` - DateTime
 - `Consent_Date__c` - DateTime
@@ -514,13 +514,20 @@ node test-sf-queue.js
 node create-sf-fields.js
 ```
 
-### Integration Flow
-1. **Student Form Submission** → Creates Registration_Request__c record
-2. **Status**: Starts as 'Pending Review'
-3. **Non-profit Review** → Staff reviews in Salesforce
-4. **House Visit** → After approval, conduct home visit
-5. **Contact Creation** → Convert approved request to Contact record
-6. **Data Retention**: Queue records for audit trail
+### Integration Flow - Complete Pipeline Tracking
+1. **Counselor Submission** → Creates Registration_Request__c with 'Pending Consent'
+2. **Parent Consent** → Updates to 'Consent Signed' with signatures
+3. **Student Data** → Updates to 'Data Submitted' with full information
+4. **Staff Review** → Moves through 'Pending Review' → 'In Review'
+5. **Decision** → Final status: 'Approved' or 'Rejected'
+6. **House Visit** → After approval, conduct home visit
+7. **Contact Creation** → Convert approved request to Contact record
+
+**Key Implementation Details**:
+- Record created immediately upon counselor submission (not after all data collected)
+- Each stage updates the same Registration_Request__c record
+- Full visibility from initial request through completion
+- SF record ID stored in Supabase for tracking
 
 ---
 

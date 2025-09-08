@@ -5,11 +5,20 @@
 
 ## Overview
 
-The Salesforce integration implements a two-stage workflow:
-1. **Stage 1**: Student data submission to Registration_Request__c queue object
-2. **Stage 2**: Non-profit staff review, approval, house visit, and Contact creation
+The Salesforce integration implements complete pipeline tracking with immediate visibility:
 
-**Critical**: No student data is stored in Supabase - it goes directly to Salesforce.
+### Workflow Stages
+1. **Counselor Submission** → Creates Registration_Request__c with "Pending Consent"
+2. **Parent Consent** → Updates to "Consent Signed" with signatures
+3. **Student Data** → Updates to "Data Submitted" with full information
+4. **Staff Review** → "Pending Review" → "In Review"
+5. **Final Decision** → "Approved" or "Rejected"
+
+**Key Features**:
+- Registration_Request__c record created immediately upon counselor submission
+- Full visibility from initial request through completion
+- No student data stored in Supabase - goes directly to Salesforce
+- Real-time status tracking for non-profit staff
 
 ---
 
@@ -159,11 +168,14 @@ const fieldMapping = {
 
 ### Picklist Values
 
-**Status__c**:
-- Pending Review
-- In Review
-- Approved
-- Rejected
+**Status__c** (Updated with workflow tracking):
+- Pending Consent - Initial counselor submission
+- Consent Signed - Parent signed consent form
+- Data Submitted - Student data completed
+- Pending Review - Ready for staff review
+- In Review - Being reviewed by staff
+- Approved - Accepted into program
+- Rejected - Not accepted
 
 **Priority__c**:
 - High
@@ -237,51 +249,86 @@ const fieldMapping = {
 
 ### Salesforce Service (src/lib/salesforce.ts)
 
+The service now includes three key methods for the complete workflow:
+
 ```typescript
 import jsforce from 'jsforce';
-
-export interface RegistrationRequestData {
-  // All form fields mapped to SF fields
-  Referral_Number__c: string;
-  Status__c: string;
-  // ... (all 89 fields)
-}
 
 class SalesforceService {
   private conn: jsforce.Connection;
 
-  async connect() {
-    this.conn = new jsforce.Connection({
-      instanceUrl: process.env.SALESFORCE_INSTANCE_URL,
-      accessToken: process.env.SALESFORCE_ACCESS_TOKEN,
-      version: '64.0'
-    });
+  // 1. Create initial record when counselor submits
+  async createInitialRegistration(data: InitialRegistrationData) {
+    const initialRequest = {
+      Referral_Number__c: data.referralNumber,
+      Status__c: 'Pending Consent',
+      Counselor_Name__c: data.counselorName,
+      Counselor_Email__c: data.counselorEmail,
+      School_Name__c: data.schoolName,
+      Parent_Email__c: data.parentEmail,
+      Parent1_Phone__c: data.parentPhone,
+      Submission_Date__c: new Date().toISOString(),
+    };
+    const result = await this.conn.sobject('Registration_Request__c').create(initialRequest);
+    return { success: result.success, recordId: result.id };
   }
 
-  async createRegistrationRequest(data: RegistrationRequestData) {
-    const result = await this.conn.sobject('Registration_Request__c').create(data);
-    return {
-      success: result.success,
-      recordId: result.id,
-      error: result.errors?.[0]?.message
+  // 2. Update with consent data
+  async updateWithConsent(recordId: string, data: ConsentUpdateData) {
+    const consentUpdate = {
+      Id: recordId,
+      Status__c: 'Consent Signed',
+      Parent1_Name__c: data.parent1Name,
+      Parent1_Signature__c: data.parent1Signature,
+      // ... parent fields
+      Consent_Date__c: data.consentDate,
     };
+    const result = await this.conn.sobject('Registration_Request__c').update(consentUpdate);
+    return { success: result.success };
+  }
+
+  // 3. Update with student data
+  async updateWithStudentData(recordId: string, data: RegistrationRequestData) {
+    const studentUpdate = {
+      Id: recordId,
+      Status__c: 'Data Submitted',
+      // ... all 89 fields
+    };
+    const result = await this.conn.sobject('Registration_Request__c').update(studentUpdate);
+    return { success: result.success };
   }
 }
 ```
 
-### API Route (src/app/api/referrals/student-data/route.ts)
+### API Routes - Complete Workflow
 
+**1. Initial Submission (src/app/api/referrals/initiate/route.ts)**
 ```typescript
-// Direct submission to Salesforce
-const sfData = {
-  Referral_Number__c: referralNumber,
-  Status__c: 'Pending Review',
-  Priority__c: 'Medium',
-  Submission_Date__c: new Date().toISOString(),
-  // Map all form fields to SF fields
-};
+// Create Registration_Request__c immediately
+const salesforce = new SalesforceService();
+const sfResult = await salesforce.createInitialRegistration({
+  referralNumber,
+  counselorName,
+  counselorEmail,
+  schoolName,
+  parentEmail,
+  parentPhone,
+});
+// Store SF record ID in Supabase for tracking
+```
 
-const result = await salesforce.createRegistrationRequest(sfData);
+**2. Consent Update (src/app/api/referrals/consent/route.ts)**
+```typescript
+// Update existing SF record with consent
+if (referral.salesforce_contact_id) {
+  await salesforce.updateWithConsent(referral.salesforce_contact_id, consentData);
+}
+```
+
+**3. Student Data (src/app/api/referrals/student-data/route.ts)**
+```typescript
+// Update SF record with complete student data
+await salesforce.updateWithStudentData(referral.salesforce_contact_id, registrationData);
 ```
 
 ---
@@ -327,12 +374,40 @@ SALESFORCE_SECURITY_TOKEN=<your security token>
 
 ---
 
-## Workflow States
+## Workflow States - Complete Pipeline
 
-1. **Pending Review** - Initial state after submission
-2. **In Review** - Staff actively reviewing
-3. **Approved** - Ready for house visit
-4. **Rejected** - Did not meet criteria
+```
+┌─────────────────┐
+│ Pending Consent │ ← Counselor submits initial form
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│ Consent Signed  │ ← Parent signs digital consent
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│ Data Submitted  │ ← Student data completed
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│ Pending Review  │ ← Ready for staff review
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│   In Review     │ ← Staff actively reviewing
+└────────┬────────┘
+         ↓
+    ┌────┴────┐
+┌───┴───┐ ┌───┴────┐
+│Approved│ │Rejected│ ← Final decision
+└────────┘ └────────┘
+```
+
+**Key Benefits**:
+- Immediate visibility upon counselor submission
+- Track conversion rates between stages
+- Identify and act on stalled requests
+- Complete audit trail of the process
 
 ---
 
