@@ -24,3 +24,17 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Fix input text color */
+input, textarea, select {
+  color: #000000 !important; /* black text */
+}
+
+input::placeholder, textarea::placeholder {
+  color: #9ca3af; /* light gray for placeholders */
+}
+
+/* Ensure text is visible in all inputs */
+.text-gray-900 {
+  color: #000000 !important;
+}
