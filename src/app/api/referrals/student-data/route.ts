@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
+import SalesforceService, { RegistrationRequestData } from '@/lib/salesforce'
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { referral_number, ...studentData } = body
 
-    // Get the referral to ensure it exists and has consent
+    // Get the referral from Supabase to validate consent and get parent/counselor data
     const { data: referral, error: referralError } = await supabase
       .from('referrals')
       .select('*')
@@ -27,19 +28,139 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // TODO: Send data to Salesforce
-    // This is where you would integrate with Salesforce API
-    // For now, we'll just log the data
-    console.log('Student data ready for Salesforce:', {
-      referral,
-      studentData
-    })
+    // Prepare complete data for Salesforce Queue
+    const registrationData: RegistrationRequestData = {
+      // Metadata
+      referralNumber: referral_number,
+      submissionDate: new Date().toISOString(),
+      consentDate: referral.consent_timestamp || new Date().toISOString(),
+      
+      // Counselor & School (from Supabase)
+      counselorName: referral.counselor_name,
+      counselorEmail: referral.counselor_email,
+      schoolName: referral.school_name,
+      
+      // Student Personal Information (from form)
+      studentFirstName: studentData.student_first_name,
+      studentLastName: studentData.student_last_name,
+      studentId: studentData.student_id,
+      dateOfBirth: studentData.date_of_birth,
+      gender: studentData.gender,
+      countryOfBirth: studentData.country_of_birth,
+      immigrationYear: studentData.immigration_year,
+      studentAddress: studentData.address,
+      studentFloor: studentData.floor,
+      studentApartment: studentData.apartment,
+      studentPhone: studentData.phone,
+      studentMobile: studentData.student_mobile,
+      schoolSystemPassword: studentData.school_system_password,
+      
+      // Parent/Guardian Information (from Supabase consent)
+      parent1Name: referral.parent_names?.split(',')[0]?.trim() || '',
+      parent1Id: '', // We don't store parent IDs in Supabase currently
+      parent1Address: '',
+      parent1Phone: referral.parent_phone,
+      parent1Signature: referral.signature_image || '',
+      parent2Name: referral.parent_names?.split(',')[1]?.trim(),
+      parent2Id: '',
+      parent2Address: '',
+      parent2Phone: '',
+      parent2Signature: referral.signature_image2,
+      parentEmail: referral.parent_email,
+      
+      // Family Information (from form)
+      siblingsCount: studentData.siblings_count || 0,
+      fatherName: studentData.father_name,
+      fatherMobile: studentData.father_mobile,
+      fatherOccupation: studentData.father_occupation,
+      fatherProfession: studentData.father_profession,
+      fatherIncome: studentData.father_income,
+      motherName: studentData.mother_name,
+      motherMobile: studentData.mother_mobile,
+      motherOccupation: studentData.mother_occupation,
+      motherProfession: studentData.mother_profession,
+      motherIncome: studentData.mother_income,
+      debtsLoans: studentData.debts_loans,
+      parentInvolvement: studentData.parent_involvement,
+      economicStatus: studentData.economic_status,
+      economicDetails: studentData.economic_details,
+      familyBackground: studentData.family_background,
+      
+      // School & Academic (from form)
+      grade: studentData.grade,
+      homeroomTeacher: studentData.homeroom_teacher,
+      teacherPhone: studentData.teacher_phone,
+      schoolCounselorName: studentData.counselor_name,
+      schoolCounselorPhone: studentData.counselor_phone,
+      failingGradesCount: studentData.failing_grades_count || 0,
+      failingSubjects: studentData.failing_subjects,
+      
+      // Welfare & Social Services (from form)
+      knownToWelfare: studentData.known_to_welfare || false,
+      socialWorkerName: studentData.social_worker_name,
+      socialWorkerPhone: studentData.social_worker_phone,
+      youthPromotion: studentData.youth_promotion || false,
+      youthWorkerName: studentData.youth_worker_name,
+      youthWorkerPhone: studentData.youth_worker_phone,
+      
+      // Assessment (from form)
+      behavioralIssues: studentData.behavioral_issues || false,
+      hasPotential: studentData.has_potential || false,
+      motivationLevel: studentData.motivation_level,
+      motivationType: studentData.motivation_type,
+      externalMotivators: studentData.external_motivators,
+      socialStatus: studentData.social_status,
+      afternoonActivities: studentData.afternoon_activities,
+      
+      // Learning & Health (from form)
+      learningDisability: studentData.learning_disability || false,
+      requiresRemedialTeaching: studentData.requires_remedial_teaching,
+      adhd: studentData.adhd || false,
+      adhdTreatment: studentData.adhd_treatment,
+      assessmentDone: studentData.assessment_done || false,
+      assessmentNeeded: studentData.assessment_needed || false,
+      assessmentDetails: studentData.assessment_details,
+      
+      // Risk Assessment (from form)
+      criminalRecord: studentData.criminal_record || false,
+      drugUse: studentData.drug_use || false,
+      smoking: studentData.smoking || false,
+      probationOfficer: studentData.probation_officer,
+      youthProbationOfficer: studentData.youth_probation_officer,
+      psychologicalTreatment: studentData.psychological_treatment || false,
+      psychiatricTreatment: studentData.psychiatric_treatment || false,
+      takesMedication: studentData.takes_medication || false,
+      medicationDescription: studentData.medication_description,
+      riskLevel: studentData.risk_level || 1,
+      riskFactors: studentData.risk_factors,
+      
+      // Final Assessment (from form)
+      militaryServicePotential: studentData.military_service_potential || false,
+      canHandleProgram: studentData.can_handle_program || false,
+      personalOpinion: studentData.personal_opinion
+    }
 
-    // Update referral status to completed
+    // Send to Salesforce Queue
+    console.log('Sending registration request to Salesforce...')
+    const salesforce = new SalesforceService()
+    const sfResult = await salesforce.createRegistrationRequest(registrationData)
+    
+    if (!sfResult.success) {
+      console.error('Failed to create Registration Request in Salesforce:', sfResult.error)
+      return NextResponse.json(
+        { error: sfResult.error || 'Failed to submit to Salesforce' },
+        { status: 500 }
+      )
+    }
+
+    console.log('Registration Request created in Salesforce:', sfResult.recordId)
+
+    // Update referral status in Supabase to completed and store SF record ID
     const { error: updateError } = await supabase
       .from('referrals')
       .update({ 
         status: 'completed',
+        salesforce_contact_id: sfResult.recordId, // Store SF Queue record ID
         updated_at: new Date().toISOString()
       })
       .eq('referral_number', referral_number)
@@ -50,7 +171,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'Student data submitted successfully',
+      message: 'Student data submitted successfully to Salesforce',
+      salesforceId: sfResult.recordId
     })
   } catch (error) {
     console.error('API error:', error)

@@ -295,7 +295,9 @@ SUPABASE_SERVICE_KEY=sb_secret_NRd5IXZ8dWPaa6eriTwiNQ_6daaBaFS
 # Email Service (Resend)
 RESEND_API_KEY=re_CxNvBTmc_KqPVvVKJoyCo8L5tJPHpZToN
 
-# Salesforce (ready for future integration)
+# Salesforce Integration
+SALESFORCE_INSTANCE_URL=https://geh--partialsb.sandbox.my.salesforce.com
+SALESFORCE_ACCESS_TOKEN=your_access_token
 SALESFORCE_USERNAME=your_salesforce_username
 SALESFORCE_PASSWORD=your_salesforce_password
 SALESFORCE_SECURITY_TOKEN=your_security_token
@@ -338,7 +340,7 @@ NEXT_PUBLIC_APP_URL=https://gesher-intake.vercel.app
 - [x] Removed redundant title from main page
 
 ### 🚧 Pending Features
-- [ ] Salesforce integration (JSforce setup)
+- [x] Salesforce integration - Registration_Request__c queue object deployed
 - [ ] SMS notifications (WhatsApp/Twilio)
 - [ ] Authentication for counselors
 - [ ] Admin dashboard
@@ -372,6 +374,153 @@ NEXT_PUBLIC_APP_URL=https://gesher-intake.vercel.app
 - Signature pad touch-compatible
 - Responsive grid layouts
 - Optimized for field use by House Managers
+
+---
+
+## 🔌 Salesforce Integration
+
+### Queue Object: Registration_Request__c
+**Purpose**: Temporary queue for registration requests pending approval by non-profit staff
+
+### Object Configuration
+- **API Name**: Registration_Request__c
+- **Label**: Registration Request
+- **Auto-Number Field**: REG-{0000}
+- **Deployment Status**: Deployed to sandbox
+- **SFDX Project**: Configured with force-app structure
+
+### Field Mappings (89 Custom Fields)
+
+#### Metadata Fields
+- `Referral_Number__c` - Text(50) - Unique referral ID
+- `Status__c` - Picklist - ['Pending Review', 'In Review', 'Approved', 'Rejected']
+- `Priority__c` - Picklist - ['High', 'Medium', 'Low']
+- `Submission_Date__c` - DateTime
+- `Consent_Date__c` - DateTime
+
+#### Counselor & School
+- `Counselor_Name__c` - Text(100)
+- `Counselor_Email__c` - Email
+- `School_Name__c` - Text(200)
+
+#### Student Personal Information
+- `Student_First_Name__c` - Text(100)
+- `Student_Last_Name__c` - Text(100)
+- `Student_ID__c` - Text(20)
+- `Date_of_Birth__c` - Date
+- `Gender__c` - Picklist - ['Male', 'Female']
+- `Country_of_Birth__c` - Text(100)
+- `Immigration_Year__c` - Text(4)
+- `Student_Address__c` - Text(255)
+- `Student_Floor__c` - Text(10)
+- `Student_Apartment__c` - Text(10)
+- `Student_Phone__c` - Phone
+- `Student_Mobile__c` - Phone
+- `School_System_Password__c` - Text(50)
+
+#### Parent/Guardian Information
+- `Parent1_Name__c` - Text(100)
+- `Parent1_ID__c` - Text(20)
+- `Parent1_Address__c` - Text(255)
+- `Parent1_Phone__c` - Phone
+- `Parent1_Signature__c` - LongTextArea(32768) - Base64 signature
+- `Parent2_Name__c` - Text(100)
+- `Parent2_ID__c` - Text(20)
+- `Parent2_Address__c` - Text(255)
+- `Parent2_Phone__c` - Phone
+- `Parent2_Signature__c` - LongTextArea(32768) - Base64 signature
+- `Parent_Email__c` - Email
+
+#### Family Information
+- `Siblings_Count__c` - Number(2,0)
+- `Father_Name__c` - Text(100)
+- `Father_Mobile__c` - Phone
+- `Father_Occupation__c` - Text(100)
+- `Father_Profession__c` - Text(100)
+- `Father_Income__c` - Text(50)
+- `Mother_Name__c` - Text(100)
+- `Mother_Mobile__c` - Phone
+- `Mother_Occupation__c` - Text(100)
+- `Mother_Profession__c` - Text(100)
+- `Mother_Income__c` - Text(50)
+- `Debts_Loans__c` - Text(255)
+- `Parent_Involvement__c` - Picklist - ['Inhibiting', 'Promoting', 'No Involvement']
+- `Economic_Status__c` - Picklist - ['Low', 'Medium', 'High']
+- `Economic_Details__c` - LongTextArea(4000)
+- `Family_Background__c` - LongTextArea(4000)
+
+#### School & Academic
+- `Grade__c` - Text(20)
+- `Homeroom_Teacher__c` - Text(100)
+- `Teacher_Phone__c` - Phone
+- `School_Counselor_Name__c` - Text(100)
+- `School_Counselor_Phone__c` - Phone
+- `Failing_Grades_Count__c` - Number(2,0)
+- `Failing_Subjects__c` - Text(255)
+
+#### Welfare & Social Services
+- `Known_to_Welfare__c` - Checkbox
+- `Social_Worker_Name__c` - Text(100)
+- `Social_Worker_Phone__c` - Phone
+- `Youth_Promotion__c` - Checkbox
+- `Youth_Worker_Name__c` - Text(100)
+- `Youth_Worker_Phone__c` - Phone
+
+#### Assessment
+- `Behavioral_Issues__c` - Checkbox
+- `Has_Potential__c` - Checkbox
+- `Motivation_Level__c` - Picklist - ['Low', 'Medium', 'High']
+- `Motivation_Type__c` - Picklist - ['Internal', 'External']
+- `External_Motivators__c` - Text(255)
+- `Social_Status__c` - Text(255)
+- `Afternoon_Activities__c` - Text(255)
+
+#### Learning & Health
+- `Learning_Disability__c` - Checkbox
+- `Requires_Remedial_Teaching__c` - Checkbox
+- `ADHD__c` - Checkbox
+- `ADHD_Treatment__c` - Text(255)
+- `Assessment_Done__c` - Checkbox
+- `Assessment_Needed__c` - Checkbox
+- `Assessment_Details__c` - LongTextArea(4000)
+
+#### Risk Assessment
+- `Criminal_Record__c` - Checkbox
+- `Drug_Use__c` - Checkbox
+- `Smoking__c` - Checkbox
+- `Probation_Officer__c` - Text(100)
+- `Youth_Probation_Officer__c` - Text(100)
+- `Psychological_Treatment__c` - Checkbox
+- `Psychiatric_Treatment__c` - Checkbox
+- `Takes_Medication__c` - Checkbox
+- `Medication_Description__c` - Text(255)
+- `Risk_Level__c` - Number(2,0)
+- `Risk_Factors__c` - LongTextArea(4000)
+
+#### Final Assessment
+- `Military_Service_Potential__c` - Checkbox
+- `Can_Handle_Program__c` - Checkbox
+- `Personal_Opinion__c` - LongTextArea(4000)
+
+### Deployment Commands
+```bash
+# Deploy to Salesforce sandbox
+sf project deploy start -d force-app -o gesher-sandbox
+
+# Test the deployment
+node test-sf-queue.js
+
+# Generate field metadata
+node create-sf-fields.js
+```
+
+### Integration Flow
+1. **Student Form Submission** → Creates Registration_Request__c record
+2. **Status**: Starts as 'Pending Review'
+3. **Non-profit Review** → Staff reviews in Salesforce
+4. **House Visit** → After approval, conduct home visit
+5. **Contact Creation** → Convert approved request to Contact record
+6. **Data Retention**: Queue records for audit trail
 
 ---
 
