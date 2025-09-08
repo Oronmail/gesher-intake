@@ -36,22 +36,21 @@ export async function sendConsentEmail({
     const { data, error } = await resend.emails.send({
       from: 'גשר אל הנוער <onboarding@resend.dev>',
       to: parentEmail,
-      subject: `טופס הסכמה - גשר אל הנוער - ${referralNumber}`,
+      subject: `מועמדות במסגרת עמותת ״גשר אל הנוער״`,
       html: `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #2563eb;">גשר אל הנוער - טופס הסכמה להורים</h2>
+          <h2 style="color: #2563eb;">מועמדות במסגרת עמותת ״גשר אל הנוער״</h2>
           
           <p>שלום,</p>
           
-          <p>${counselorName} מבית ספר ${schoolName} הפנה את ילדכם לתוכנית "גשר אל הנוער".</p>
+          <p>יועץ משפחה מבית ספר ${schoolName} הפנה את ילדכם לתוכנית "גשר אל הנוער".</p>
           
-          <p>לצורך המשך הטיפול בבקשה, אנו זקוקים להסכמתכם לשיתוף מידע.</p>
+          <p>לצורך המשך הטיפול בבקשה, אנו זקוקים להסכמתכם לויתור סודיות לימודית/פסיכולוגית/רפואית.</p>
           
           <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <p><strong>מספר הפניה:</strong> ${referralNumber}</p>
-            <p>לחצו על הקישור למילוי טופס ההסכמה:</p>
+            <p>לחצו על הקישור למילוי טופס ויתור הסודיות:</p>
             <a href="${consentUrl}" style="display: inline-block; background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 10px;">
-              מילוי טופס הסכמה
+              מילוי טופס
             </a>
           </div>
           
