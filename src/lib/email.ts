@@ -16,6 +16,7 @@ interface SendCounselorNotificationParams {
   counselorEmail: string;
   counselorName: string;
   parentNames: string;
+  studentName: string;
   studentFormUrl: string;
   referralNumber: string;
 }
@@ -86,6 +87,7 @@ export async function sendCounselorNotification({
   counselorEmail,
   counselorName,
   parentNames,
+  studentName,
   studentFormUrl,
   referralNumber,
 }: SendCounselorNotificationParams) {
@@ -98,7 +100,7 @@ export async function sendCounselorNotification({
     const { data, error } = await resend.emails.send({
       from: 'גשר אל הנוער <onboarding@resend.dev>',
       to: counselorEmail,
-      subject: `הסכמת הורים התקבלה - ${referralNumber}`,
+      subject: `הסכמת הורים התקבלה - ${studentName}`,
       html: `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #10b981;">✅ הסכמת הורים התקבלה בהצלחה</h2>
@@ -108,7 +110,7 @@ export async function sendCounselorNotification({
           <p>ההורים ${parentNames} חתמו על טופס ההסכמה.</p>
           
           <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <p><strong>מספר הפניה:</strong> ${referralNumber}</p>
+            <p><strong>שם התלמיד/ה:</strong> ${studentName}</p>
             <p>כעת ניתן למלא את טופס נתוני התלמיד/ה:</p>
             <a href="${studentFormUrl}" style="display: inline-block; background: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 10px;">
               מילוי נתוני תלמיד/ה

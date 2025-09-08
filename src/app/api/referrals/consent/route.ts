@@ -12,6 +12,7 @@ export async function POST(request: NextRequest) {
       parent2_name,
       signature,
       signature2,
+      student_name,
     } = body
 
     // Combine parent names
@@ -57,6 +58,7 @@ export async function POST(request: NextRequest) {
         counselorEmail: data.counselor_email,
         counselorName: data.counselor_name,
         parentNames: parent_names,
+        studentName: student_name,
         studentFormUrl: studentFormUrl,
         referralNumber: referral_number,
       })
