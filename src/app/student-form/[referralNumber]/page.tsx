@@ -1,5 +1,4 @@
 import StudentDataForm from '@/components/StudentDataForm'
-import Logo from '@/components/Logo'
 
 export default function StudentFormPage({ 
   params 

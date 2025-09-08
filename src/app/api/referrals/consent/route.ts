@@ -11,7 +11,6 @@ export async function POST(request: NextRequest) {
       parent2_name,
       signature,
       signature2,
-      student_name,
     } = body
 
     // Combine parent names

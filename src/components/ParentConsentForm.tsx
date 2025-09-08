@@ -96,7 +96,7 @@ export default function ParentConsentForm({ referralNumber }: ParentConsentFormP
           message: result.error || 'שגיאה בשליחת הטופס',
         })
       }
-    } catch (error) {
+    } catch {
       setSubmitResult({
         success: false,
         message: 'אירעה שגיאה. אנא נסה שנית.',
@@ -120,7 +120,7 @@ export default function ParentConsentForm({ referralNumber }: ParentConsentFormP
 
         <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
           <p className="text-gray-700">
-            אני מאפשר להנהלת "גשר אל הנוער" לקבל מביה"ס/ רווחה/ גורם מטפל אחר כל מידע
+            אני מאפשר להנהלת &quot;גשר אל הנוער&quot; לקבל מביה&quot;ס/ רווחה/ גורם מטפל אחר כל מידע
             לימודי/פסיכולוגי/רפואי על בני/ביתי. אנו מוותרים בזאת על סודיות לגבי המידע הרלוונטי.
           </p>
         </div>

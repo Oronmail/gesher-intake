@@ -54,7 +54,7 @@ export default function CounselorInitialForm() {
           message: result.error || 'שגיאה ביצירת ההפניה',
         })
       }
-    } catch (error) {
+    } catch {
       setSubmitResult({
         success: false,
         message: 'אירעה שגיאה. אנא נסה שנית.',

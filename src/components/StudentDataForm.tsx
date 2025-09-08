@@ -15,7 +15,7 @@ const formSchema = z.object({
   date_of_birth: z.string().min(1, 'נא להזין תאריך לידה'),
   country_of_birth: z.string().min(2, 'נא להזין ארץ לידה'),
   immigration_year: z.string().optional(),
-  gender: z.enum(['male', 'female'], { required_error: 'נא לבחור מין' }),
+  gender: z.enum(['male', 'female'] as const),
   address: z.string().min(5, 'נא להזין כתובת'),
   floor: z.string().optional(),
   apartment: z.string().optional(),
@@ -146,7 +146,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
 
   const nextStep = async () => {
     const fieldsToValidate = getFieldsForStep(currentStep)
-    const isValid = await trigger(fieldsToValidate as any)
+    const isValid = await trigger(fieldsToValidate as (keyof FormData)[])
     if (isValid && currentStep < totalSteps) {
       setCurrentStep(currentStep + 1)
     }
@@ -198,7 +198,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
           message: result.error || 'שגיאה בשליחת הטופס',
         })
       }
-    } catch (error) {
+    } catch {
       setSubmitResult({
         success: false,
         message: 'אירעה שגיאה. אנא נסה שנית.',
@@ -721,7 +721,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                     <>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          שם עו"ס מטפל
+                          שם עו&quot;ס מטפל
                         </label>
                         <input
                           {...register('social_worker_name')}
@@ -730,7 +730,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          טלפון עו"ס
+                          טלפון עו&quot;ס
                         </label>
                         <input
                           {...register('social_worker_phone')}
@@ -863,7 +863,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    פעילויות בשעות אחה"צ (חוגים, תנועות נוער, אימוני כושר, עבודה)
+                    פעילויות בשעות אחה&quot;צ (חוגים, תנועות נוער, אימוני כושר, עבודה)
                   </label>
                   <textarea
                     {...register('afternoon_activities')}
@@ -1092,7 +1092,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                       type="checkbox"
                       className="mr-2"
                     />
-                    בעל/ת סיכויים להתגייס לצה"ל
+                    בעל/ת סיכויים להתגייס לצה&quot;ל
                   </label>
                 </div>
 

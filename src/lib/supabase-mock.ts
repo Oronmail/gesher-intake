@@ -21,8 +21,8 @@ interface MockReferral {
 const mockData: Map<string, MockReferral> = new Map()
 
 export const supabaseMock = {
-  from: (table: string) => ({
-    insert: (data: any) => ({
+  from: () => ({
+    insert: (data: MockReferral) => ({
       select: () => ({
         single: async () => {
           const referral: MockReferral = {
@@ -37,7 +37,7 @@ export const supabaseMock = {
         }
       })
     }),
-    update: (updates: any) => ({
+    update: (updates: Partial<MockReferral>) => ({
       eq: (field: string, value: string) => ({
         select: () => ({
           single: async () => {

@@ -12,7 +12,7 @@ const isConfigured = supabaseUrl &&
 
 export const supabase = isConfigured 
   ? createClient(supabaseUrl, supabaseAnonKey)
-  : supabaseMock as any
+  : (supabaseMock as unknown as ReturnType<typeof createClient>)
 
 export type ReferralStatus = 
   | 'pending_consent'
