@@ -8,6 +8,21 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
+                <fullName>Pending Consent</fullName>
+                <default>false</default>
+                <label>Pending Consent</label>
+            </value>
+            <value>
+                <fullName>Consent Signed</fullName>
+                <default>false</default>
+                <label>Consent Signed</label>
+            </value>
+            <value>
+                <fullName>Data Submitted</fullName>
+                <default>false</default>
+                <label>Data Submitted</label>
+            </value>
+            <value>
                 <fullName>Pending Review</fullName>
                 <default>false</default>
                 <label>Pending Review</label>

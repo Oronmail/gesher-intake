@@ -594,6 +594,18 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
+                    פירוט מצב כלכלי
+                  </label>
+                  <textarea
+                    {...register('economic_details')}
+                    rows={2}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="פרט את המצב הכלכלי של המשפחה..."
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     רקע משפחתי
                   </label>
                   <textarea

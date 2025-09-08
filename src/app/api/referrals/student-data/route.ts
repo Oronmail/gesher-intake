@@ -140,27 +140,34 @@ export async function POST(request: NextRequest) {
       personalOpinion: studentData.personal_opinion
     }
 
-    // Send to Salesforce Queue
-    console.log('Sending registration request to Salesforce...')
+    // Update existing Salesforce record with student data
+    if (!referral.salesforce_contact_id) {
+      console.error('No Salesforce record ID found for this referral')
+      return NextResponse.json(
+        { error: 'Salesforce record not found' },
+        { status: 400 }
+      )
+    }
+    
+    console.log('Updating Salesforce registration request with student data...')
     const salesforce = new SalesforceService()
-    const sfResult = await salesforce.createRegistrationRequest(registrationData)
+    const sfResult = await salesforce.updateWithStudentData(referral.salesforce_contact_id, registrationData)
     
     if (!sfResult.success) {
-      console.error('Failed to create Registration Request in Salesforce:', sfResult.error)
+      console.error('Failed to update Registration Request in Salesforce:', sfResult.error)
       return NextResponse.json(
         { error: sfResult.error || 'Failed to submit to Salesforce' },
         { status: 500 }
       )
     }
 
-    console.log('Registration Request created in Salesforce:', sfResult.recordId)
+    console.log('Registration Request updated in Salesforce')
 
-    // Update referral status in Supabase to completed and store SF record ID
+    // Update referral status in Supabase to completed
     const { error: updateError } = await supabase
       .from('referrals')
       .update({ 
         status: 'completed',
-        salesforce_contact_id: sfResult.recordId, // Store SF Queue record ID
         updated_at: new Date().toISOString()
       })
       .eq('referral_number', referral_number)
@@ -172,7 +179,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'Student data submitted successfully to Salesforce',
-      salesforceId: sfResult.recordId
+      salesforceId: referral.salesforce_contact_id
     })
   } catch (error) {
     console.error('API error:', error)

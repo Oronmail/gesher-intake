@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { sendConsentEmail } from '@/lib/email'
+import SalesforceService, { InitialRegistrationData } from '@/lib/salesforce'
 
 function generateReferralNumber(): string {
   const date = new Date()
@@ -25,7 +26,28 @@ export async function POST(request: NextRequest) {
     // Generate unique referral number
     const referral_number = generateReferralNumber()
     
-    // Create referral in Supabase
+    // Create initial Registration Request in Salesforce
+    const salesforce = new SalesforceService()
+    const initialData: InitialRegistrationData = {
+      referralNumber: referral_number,
+      counselorName: counselor_name,
+      counselorEmail: counselor_email,
+      schoolName: school_name,
+      parentEmail: parent_email,
+      parentPhone: parent_phone,
+    }
+    
+    const sfResult = await salesforce.createInitialRegistration(initialData)
+    
+    if (!sfResult.success) {
+      console.error('Failed to create Salesforce record:', sfResult.error)
+      // Continue anyway - we don't want to block the process
+    }
+    
+    const salesforceRecordId = sfResult.recordId || null
+    console.log('Salesforce Record ID:', salesforceRecordId)
+    
+    // Create referral in Supabase (with Salesforce record ID)
     const { data, error } = await supabase
       .from('referrals')
       .insert({
@@ -37,6 +59,7 @@ export async function POST(request: NextRequest) {
         parent_email: parent_email || null,
         parent_phone,
         status: 'pending_consent',
+        salesforce_contact_id: salesforceRecordId, // Store SF record ID
       })
       .select()
       .single()

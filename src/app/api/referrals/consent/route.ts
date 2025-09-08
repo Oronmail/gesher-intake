@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { sendCounselorNotification } from '@/lib/email'
+import SalesforceService, { ConsentUpdateData } from '@/lib/salesforce'
 
 export async function POST(request: NextRequest) {
   try {
@@ -47,6 +48,33 @@ export async function POST(request: NextRequest) {
         { error: 'Referral not found' },
         { status: 404 }
       )
+    }
+
+    // Update Salesforce record with consent data
+    if (data.salesforce_contact_id) {
+      const salesforce = new SalesforceService()
+      const consentData: ConsentUpdateData = {
+        parent1Name: parent1_name,
+        parent1Id: parent1_id,
+        parent1Address: parent1_address,
+        parent1Phone: parent1_phone,
+        parent1Signature: signature,
+        parent2Name: parent2_name,
+        parent2Id: parent2_id,
+        parent2Address: parent2_address,
+        parent2Phone: parent2_phone,
+        parent2Signature: signature2,
+        consentDate: new Date().toISOString(),
+      }
+      
+      const sfResult = await salesforce.updateWithConsent(data.salesforce_contact_id, consentData)
+      
+      if (!sfResult.success) {
+        console.error('Failed to update Salesforce record with consent:', sfResult.error)
+        // Continue anyway - we don't want to block the process
+      } else {
+        console.log('Salesforce record updated with consent data')
+      }
     }
 
     // Send notification to counselor that consent is signed
