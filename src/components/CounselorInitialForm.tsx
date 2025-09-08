@@ -184,11 +184,6 @@ export default function CounselorInitialForm() {
               'יצירת הפניה'
             )}
           </button>
-
-          <p className="text-sm text-gray-600 text-center">
-            בשליחת טופס זה, אני מאשר/ת שקיבלתי הסכמה מילולית מההורים
-            לשתף את פרטי ההתקשרות שלהם לצורך הפניה זו.
-          </p>
         </form>
       </div>
     </div>
