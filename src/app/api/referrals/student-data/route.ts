@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (referral.status !== 'consent_signed') {
+    if (referral.status !== 'consent_signed' && referral.status !== 'completed') {
       return NextResponse.json(
         { error: 'Parent consent not yet provided' },
         { status: 400 }

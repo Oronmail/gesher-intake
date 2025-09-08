@@ -36,10 +36,11 @@ A privacy-compliant digital workflow system that:
 - **Styling**: Tailwind CSS
 - **Forms**: React Hook Form + Zod validation
 - **Signatures**: React Signature Canvas
-- **Database**: Supabase (configured with new API keys format)
-- **Email Service**: Resend (100 emails/day free tier)
-- **Final Storage**: Salesforce (existing client system)
-- **Hosting**: Vercel (deployed at gesher-intake.vercel.app)
+- **Database**: Supabase (Project: fftnsfaakvahqyfwhtku.supabase.co)
+- **Email Service**: Resend (API Key: re_CxNvBTmc_KqPVvVKJoyCo8L5tJPHpZToN)
+- **Email Sender**: onboarding@resend.dev
+- **Final Storage**: Salesforce (ready for integration)
+- **Hosting**: Vercel (https://gesher-intake.vercel.app)
 - **Repository**: GitHub (Oronmail/gesher-intake)
 - **Cost**: $0 (completely free solution)
 
@@ -199,24 +200,25 @@ CREATE TABLE referrals (
 
 ---
 
-## 📧 Email Notification System
+## 📧 Email Notification System (FULLY OPERATIONAL)
 
 ### Implementation
-- **Service**: Resend (100 emails/day free tier)
+- **Service**: Resend (API Key: re_CxNvBTmc_KqPVvVKJoyCo8L5tJPHpZToN)
+- **Sender**: onboarding@resend.dev
 - **Templates**: HTML emails with Hebrew RTL support
-- **Automation**: Fully automated workflow notifications
+- **Automation**: Fully automated and tested
 
 ### Email Flow
 1. **Parent Consent Email**
-   - Sent when counselor submits initial form
-   - Contains unique consent form link
-   - Hebrew content with RTL formatting
-   - Includes referral number
+   - Subject: "טופס ויתור סודיות - גשר אל הנוער"
+   - Title: "מועמדות במסגרת עמותת גשר אל הנוער"
+   - Says "יועץ משפחה" instead of counselor name
+   - Button text: "מילוי טופס"
 
 2. **Counselor Notification**
-   - Sent when parent signs consent
+   - Subject: "הסכמת הורים התקבלה - [Student Name]"
+   - Shows "שם התלמיד/ה" instead of reference number
    - Contains student data form link
-   - Alerts counselor to continue process
 
 ### Configuration
 ```typescript
@@ -282,18 +284,18 @@ The system includes a mock database for local testing:
 2. Salesforce account with API access
 3. Vercel account (free tier)
 
-### Environment Variables
+### Environment Variables (CONFIGURED IN VERCEL)
 ```env
 # .env.local
-# Supabase (new API keys format)
+# Supabase
 NEXT_PUBLIC_SUPABASE_URL=https://fftnsfaakvahqyfwhtku.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_YOUR_KEY
-SUPABASE_SERVICE_KEY=sb_secret_YOUR_KEY
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_MfBSFVfIWbZlb9_jzGZtiA_NjjFWHsN
+SUPABASE_SERVICE_KEY=sb_secret_NRd5IXZ8dWPaa6eriTwiNQ_6daaBaFS
 
-# Email Service
-RESEND_API_KEY=re_YOUR_API_KEY
+# Email Service (Resend)
+RESEND_API_KEY=re_CxNvBTmc_KqPVvVKJoyCo8L5tJPHpZToN
 
-# Salesforce (future)
+# Salesforce (ready for future integration)
 SALESFORCE_USERNAME=your_salesforce_username
 SALESFORCE_PASSWORD=your_salesforce_password
 SALESFORCE_SECURITY_TOKEN=your_security_token
@@ -316,7 +318,7 @@ NEXT_PUBLIC_APP_URL=https://gesher-intake.vercel.app
 
 ### ✅ Completed Features
 - [x] Privacy-compliant workflow (consent before data)
-- [x] Counselor initial form
+- [x] Counselor initial form with title "הגשת מועמדות" (centered)
 - [x] Parent digital consent with dual signatures
 - [x] Comprehensive 7-step student data form
 - [x] Hebrew UI throughout
@@ -326,12 +328,14 @@ NEXT_PUBLIC_APP_URL=https://gesher-intake.vercel.app
 - [x] Mobile-responsive design
 - [x] Form validation with Zod
 - [x] RTL layout support
-- [x] Supabase integration with new API keys
-- [x] Email notifications via Resend
-- [x] Automatic parent email with consent link
-- [x] Automatic counselor notification when consent signed
-- [x] Deployed to Vercel (gesher-intake.vercel.app)
-- [x] GitHub repository setup
+- [x] Supabase integration (fftnsfaakvahqyfwhtku.supabase.co)
+- [x] Resend email service configured and working
+- [x] Parent email: "טופס ויתור סודיות - גשר אל הנוער"
+- [x] Counselor email shows student name (not ref number)
+- [x] Deployed to Vercel (https://gesher-intake.vercel.app)
+- [x] GitHub repository (Oronmail/gesher-intake)
+- [x] Removed consent disclaimer from counselor form
+- [x] Removed redundant title from main page
 
 ### 🚧 Pending Features
 - [ ] Salesforce integration (JSforce setup)
@@ -458,6 +462,8 @@ This is a pro bono project developed for Gesher Al HaNoar. For technical questio
 ---
 
 *Last Updated: January 2025*
-*Project Status: Deployed to Production*
+*Project Status: Fully Deployed & Operational*
 *Live URL: https://gesher-intake.vercel.app*
 *Repository: https://github.com/Oronmail/gesher-intake*
+*Email Service: Resend (Configured & Working)*
+*Database: Supabase (Connected)*
