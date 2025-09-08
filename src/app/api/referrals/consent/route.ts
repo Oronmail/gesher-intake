@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
+import { sendCounselorNotification } from '@/lib/email'
 
 export async function POST(request: NextRequest) {
   try {
@@ -47,10 +48,26 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // TODO: Send notification to counselor that consent is signed
-    // In production, send email to counselor_email from the referral record
-    
+    // Send notification to counselor that consent is signed
     const studentFormUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/student-form/${referral_number}`
+    
+    // Send email to counselor
+    if (data.counselor_email) {
+      const emailResult = await sendCounselorNotification({
+        counselorEmail: data.counselor_email,
+        counselorName: data.counselor_name,
+        parentNames: parent_names,
+        studentFormUrl: studentFormUrl,
+        referralNumber: referral_number,
+      })
+      
+      if (emailResult.success) {
+        console.log('Notification email sent to counselor:', data.counselor_email)
+      } else {
+        console.log('Failed to send counselor notification:', emailResult.error)
+      }
+    }
+    
     console.log('====================================')
     console.log('✅ CONSENT SIGNED SUCCESSFULLY!')
     console.log('====================================')

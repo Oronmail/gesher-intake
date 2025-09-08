@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
+import { sendConsentEmail } from '@/lib/email'
 
 function generateReferralNumber(): string {
   const date = new Date()
@@ -48,11 +49,28 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // TODO: Send email/SMS to parent with consent form link
+    // Send email to parent with consent form link
     const consentUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/consent/${referral_number}`
     
     console.log('Consent URL:', consentUrl)
-    // In production, send this URL via email/SMS to parent
+    
+    // Send email if parent email is provided
+    if (parent_email) {
+      const emailResult = await sendConsentEmail({
+        parentEmail: parent_email,
+        parentPhone: parent_phone,
+        counselorName: counselor_name,
+        schoolName: school_name,
+        referralNumber: referral_number,
+        consentUrl: consentUrl,
+      })
+      
+      if (emailResult.success) {
+        console.log('Consent email sent to parent:', parent_email)
+      } else {
+        console.log('Failed to send email, but referral created:', emailResult.error)
+      }
+    }
 
     return NextResponse.json({
       success: true,
