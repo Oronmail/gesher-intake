@@ -36,9 +36,11 @@ A privacy-compliant digital workflow system that:
 - **Styling**: Tailwind CSS
 - **Forms**: React Hook Form + Zod validation
 - **Signatures**: React Signature Canvas
-- **Temporary Storage**: Supabase (free tier) or mock for local testing
+- **Database**: Supabase (configured with new API keys format)
+- **Email Service**: Resend (100 emails/day free tier)
 - **Final Storage**: Salesforce (existing client system)
-- **Hosting**: Vercel (free tier)
+- **Hosting**: Vercel (deployed at gesher-intake.vercel.app)
+- **Repository**: GitHub (Oronmail/gesher-intake)
 - **Cost**: $0 (completely free solution)
 
 ### Project Structure
@@ -197,6 +199,43 @@ CREATE TABLE referrals (
 
 ---
 
+## 📧 Email Notification System
+
+### Implementation
+- **Service**: Resend (100 emails/day free tier)
+- **Templates**: HTML emails with Hebrew RTL support
+- **Automation**: Fully automated workflow notifications
+
+### Email Flow
+1. **Parent Consent Email**
+   - Sent when counselor submits initial form
+   - Contains unique consent form link
+   - Hebrew content with RTL formatting
+   - Includes referral number
+
+2. **Counselor Notification**
+   - Sent when parent signs consent
+   - Contains student data form link
+   - Alerts counselor to continue process
+
+### Configuration
+```typescript
+// src/lib/email.ts
+- sendConsentEmail() - Sends consent link to parent
+- sendCounselorNotification() - Notifies counselor of signed consent
+```
+
+### Setup Requirements
+1. Create free account at [Resend.com](https://resend.com)
+2. Get API key from dashboard
+3. Add to environment variables:
+   ```
+   RESEND_API_KEY=re_YOUR_API_KEY
+   ```
+4. For production: Verify domain or use resend.dev sender
+
+---
+
 ## 🌐 Hebrew/RTL Support
 
 ### Implementation
@@ -246,13 +285,21 @@ The system includes a mock database for local testing:
 ### Environment Variables
 ```env
 # .env.local
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-SUPABASE_SERVICE_KEY=your_service_key
+# Supabase (new API keys format)
+NEXT_PUBLIC_SUPABASE_URL=https://fftnsfaakvahqyfwhtku.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_YOUR_KEY
+SUPABASE_SERVICE_KEY=sb_secret_YOUR_KEY
+
+# Email Service
+RESEND_API_KEY=re_YOUR_API_KEY
+
+# Salesforce (future)
 SALESFORCE_USERNAME=your_salesforce_username
 SALESFORCE_PASSWORD=your_salesforce_password
 SALESFORCE_SECURITY_TOKEN=your_security_token
-NEXT_PUBLIC_APP_URL=https://your-domain.vercel.app
+
+# Application
+NEXT_PUBLIC_APP_URL=https://gesher-intake.vercel.app
 ```
 
 ### Deployment Steps
@@ -279,15 +326,20 @@ NEXT_PUBLIC_APP_URL=https://your-domain.vercel.app
 - [x] Mobile-responsive design
 - [x] Form validation with Zod
 - [x] RTL layout support
+- [x] Supabase integration with new API keys
+- [x] Email notifications via Resend
+- [x] Automatic parent email with consent link
+- [x] Automatic counselor notification when consent signed
+- [x] Deployed to Vercel (gesher-intake.vercel.app)
+- [x] GitHub repository setup
 
 ### 🚧 Pending Features
 - [ ] Salesforce integration (JSforce setup)
-- [ ] Email/SMS notifications
-- [ ] Production Supabase setup
-- [ ] Vercel deployment
+- [ ] SMS notifications (WhatsApp/Twilio)
 - [ ] Authentication for counselors
 - [ ] Admin dashboard
 - [ ] Data export functionality
+- [ ] Domain verification for custom email sender
 
 ---
 
@@ -405,5 +457,7 @@ This is a pro bono project developed for Gesher Al HaNoar. For technical questio
 
 ---
 
-*Last Updated: December 2024*
-*Project Status: MVP Complete, Ready for Production Setup*
+*Last Updated: January 2025*
+*Project Status: Deployed to Production*
+*Live URL: https://gesher-intake.vercel.app*
+*Repository: https://github.com/Oronmail/gesher-intake*

@@ -67,8 +67,8 @@ export default function CounselorInitialForm() {
   return (
     <div className="max-w-2xl mx-auto p-6">
       <div className="bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-2xl font-bold mb-6 text-gray-800">
-          טופס הפניית תלמיד/ה
+        <h1 className="text-2xl font-bold mb-6 text-gray-800 text-center">
+          הגשת מועמדות
         </h1>
         
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

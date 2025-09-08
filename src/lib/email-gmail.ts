@@ -1,7 +1,21 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
-// Initialize Resend with API key
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Create reusable transporter using Gmail SMTP
+const createTransporter = () => {
+  // Check if Gmail credentials are configured
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    console.log('Gmail credentials not configured');
+    return null;
+  }
+
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_APP_PASSWORD, // Use App Password, not regular password
+    },
+  });
+};
 
 interface SendConsentEmailParams {
   parentEmail: string;
@@ -27,14 +41,16 @@ export async function sendConsentEmail({
   referralNumber,
   consentUrl,
 }: SendConsentEmailParams) {
-  if (!process.env.RESEND_API_KEY) {
-    console.log('Resend API key not configured, skipping email');
+  const transporter = createTransporter();
+  
+  if (!transporter) {
+    console.log('Email not configured, skipping');
     return { success: false, error: 'Email not configured' };
   }
 
   try {
-    const { data, error } = await resend.emails.send({
-      from: 'גשר אל הנוער <onboarding@resend.dev>',
+    const info = await transporter.sendMail({
+      from: `"גשר אל הנוער" <${process.env.GMAIL_USER}>`,
       to: parentEmail,
       subject: `טופס הסכמה - גשר אל הנוער - ${referralNumber}`,
       html: `
@@ -70,13 +86,8 @@ export async function sendConsentEmail({
       `,
     });
 
-    if (error) {
-      console.error('Error sending consent email:', error);
-      return { success: false, error: error.message };
-    }
-
-    console.log('Consent email sent successfully:', data);
-    return { success: true, data };
+    console.log('Consent email sent successfully:', info.messageId);
+    return { success: true, data: info };
   } catch (error) {
     console.error('Failed to send consent email:', error);
     return { success: false, error: 'Failed to send email' };
@@ -90,14 +101,16 @@ export async function sendCounselorNotification({
   studentFormUrl,
   referralNumber,
 }: SendCounselorNotificationParams) {
-  if (!process.env.RESEND_API_KEY) {
-    console.log('Resend API key not configured, skipping email');
+  const transporter = createTransporter();
+  
+  if (!transporter) {
+    console.log('Email not configured, skipping');
     return { success: false, error: 'Email not configured' };
   }
 
   try {
-    const { data, error } = await resend.emails.send({
-      from: 'גשר אל הנוער <onboarding@resend.dev>',
+    const info = await transporter.sendMail({
+      from: `"גשר אל הנוער" <${process.env.GMAIL_USER}>`,
       to: counselorEmail,
       subject: `הסכמת הורים התקבלה - ${referralNumber}`,
       html: `
@@ -130,13 +143,8 @@ export async function sendCounselorNotification({
       `,
     });
 
-    if (error) {
-      console.error('Error sending counselor notification:', error);
-      return { success: false, error: error.message };
-    }
-
-    console.log('Counselor notification sent successfully:', data);
-    return { success: true, data };
+    console.log('Counselor notification sent successfully:', info.messageId);
+    return { success: true, data: info };
   } catch (error) {
     console.error('Failed to send counselor notification:', error);
     return { success: false, error: 'Failed to send email' };
