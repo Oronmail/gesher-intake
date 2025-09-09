@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Loader2, ChevronRight, ChevronLeft } from 'lucide-react'
 import Logo from './Logo'
+import { supabase } from '@/lib/supabase'
 
 const formSchema = z.object({
   // פרטים אישיים
@@ -110,6 +111,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
   const [currentStep, setCurrentStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string } | null>(null)
+  const [loading, setLoading] = useState(true)
 
   const totalSteps = 7
 
@@ -119,6 +121,8 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
     formState: { errors },
     watch,
     trigger,
+    setValue,
+    reset,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -143,6 +147,54 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
       risk_level: 1,
     }
   })
+
+  // Fetch referral data from Supabase and prepopulate fields
+  useEffect(() => {
+    const fetchReferralData = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('referrals')
+          .select('*')
+          .eq('referral_number', referralNumber)
+          .single()
+
+        if (data && !error) {
+          // Prepopulate school and counselor info
+          if (data.school_name) setValue('school_name', data.school_name)
+          if (data.counselor_name) setValue('counselor_name', data.counselor_name)
+          if (data.counselor_email) setValue('counselor_phone', data.counselor_email) // Using email as phone if available
+          
+          // Prepopulate parent contact info if available
+          if (data.parent_phone) {
+            setValue('father_mobile', data.parent_phone)
+            setValue('mother_mobile', data.parent_phone)
+          }
+          
+          // If parent names are stored (from consent form)
+          if (data.parent_names) {
+            const parentNames = data.parent_names.split(', ')
+            if (parentNames[0]) {
+              const firstName = parentNames[0].split(' ')[0] || ''
+              setValue('father_name', firstName)
+            }
+            if (parentNames[1]) {
+              const secondName = parentNames[1].split(' ')[0] || ''
+              setValue('mother_name', secondName)
+            }
+          }
+
+          // Prepopulate student name if available from consent form
+          // This would be in a separate field if stored
+        }
+      } catch (error) {
+        console.error('Error fetching referral data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchReferralData()
+  }, [referralNumber, setValue])
 
   const nextStep = async () => {
     const fieldsToValidate = getFieldsForStep(currentStep)
@@ -208,6 +260,19 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
     }
   }
 
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="bg-white rounded-lg shadow-lg p-8">
+          <div className="flex items-center justify-center">
+            <Loader2 className="animate-spin h-8 w-8 text-blue-600" />
+            <span className="mr-3 text-gray-600">טוען נתונים...</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="bg-white rounded-lg shadow-lg p-8">
@@ -216,7 +281,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
             <Logo className="h-20 w-20" />
           </div>
           <h1 className="text-2xl font-bold text-gray-800">
-            טופס הפניית מועמד/ת
+            טופס רישום מועמדות לתלמיד/ה
           </h1>
         </div>
 
@@ -227,8 +292,8 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
               <div key={index} className="flex-1">
                 <div className="relative">
                   {index < totalSteps - 1 && (
-                    <div className={`absolute top-5 w-full h-0.5 ${index < currentStep - 1 ? 'bg-blue-600' : 'bg-gray-300'}`} 
-                         style={{ right: '-50%', left: '50%' }} />
+                    <div className={`absolute top-5 h-0.5 ${index < currentStep - 1 ? 'bg-blue-600' : 'bg-gray-300'}`} 
+                         style={{ right: '-50%', left: '50%', width: '100%' }} />
                   )}
                   <div className={`relative z-10 w-10 h-10 mx-auto rounded-full flex items-center justify-center text-white font-bold
                     ${index < currentStep ? 'bg-blue-600' : 'bg-gray-300'}`}>
@@ -338,7 +403,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                     <option value="female">נקבה</option>
                   </select>
                   {errors.gender && (
-                    <p className="mt-1 text-sm text-red-600">{errors.gender.message}</p>
+                    <p className="mt-1 text-sm text-red-600">נא לבחור מין</p>
                   )}
                 </div>
 

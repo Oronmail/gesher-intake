@@ -112,8 +112,11 @@ gesher-intake/
 - counselor_email: string
 - school_name: string
 - parent_email?: string (optional)
-- parent_phone: string
+- parent_phone?: string (optional)
 ```
+**Important**: At least one contact method (email OR phone) is required. The form validates that either parent_email or parent_phone is provided.
+
+**Success Message**: After successful submission, displays: "בקשה לחתימה על טופס ויתור סודיות נשלחה להורים. לאחר חתימתם תישלח התראה ל-[counselor_email] להמשך מילוי נתוני התלמיד"
 
 ### 2. Parent Consent Form (ParentConsentForm.tsx)
 ```typescript
@@ -129,6 +132,7 @@ gesher-intake/
 - parent2_phone?: string
 - parent2_signature?: base64 image
 ```
+**Consent Status Check**: The form automatically checks if consent was already signed. If already signed, displays a confirmation page with signature details instead of the form.
 
 ### 3. Student Data Form (StudentDataForm.tsx)
 **7-Step Wizard Form:**
@@ -301,6 +305,7 @@ SALESFORCE_LOGIN_URL=https://test.salesforce.com
 SALESFORCE_CLIENT_ID=your_connected_app_consumer_key
 SALESFORCE_CLIENT_SECRET=your_connected_app_consumer_secret
 SALESFORCE_USERNAME=oronmail@geh.com.partialsb
+SALESFORCE_PRIVATE_KEY=-----BEGIN RSA PRIVATE KEY-----\nMIIE...(single line format with \n for newlines)...\n-----END RSA PRIVATE KEY-----
 # Fallback (temporary access token - expires after 2 hours)
 SALESFORCE_ACCESS_TOKEN=your_access_token_if_jwt_not_configured
 
@@ -345,6 +350,10 @@ NEXT_PUBLIC_APP_URL=https://gesher-intake.vercel.app
 - [x] Automatic token refresh and session management
 - [x] Salesforce Page Layouts and Lightning Record Pages deployed
 - [x] Certificate-based authentication configured
+- [x] Parent phone made optional (at least one contact method required)
+- [x] Consent re-signing prevention (checks if already signed)
+- [x] Environment variable support for Vercel deployment
+- [x] Private key configuration for JWT in Vercel
 
 ### 🚧 Pending Features
 - [ ] SMS notifications (WhatsApp/Twilio)
@@ -458,9 +467,10 @@ node test-jwt.js
 SALESFORCE_CLIENT_ID=your_connected_app_consumer_key
 SALESFORCE_USERNAME=oronmail@geh.com.partialsb
 SALESFORCE_LOGIN_URL=https://test.salesforce.com
+SALESFORCE_INSTANCE_URL=https://geh--partialsb.sandbox.my.salesforce.com
+SALESFORCE_PRIVATE_KEY=-----BEGIN RSA PRIVATE KEY-----\nMIIE...(single line format with \n for newlines)...\n-----END RSA PRIVATE KEY-----
 
 # Optional Fallback (if JWT not configured)
-SALESFORCE_INSTANCE_URL=https://geh--partialsb.sandbox.my.salesforce.com
 SALESFORCE_ACCESS_TOKEN=temporary_access_token
 ```
 

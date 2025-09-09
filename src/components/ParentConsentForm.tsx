@@ -106,6 +106,32 @@ export default function ParentConsentForm({ referralNumber }: ParentConsentFormP
     }
   }
 
+  // Show success page after successful submission
+  if (submitResult?.success) {
+    return (
+      <div className="max-w-3xl mx-auto p-6">
+        <div className="bg-white rounded-lg shadow-lg p-8">
+          <div className="flex flex-col items-center text-center space-y-6">
+            <Logo className="h-20 w-20" />
+            <div className="bg-green-50 border border-green-200 rounded-lg p-8 w-full">
+              <h1 className="text-2xl font-bold text-green-800 mb-4">
+                הטופס נשלח בהצלחה!
+              </h1>
+              <p className="text-green-700 text-lg">
+                {submitResult.message}
+              </p>
+            </div>
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg w-full">
+              <p className="text-blue-800">
+                מספר סימוכין: {referralNumber}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-3xl mx-auto p-6">
       <div className="bg-white rounded-lg shadow-lg p-8">
@@ -277,14 +303,8 @@ export default function ParentConsentForm({ referralNumber }: ParentConsentFormP
             </div>
           </div>
 
-          {submitResult && (
-            <div
-              className={`p-4 rounded-md ${
-                submitResult.success
-                  ? 'bg-green-50 text-green-800'
-                  : 'bg-red-50 text-red-800'
-              }`}
-            >
+          {submitResult && !submitResult.success && (
+            <div className="p-4 rounded-md bg-red-50 text-red-800">
               {submitResult.message}
             </div>
           )}
