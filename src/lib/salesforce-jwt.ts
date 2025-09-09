@@ -31,15 +31,21 @@ class SalesforceJWTService {
   private privateKey: string | null = null;
 
   constructor() {
-    // Load private key if available
-    try {
-      const keyPath = path.join(process.cwd(), 'certs', 'server.key');
-      if (fs.existsSync(keyPath)) {
-        this.privateKey = fs.readFileSync(keyPath, 'utf8');
-        console.log('JWT private key loaded successfully');
+    // Load private key from environment variable first (for Vercel)
+    if (process.env.SALESFORCE_PRIVATE_KEY) {
+      this.privateKey = process.env.SALESFORCE_PRIVATE_KEY.replace(/\\n/g, '\n');
+      console.log('JWT private key loaded from environment variable');
+    } else {
+      // Fall back to file system (for local development)
+      try {
+        const keyPath = path.join(process.cwd(), 'certs', 'server.key');
+        if (fs.existsSync(keyPath)) {
+          this.privateKey = fs.readFileSync(keyPath, 'utf8');
+          console.log('JWT private key loaded from file system');
+        }
+      } catch {
+        console.log('JWT private key not found, will use fallback authentication');
       }
-    } catch {
-      console.log('JWT private key not found, will use fallback authentication');
     }
   }
 
