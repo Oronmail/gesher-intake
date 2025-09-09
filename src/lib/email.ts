@@ -23,9 +23,9 @@ interface SendCounselorNotificationParams {
 
 export async function sendConsentEmail({
   parentEmail,
-  counselorName,
+  counselorName, // eslint-disable-line @typescript-eslint/no-unused-vars
   schoolName,
-  referralNumber,
+  referralNumber, // eslint-disable-line @typescript-eslint/no-unused-vars
   consentUrl,
 }: SendConsentEmailParams) {
   if (!process.env.RESEND_API_KEY) {
@@ -89,7 +89,7 @@ export async function sendCounselorNotification({
   parentNames,
   studentName,
   studentFormUrl,
-  referralNumber,
+  referralNumber, // eslint-disable-line @typescript-eslint/no-unused-vars
 }: SendCounselorNotificationParams) {
   if (!process.env.RESEND_API_KEY) {
     console.log('Resend API key not configured, skipping email');

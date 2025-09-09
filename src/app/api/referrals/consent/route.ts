@@ -10,7 +10,13 @@ export async function POST(request: NextRequest) {
     const {
       referral_number,
       parent1_name,
+      parent1_id,
+      parent1_address,
+      parent1_phone,
       parent2_name,
+      parent2_id,
+      parent2_address,
+      parent2_phone,
       signature,
       signature2,
       student_name,

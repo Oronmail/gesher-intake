@@ -1,4 +1,4 @@
-import jsforce from 'jsforce';
+import { Connection } from 'jsforce';
 
 // Salesforce connection configuration
 const SF_INSTANCE_URL = process.env.SALESFORCE_INSTANCE_URL || '';
@@ -146,7 +146,7 @@ export interface ConsentUpdateData {
 }
 
 class SalesforceService {
-  private conn: jsforce.Connection | null = null;
+  private conn: Connection | null = null;
   private lastLoginTime: number = 0;
   private SESSION_DURATION = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
 
@@ -159,7 +159,7 @@ class SalesforceService {
    * Get or create a valid Salesforce connection
    * This method handles automatic login and session refresh
    */
-  private async getConnection(): Promise<jsforce.Connection> {
+  private async getConnection(): Promise<Connection> {
     const now = Date.now();
     
     // Check if we need to refresh the session (older than 2 hours)
@@ -169,7 +169,7 @@ class SalesforceService {
       // Try to use access token first if available
       if (SF_INSTANCE_URL && SF_ACCESS_TOKEN) {
         try {
-          this.conn = new jsforce.Connection({
+          this.conn = new Connection({
             instanceUrl: SF_INSTANCE_URL,
             accessToken: SF_ACCESS_TOKEN,
             version: '64.0'
@@ -180,7 +180,7 @@ class SalesforceService {
           console.log('Connected using access token');
           this.lastLoginTime = now;
           return this.conn;
-        } catch (error) {
+        } catch {
           console.log('Access token failed, falling back to username/password');
         }
       }
@@ -188,7 +188,7 @@ class SalesforceService {
       // Fall back to username/password authentication
       if (SF_USERNAME && SF_PASSWORD) {
         try {
-          this.conn = new jsforce.Connection({
+          this.conn = new Connection({
             loginUrl: SF_LOGIN_URL,
             version: '64.0'
           });
@@ -220,14 +220,15 @@ class SalesforceService {
    * Wrapper to execute Salesforce operations with automatic retry on session expiry
    */
   private async executeWithRetry<T>(
-    operation: (conn: jsforce.Connection) => Promise<T>
+    operation: (conn: Connection) => Promise<T>
   ): Promise<T> {
     try {
       const conn = await this.getConnection();
       return await operation(conn);
-    } catch (error: any) {
+    } catch (error) {
       // If session expired, force re-login and retry once
-      if (error?.errorCode === 'INVALID_SESSION_ID') {
+      const err = error as Error & { errorCode?: string };
+      if (err?.errorCode === 'INVALID_SESSION_ID') {
         console.log('Session expired, re-authenticating...');
         this.conn = null;
         this.lastLoginTime = 0;

@@ -1,4 +1,4 @@
-import jsforce from 'jsforce';
+import { Connection } from 'jsforce';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
@@ -25,7 +25,7 @@ const SF_ACCESS_TOKEN = process.env.SALESFORCE_ACCESS_TOKEN || '';
  * 4. Falls back to direct access token if needed
  */
 class SalesforceJWTService {
-  private conn: jsforce.Connection | null = null;
+  private conn: Connection | null = null;
   private lastAuthTime: number = 0;
   private TOKEN_DURATION = 50 * 60 * 1000; // Refresh every 50 minutes (tokens last 1 hour)
   private privateKey: string | null = null;
@@ -38,7 +38,7 @@ class SalesforceJWTService {
         this.privateKey = fs.readFileSync(keyPath, 'utf8');
         console.log('JWT private key loaded successfully');
       }
-    } catch (error) {
+    } catch {
       console.log('JWT private key not found, will use fallback authentication');
     }
   }
@@ -107,7 +107,7 @@ class SalesforceJWTService {
    * Get or create a valid Salesforce connection
    * Automatically handles authentication and token refresh
    */
-  private async getConnection(): Promise<jsforce.Connection> {
+  private async getConnection(): Promise<Connection> {
     const now = Date.now();
     
     // Check if we need to refresh the connection
@@ -119,7 +119,7 @@ class SalesforceJWTService {
         try {
           const { access_token, instance_url } = await this.getJWTAccessToken();
           
-          this.conn = new jsforce.Connection({
+          this.conn = new Connection({
             instanceUrl: instance_url,
             accessToken: access_token,
             version: '64.0'
@@ -142,7 +142,7 @@ class SalesforceJWTService {
       // Method 2: Fall back to direct access token
       if (SF_INSTANCE_URL && SF_ACCESS_TOKEN) {
         try {
-          this.conn = new jsforce.Connection({
+          this.conn = new Connection({
             instanceUrl: SF_INSTANCE_URL,
             accessToken: SF_ACCESS_TOKEN,
             version: '64.0'
@@ -170,16 +170,17 @@ class SalesforceJWTService {
    * Execute operation with automatic retry on failure
    */
   private async executeWithRetry<T>(
-    operation: (conn: jsforce.Connection) => Promise<T>
+    operation: (conn: Connection) => Promise<T>
   ): Promise<T> {
     try {
       const conn = await this.getConnection();
       return await operation(conn);
-    } catch (error: any) {
+    } catch (error) {
       // If authentication failed, force reconnection and retry
-      if (error?.errorCode === 'INVALID_SESSION_ID' || 
-          error?.message?.includes('expired') ||
-          error?.message?.includes('invalid')) {
+      const err = error as Error & { errorCode?: string };
+      if (err?.errorCode === 'INVALID_SESSION_ID' || 
+          err?.message?.includes('expired') ||
+          err?.message?.includes('invalid')) {
         
         console.log('Session expired, re-authenticating automatically...');
         this.conn = null;
@@ -195,7 +196,8 @@ class SalesforceJWTService {
   /**
    * Create initial Registration Request when counselor submits
    */
-  async createInitialRegistration(data: any): Promise<{
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async createInitialRegistration(data: Record<string, any>): Promise<{
     success: boolean;
     recordId?: string;
     error?: string;
@@ -242,7 +244,8 @@ class SalesforceJWTService {
   /**
    * Update Registration Request with consent data
    */
-  async updateWithConsent(recordId: string, data: any): Promise<{
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async updateWithConsent(recordId: string, data: Record<string, any>): Promise<{
     success: boolean;
     error?: string;
   }> {
@@ -290,7 +293,8 @@ class SalesforceJWTService {
   /**
    * Update Registration Request with full student data
    */
-  async updateWithStudentData(recordId: string, data: any): Promise<{
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async updateWithStudentData(recordId: string, data: Record<string, any>): Promise<{
     success: boolean;
     error?: string;
   }> {
