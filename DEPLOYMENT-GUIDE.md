@@ -67,6 +67,13 @@ CREATE INDEX idx_status ON referrals(status);
 3. Note: Use `onboarding@resend.dev` as sender for testing
 4. For production: Verify your domain and use custom sender
 
+### Step 3.5: Set up ActiveTrail SMS Service (Optional)
+
+1. Get ActiveTrail API key from your account
+2. Configure SMS settings in environment variables
+3. Test SMS with: `node test-sms.js 0501234567`
+4. SMS will automatically send when parent phone is provided
+
 ### Step 4: Deploy to Vercel
 
 #### Option A: One-Click Deploy
@@ -92,6 +99,11 @@ SUPABASE_SERVICE_KEY=[your-service-key]
 
 # Email Service (Required)
 RESEND_API_KEY=[your-resend-api-key]
+
+# SMS Service (Optional but Recommended)
+ACTIVETRAIL_API_KEY=[your-activetrail-api-key]
+ACTIVETRAIL_BASE_URL=https://webapi.mymarketing.co.il
+ACTIVETRAIL_SENDER_ID=GesherYouth
 
 # Application URL (Required)
 NEXT_PUBLIC_APP_URL=https://[your-app].vercel.app

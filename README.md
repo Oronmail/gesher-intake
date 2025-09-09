@@ -13,7 +13,7 @@ This system digitizes the student referral process, replacing paper forms with a
 - **Privacy-First Design**: No student data collected before parental consent
 - **Digital Signatures**: Secure electronic signature capture for parents
 - **Hebrew Interface**: Full RTL support with Hebrew UI
-- **Email Notifications**: Automated workflow emails via Resend
+- **Dual Notifications**: Email via Resend + SMS via ActiveTrail
 - **Mobile Responsive**: Works on all devices
 - **Multi-Step Forms**: Comprehensive data collection with validation
 - **Production Ready**: Deployed on Vercel with Supabase database
@@ -21,6 +21,7 @@ This system digitizes the student referral process, replacing paper forms with a
 - **Salesforce Integration**: Direct sync with Registration_Request__c object
 - **JWT Authentication**: Fully automated server-to-server authentication
 - **Page Layouts**: Custom Salesforce layouts for data visualization
+- **SMS Support**: Automatic Israeli phone number formatting and Hebrew SMS
 
 ## 🔄 Workflow
 
@@ -37,6 +38,7 @@ This system digitizes the student referral process, replacing paper forms with a
 - **Signatures**: React Signature Canvas
 - **Database**: Supabase (production) or built-in mock
 - **Email Service**: Resend
+- **SMS Service**: ActiveTrail (Israeli SMS provider)
 - **CRM**: Salesforce with JWT Bearer authentication
 - **Hosting**: Vercel
 - **Repository**: GitHub (Oronmail/gesher-intake)
