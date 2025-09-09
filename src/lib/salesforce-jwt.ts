@@ -210,7 +210,7 @@ class SalesforceJWTService {
   }> {
     try {
       const initialRequest = {
-        Name: data.referralNumber,  // Name field is now text type in Salesforce
+        Referral_Number__c: data.referralNumber,  // Using Referral_Number__c field
         Status__c: 'Pending Consent',
         Counselor_Name__c: data.counselorName,
         Counselor_Email__c: data.counselorEmail,
