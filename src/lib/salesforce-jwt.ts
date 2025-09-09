@@ -101,7 +101,7 @@ class SalesforceJWTService {
     }
 
     const data = await response.json();
-    console.log('JWT authentication successful, token obtained');
+    // JWT authentication successful
     
     return {
       access_token: data.access_token,
@@ -132,9 +132,7 @@ class SalesforceJWTService {
           });
           
           // Test the connection
-          const identity = await this.conn.identity();
-          console.log(`Connected via JWT Bearer as: ${identity.display_name}`);
-          console.log('Token will auto-refresh before expiry - no manual intervention needed!');
+          await this.conn.identity();
           
           this.lastAuthTime = now;
           return this.conn;
