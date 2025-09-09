@@ -175,3 +175,4 @@ Developed pro bono for Gesher Al HaNoar (גשר אל הנוער) to support thei
 - [CLAUDE.md](./CLAUDE.md) - Comprehensive project documentation
 - [JWT_AUTHENTICATION.md](./JWT_AUTHENTICATION.md) - JWT Bearer setup guide
 - [SF_INTEGRATION.md](./SF_INTEGRATION.md) - Salesforce integration details
+# Force rebuild at 2025-09-09 19:57:22
