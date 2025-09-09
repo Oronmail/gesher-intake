@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { sendConsentEmail } from '@/lib/email'
+import { sendConsentSMS } from '@/lib/sms'
 import salesforceJWT from '@/lib/salesforce-jwt'
 import { 
   secureFormSchemas, 
@@ -88,10 +89,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Send email to parent with consent form link
+    // Send notifications to parent with consent form link
     const consentUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/consent/${referral_number}`
     
     console.log('Consent URL:', consentUrl)
+    
+    // Track notification results
+    const notifications = {
+      email: false,
+      sms: false,
+    }
     
     // Send email if parent email is provided
     if (parent_email) {
@@ -106,10 +113,31 @@ export async function POST(request: NextRequest) {
       
       if (emailResult.success) {
         console.log('Consent email sent to parent:', parent_email)
+        notifications.email = true
       } else {
         console.log('Failed to send email, but referral created:', emailResult.error)
       }
     }
+    
+    // Send SMS if parent phone is provided
+    if (parent_phone) {
+      const smsResult = await sendConsentSMS({
+        parentPhone: parent_phone,
+        referralNumber: referral_number,
+        consentUrl: consentUrl,
+      })
+      
+      if (smsResult.success) {
+        console.log('Consent SMS sent to parent:', parent_phone)
+        notifications.sms = true
+      } else {
+        console.log('Failed to send SMS:', smsResult.error)
+        // SMS failure is not critical - continue anyway
+      }
+    }
+    
+    // Log notification summary
+    console.log('Notifications sent:', notifications)
 
     return NextResponse.json({
       success: true,

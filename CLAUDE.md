@@ -147,6 +147,8 @@ A privacy-compliant digital workflow system that:
 - **Database**: Supabase (Project: fftnsfaakvahqyfwhtku.supabase.co)
 - **Email Service**: Resend (API Key: re_CxNvBTmc_KqPVvVKJoyCo8L5tJPHpZToN)
 - **Email Sender**: onboarding@resend.dev
+- **SMS Service**: ActiveTrail (Optional - when parent phone provided)
+- **SMS API**: https://webapi.mymarketing.co.il
 - **Final Storage**: Salesforce (ready for integration)
 - **Hosting**: Vercel (https://gesher-intake.vercel.app)
 - **Repository**: GitHub (Oronmail/gesher-intake)
@@ -367,7 +369,7 @@ CREATE TABLE referrals (
 
 ---
 
-## 📧 Email Notification System (FULLY OPERATIONAL)
+## 📧 Email & SMS Notification System (FULLY OPERATIONAL)
 
 ### Implementation
 - **Service**: Resend (API Key: re_CxNvBTmc_KqPVvVKJoyCo8L5tJPHpZToN)
@@ -394,7 +396,7 @@ CREATE TABLE referrals (
 - sendCounselorNotification() - Notifies counselor of signed consent
 ```
 
-### Setup Requirements
+### Email Setup Requirements
 1. Create free account at [Resend.com](https://resend.com)
 2. Get API key from dashboard
 3. Add to environment variables:
@@ -402,6 +404,25 @@ CREATE TABLE referrals (
    RESEND_API_KEY=re_YOUR_API_KEY
    ```
 4. For production: Verify domain or use resend.dev sender
+
+### SMS Setup Requirements (ActiveTrail)
+1. Get ActiveTrail API key from your account
+2. Add to environment variables:
+   ```
+   ACTIVETRAIL_API_KEY=your_api_key_here
+   ACTIVETRAIL_BASE_URL=https://webapi.mymarketing.co.il
+   ACTIVETRAIL_SENDER_ID=GesherYouth
+   ```
+3. Test SMS functionality:
+   ```bash
+   node test-sms.js 0501234567
+   ```
+
+### Notification Flow
+- **When parent phone + email provided**: Both SMS and email sent
+- **When only email provided**: Email sent only
+- **When only phone provided**: SMS sent only
+- **Automatic fallback**: If one service fails, other continues
 
 ---
 
