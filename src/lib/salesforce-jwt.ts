@@ -264,11 +264,17 @@ class SalesforceJWTService {
         Parent1_Address__c: data.parent1Address || '',
         Parent1_Phone__c: data.parent1Phone || '',
         Parent1_Signature__c: data.parent1Signature,
+        // Add HTML-wrapped signature for display in Rich Text field
+        Parent1_Signature_Display__c: data.parent1Signature ? 
+          `<img src="${data.parent1Signature}" style="max-width:300px; border:1px solid #ccc; padding:5px; background:white;" alt="חתימת הורה 1"/>` : '',
         Parent2_Name__c: data.parent2Name || '',
         Parent2_ID__c: data.parent2Id || '',
         Parent2_Address__c: data.parent2Address || '',
         Parent2_Phone__c: data.parent2Phone || '',
         Parent2_Signature__c: data.parent2Signature || '',
+        // Add HTML-wrapped signature for display in Rich Text field
+        Parent2_Signature_Display__c: data.parent2Signature ? 
+          `<img src="${data.parent2Signature}" style="max-width:300px; border:1px solid #ccc; padding:5px; background:white;" alt="חתימת הורה 2"/>` : '',
         Consent_Date__c: data.consentDate,
       };
 

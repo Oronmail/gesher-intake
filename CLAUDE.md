@@ -552,11 +552,13 @@ SALESFORCE_ACCESS_TOKEN=your_token node test-connection.js
 - `Parent1_Address__c` - Text(255)
 - `Parent1_Phone__c` - Phone
 - `Parent1_Signature__c` - LongTextArea(32768) - Base64 signature
+- `Parent1_Signature_Display__c` - Rich Text Area(32768) - HTML formatted signature image
 - `Parent2_Name__c` - Text(100)
 - `Parent2_ID__c` - Text(20)
 - `Parent2_Address__c` - Text(255)
 - `Parent2_Phone__c` - Phone
 - `Parent2_Signature__c` - LongTextArea(32768) - Base64 signature
+- `Parent2_Signature_Display__c` - Rich Text Area(32768) - HTML formatted signature image
 - `Parent_Email__c` - Email
 
 #### Family Information
