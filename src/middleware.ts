@@ -97,24 +97,35 @@ export function middleware(request: NextRequest) {
       )
     }
     
-    // Check API key for sensitive endpoints
+    // Check API key for sensitive endpoints (but skip for same-origin requests)
     const protectedPaths = ['/api/referrals/initiate', '/api/referrals/consent', '/api/referrals/student-data']
     if (protectedPaths.some(path => pathname.startsWith(path))) {
-      const apiKey = request.headers.get('x-api-key')
-      const validApiKey = process.env.API_SECRET_KEY
+      const origin = request.headers.get('origin')
+      const referer = request.headers.get('referer')
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://gesher-intake.vercel.app'
       
-      // In production, require API key
-      if (process.env.NODE_ENV === 'production' && validApiKey && apiKey !== validApiKey) {
-        return new NextResponse(
-          JSON.stringify({ error: 'Invalid API key' }),
-          { 
-            status: 401, 
-            headers: {
-              'Content-Type': 'application/json',
-              ...corsHeaders,
+      // Check if this is a same-origin request (from our own frontend)
+      const isSameOrigin = !origin || origin === appUrl || 
+                          (referer && referer.startsWith(appUrl))
+      
+      // Only require API key for external/cross-origin requests
+      if (!isSameOrigin) {
+        const apiKey = request.headers.get('x-api-key')
+        const validApiKey = process.env.API_SECRET_KEY
+        
+        // In production, require API key for external requests
+        if (process.env.NODE_ENV === 'production' && validApiKey && apiKey !== validApiKey) {
+          return new NextResponse(
+            JSON.stringify({ error: 'Invalid API key' }),
+            { 
+              status: 401, 
+              headers: {
+                'Content-Type': 'application/json',
+                ...corsHeaders,
+              }
             }
-          }
-        )
+          )
+        }
       }
     }
     
