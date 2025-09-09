@@ -19,12 +19,14 @@ type FormData = z.infer<typeof formSchema>
 export default function CounselorInitialForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string } | null>(null)
+  const [counselorEmail, setCounselorEmail] = useState<string>('')
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    getValues,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   })
@@ -32,6 +34,7 @@ export default function CounselorInitialForm() {
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true)
     setSubmitResult(null)
+    setCounselorEmail(data.counselor_email)
 
     try {
       const response = await fetch('/api/referrals/initiate', {
@@ -45,7 +48,7 @@ export default function CounselorInitialForm() {
       if (response.ok) {
         setSubmitResult({
           success: true,
-          message: `ההפניה נוצרה בהצלחה! מספר סימוכין: ${result.referral_number}`,
+          message: `בקשה לחתימה על טופס ויתור סודיות נשלחה להורים, ברגע שיחתמו תישלח התראה ל-${data.counselor_email} להמשך מילוי נתוני התלמיד`,
         })
         reset()
       } else {
