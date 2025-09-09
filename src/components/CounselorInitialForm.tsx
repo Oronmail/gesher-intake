@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Loader2 } from 'lucide-react'
+import { Loader2, CheckCircle } from 'lucide-react'
 
 const formSchema = z.object({
   counselor_name: z.string().min(2, 'נא להזין שם מלא'),
@@ -45,7 +45,7 @@ export default function CounselorInitialForm() {
       if (response.ok) {
         setSubmitResult({
           success: true,
-          message: `בקשה לחתימה על טופס ויתור סודיות נשלחה להורים, ברגע שיחתמו תישלח התראה ל-${data.counselor_email} להמשך מילוי נתוני התלמיד`,
+          message: `בקשה לחתימה על טופס ויתור סודיות נשלחה להורים. לאחר חתימתם תישלח התראה ל-${data.counselor_email} להמשך מילוי נתוני התלמיד`,
         })
         reset()
       } else {
@@ -62,6 +62,36 @@ export default function CounselorInitialForm() {
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  // Show success message only after successful submission
+  if (submitResult?.success) {
+    return (
+      <div className="max-w-2xl mx-auto p-6">
+        <div className="bg-white rounded-lg shadow-lg p-8">
+          <div className="flex flex-col items-center text-center space-y-6">
+            <CheckCircle className="h-16 w-16 text-green-500" />
+            <h1 className="text-2xl font-bold text-gray-800">
+              ההפניה נוצרה בהצלחה!
+            </h1>
+            <div className="bg-green-50 border border-green-200 rounded-lg p-6 max-w-lg">
+              <p className="text-green-800 text-lg leading-relaxed">
+                {submitResult.message}
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                setSubmitResult(null)
+                reset()
+              }}
+              className="mt-6 px-6 py-2 text-sm text-blue-600 hover:text-blue-800 hover:underline"
+            >
+              יצירת הפניה נוספת
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -158,14 +188,8 @@ export default function CounselorInitialForm() {
             </div>
           </div>
 
-          {submitResult && (
-            <div
-              className={`p-4 rounded-md ${
-                submitResult.success
-                  ? 'bg-green-50 text-green-800'
-                  : 'bg-red-50 text-red-800'
-              }`}
-            >
+          {submitResult && !submitResult.success && (
+            <div className="p-4 rounded-md bg-red-50 text-red-800">
               {submitResult.message}
             </div>
           )}
