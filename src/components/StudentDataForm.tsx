@@ -281,24 +281,28 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
             <Logo className="h-20 w-20" />
           </div>
           <h1 className="text-2xl font-bold text-gray-800">
-            טופס רישום מועמדות לתלמיד/ה
+            טופס רישום מועמד/ת
           </h1>
         </div>
 
         {/* Progress indicator */}
         <div className="mb-8">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center relative">
             {[...Array(totalSteps)].map((_, index) => (
-              <div key={index} className="flex-1">
-                <div className="relative">
-                  {index < totalSteps - 1 && (
-                    <div className={`absolute top-5 h-0.5 ${index < currentStep - 1 ? 'bg-blue-600' : 'bg-gray-300'}`} 
-                         style={{ right: '-50%', left: '50%', width: '100%' }} />
-                  )}
-                  <div className={`relative z-10 w-10 h-10 mx-auto rounded-full flex items-center justify-center text-white font-bold
-                    ${index < currentStep ? 'bg-blue-600' : 'bg-gray-300'}`}>
-                    {index + 1}
-                  </div>
+              <div key={index} className="flex-1 relative">
+                {index < totalSteps - 1 && (
+                  <div className={`absolute top-5 h-0.5 ${index < currentStep - 1 ? 'bg-blue-600' : 'bg-gray-300'}`} 
+                       style={{ 
+                         left: '50%',
+                         right: index === totalSteps - 2 ? '-50%' : '-50%',
+                         width: '100%',
+                         transform: 'translateX(0)',
+                         zIndex: 0
+                       }} />
+                )}
+                <div className={`relative z-10 w-10 h-10 mx-auto rounded-full flex items-center justify-center text-white font-bold
+                  ${index < currentStep ? 'bg-blue-600' : 'bg-gray-300'}`}>
+                  {index + 1}
                 </div>
               </div>
             ))}
