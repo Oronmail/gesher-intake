@@ -354,6 +354,10 @@ NEXT_PUBLIC_APP_URL=https://gesher-intake.vercel.app
 - [x] Consent re-signing prevention (checks if already signed)
 - [x] Environment variable support for Vercel deployment
 - [x] Private key configuration for JWT in Vercel
+- [x] Signature display fields for Lightning pages (Rich Text with HTML img tags)
+- [x] Automatic signature image rendering without triggers or flows
+- [x] Student form title updated to "טופס רישום מועמדות לתלמיד/ה"
+- [x] Data prepopulation in student form from Supabase
 
 ### 🚧 Pending Features
 - [ ] SMS notifications (WhatsApp/Twilio)
@@ -658,6 +662,42 @@ node create-sf-fields.js
 - Each stage updates the same Registration_Request__c record
 - Full visibility from initial request through completion
 - SF record ID stored in Supabase for tracking
+
+---
+
+## 🖼️ Signature Display in Salesforce
+
+### Implementation
+The system automatically displays parent signatures as images in Salesforce Lightning pages without requiring triggers, flows, or complex development.
+
+### How It Works
+1. **Data Storage**: Signatures are stored in two formats:
+   - `Parent1_Signature__c` / `Parent2_Signature__c` - Raw base64 data (preserved for backup/export)
+   - `Parent1_Signature_Display__c` / `Parent2_Signature_Display__c` - HTML-wrapped images for display
+
+2. **Automatic Conversion**: When consent is submitted, the system automatically:
+   - Saves the raw base64 signature data
+   - Wraps it in HTML `<img>` tags with styling
+   - Stores both versions in Salesforce
+
+3. **Display**: Simply add the Rich Text display fields to your Lightning page layout
+   - Signatures render automatically as images
+   - No additional configuration needed
+   - Works on mobile and desktop
+
+### Field Details
+```javascript
+// Automatic HTML wrapping applied during save
+Parent1_Signature_Display__c = `<img src="${base64data}" 
+  style="max-width:300px; border:1px solid #ccc; padding:5px; background:white;" 
+  alt="חתימת הורה 1"/>`
+```
+
+### Deployment
+```bash
+# Deploy signature display fields
+./deploy-signature-fields.sh
+```
 
 ---
 
