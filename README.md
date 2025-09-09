@@ -18,6 +18,9 @@ This system digitizes the student referral process, replacing paper forms with a
 - **Multi-Step Forms**: Comprehensive data collection with validation
 - **Production Ready**: Deployed on Vercel with Supabase database
 - **Mock Database**: Built-in testing mode for development
+- **Salesforce Integration**: Direct sync with Registration_Request__c object
+- **JWT Authentication**: Fully automated server-to-server authentication
+- **Page Layouts**: Custom Salesforce layouts for data visualization
 
 ## 🔄 Workflow
 
@@ -34,6 +37,7 @@ This system digitizes the student referral process, replacing paper forms with a
 - **Signatures**: React Signature Canvas
 - **Database**: Supabase (production) or built-in mock
 - **Email Service**: Resend
+- **CRM**: Salesforce with JWT Bearer authentication
 - **Hosting**: Vercel
 - **Repository**: GitHub (Oronmail/gesher-intake)
 
@@ -72,10 +76,14 @@ SUPABASE_SERVICE_KEY=your_service_key
 # Email Service (Required for notifications)
 RESEND_API_KEY=your_resend_api_key
 
-# Salesforce (Optional - for CRM integration)
-SALESFORCE_USERNAME=your_username
-SALESFORCE_PASSWORD=your_password
-SALESFORCE_SECURITY_TOKEN=your_token
+# Salesforce JWT Authentication (Automated)
+SALESFORCE_CLIENT_ID=your_connected_app_consumer_key
+SALESFORCE_USERNAME=your_salesforce_username
+SALESFORCE_LOGIN_URL=https://test.salesforce.com
+
+# Certificate files (in certs/ directory)
+# - server.key (private key for JWT signing)
+# - server.crt (upload to Salesforce Connected App)
 
 # Application URL
 NEXT_PUBLIC_APP_URL=https://gesher-intake.vercel.app
@@ -163,4 +171,7 @@ Developed pro bono for Gesher Al HaNoar (גשר אל הנוער) to support thei
 
 ---
 
-**For technical documentation and development details, see [CLAUDE.md](./CLAUDE.md)**
+**For technical documentation and development details, see:**
+- [CLAUDE.md](./CLAUDE.md) - Comprehensive project documentation
+- [JWT_AUTHENTICATION.md](./JWT_AUTHENTICATION.md) - JWT Bearer setup guide
+- [SF_INTEGRATION.md](./SF_INTEGRATION.md) - Salesforce integration details

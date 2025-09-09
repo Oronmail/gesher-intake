@@ -340,9 +340,13 @@ NEXT_PUBLIC_APP_URL=https://gesher-intake.vercel.app
 - [x] GitHub repository (Oronmail/gesher-intake)
 - [x] Removed consent disclaimer from counselor form
 - [x] Removed redundant title from main page
+- [x] Salesforce integration - Registration_Request__c queue object deployed
+- [x] JWT Bearer authentication for autonomous server-to-server operation
+- [x] Automatic token refresh and session management
+- [x] Salesforce Page Layouts and Lightning Record Pages deployed
+- [x] Certificate-based authentication configured
 
 ### 🚧 Pending Features
-- [x] Salesforce integration - Registration_Request__c queue object deployed
 - [ ] SMS notifications (WhatsApp/Twilio)
 - [ ] Authentication for counselors
 - [ ] Admin dashboard

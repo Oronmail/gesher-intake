@@ -245,14 +245,31 @@ const fieldMapping = {
 
 ---
 
+## Authentication Method: JWT Bearer Token Flow
+
+### Overview
+The system uses JWT Bearer authentication for fully automated server-to-server communication:
+- **No manual intervention required** - Tokens refresh automatically
+- **Certificate-based security** - Uses RSA-256 signed JWT tokens
+- **Automatic session recovery** - Handles expired sessions seamlessly
+- **Multiple fallback methods** - Ensures high availability
+
+### JWT Service Architecture (src/lib/salesforce-jwt.ts)
+The JWT service handles all authentication automatically:
+- Generates JWT tokens with 5-minute expiry
+- Exchanges JWT for access tokens via OAuth
+- Refreshes tokens before they expire (every 50 minutes)
+- Automatically retries on session failures
+
 ## Implementation Code
 
-### Salesforce Service (src/lib/salesforce.ts)
+### Salesforce JWT Service (src/lib/salesforce-jwt.ts)
 
-The service now includes three key methods for the complete workflow:
+The service now includes JWT Bearer authentication and three key methods for the complete workflow:
 
 ```typescript
 import jsforce from 'jsforce';
+import jwt from 'jsonwebtoken';
 
 class SalesforceService {
   private conn: jsforce.Connection;
@@ -364,13 +381,20 @@ node create-sf-fields.js
 ## Environment Variables
 
 ```env
-# Salesforce Configuration
+# JWT Bearer Authentication (Primary Method - Fully Automated)
+SALESFORCE_CLIENT_ID=your_connected_app_consumer_key
+SALESFORCE_CLIENT_SECRET=your_connected_app_consumer_secret  
+SALESFORCE_USERNAME=your_salesforce_username
+SALESFORCE_LOGIN_URL=https://test.salesforce.com
+
+# Fallback Method (Direct Access Token)
 SALESFORCE_INSTANCE_URL=https://geh--partialsb.sandbox.my.salesforce.com
-SALESFORCE_ACCESS_TOKEN=<obtain from SF>
-SALESFORCE_USERNAME=<your username>
-SALESFORCE_PASSWORD=<your password>
-SALESFORCE_SECURITY_TOKEN=<your security token>
+SALESFORCE_ACCESS_TOKEN=temporary_access_token_if_jwt_fails
 ```
+
+### Certificate Files Required
+- `certs/server.key` - Private key for JWT signing (never commit)
+- `certs/server.crt` - Public certificate (upload to Connected App)
 
 ---
 
@@ -482,4 +506,5 @@ SALESFORCE_SECURITY_TOKEN=<your security token>
 
 *Last Updated: January 2025*
 *Object Status: Deployed to Sandbox*
-*Total Fields: 89 Custom Fields*
+*Total Fields: 89 Custom Fields + Page Layouts + Lightning Pages*
+*Authentication: JWT Bearer Token (Fully Automated)*
