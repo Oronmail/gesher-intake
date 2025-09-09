@@ -11,8 +11,14 @@ const formSchema = z.object({
   counselor_email: z.string().email('כתובת אימייל לא תקינה'),
   school_name: z.string().min(2, 'נא להזין שם בית ספר'),
   parent_email: z.string().email('כתובת אימייל לא תקינה').optional().or(z.literal('')),
-  parent_phone: z.string().regex(/^[\d\-\+\(\)\s]+$/, 'מספר טלפון לא תקין'),
-})
+  parent_phone: z.string().regex(/^[\d\-\+\(\)\s]*$/, 'מספר טלפון לא תקין').optional().or(z.literal('')),
+}).refine(
+  (data) => data.parent_email || data.parent_phone,
+  {
+    message: "חובה להזין לפחות אמצעי קשר אחד (טלפון או אימייל)",
+    path: ["parent_phone"], // Show error on phone field
+  }
+)
 
 type FormData = z.infer<typeof formSchema>
 
@@ -152,11 +158,14 @@ export default function CounselorInitialForm() {
             <h2 className="text-lg font-semibold mb-4 text-gray-800">
               פרטי התקשרות של ההורים
             </h2>
+            <p className="text-sm text-gray-600 mb-4">
+              * חובה להזין לפחות אמצעי קשר אחד (טלפון או אימייל)
+            </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  אימייל הורה (אופציונלי)
+                  אימייל הורה
                 </label>
                 <input
                   {...register('parent_email')}
@@ -172,7 +181,7 @@ export default function CounselorInitialForm() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  טלפון הורה *
+                  טלפון הורה
                 </label>
                 <input
                   {...register('parent_phone')}
