@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { sendCounselorNotification } from '@/lib/email'
-import SalesforceService, { ConsentUpdateData } from '@/lib/salesforce'
+import salesforceJWT from '@/lib/salesforce-jwt'
 
 export async function POST(request: NextRequest) {
   try {
@@ -58,8 +58,7 @@ export async function POST(request: NextRequest) {
 
     // Update Salesforce record with consent data
     if (data.salesforce_contact_id) {
-      const salesforce = new SalesforceService()
-      const consentData: ConsentUpdateData = {
+      const consentData = {
         parent1Name: parent1_name,
         parent1Id: parent1_id,
         parent1Address: parent1_address,
@@ -73,7 +72,7 @@ export async function POST(request: NextRequest) {
         consentDate: new Date().toISOString(),
       }
       
-      const sfResult = await salesforce.updateWithConsent(data.salesforce_contact_id, consentData)
+      const sfResult = await salesforceJWT.updateWithConsent(data.salesforce_contact_id, consentData)
       
       if (!sfResult.success) {
         console.error('Failed to update Salesforce record with consent:', sfResult.error)

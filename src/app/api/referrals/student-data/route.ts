@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
-import SalesforceService, { RegistrationRequestData } from '@/lib/salesforce'
+import salesforceJWT from '@/lib/salesforce-jwt'
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Prepare complete data for Salesforce Queue
-    const registrationData: RegistrationRequestData = {
+    const registrationData = {
       // Metadata
       referralNumber: referral_number,
       submissionDate: new Date().toISOString(),
@@ -150,8 +150,7 @@ export async function POST(request: NextRequest) {
     }
     
     console.log('Updating Salesforce registration request with student data...')
-    const salesforce = new SalesforceService()
-    const sfResult = await salesforce.updateWithStudentData(referral.salesforce_contact_id, registrationData)
+    const sfResult = await salesforceJWT.updateWithStudentData(referral.salesforce_contact_id, registrationData)
     
     if (!sfResult.success) {
       console.error('Failed to update Registration Request in Salesforce:', sfResult.error)

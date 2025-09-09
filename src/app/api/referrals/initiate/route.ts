@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { sendConsentEmail } from '@/lib/email'
-import SalesforceService, { InitialRegistrationData } from '@/lib/salesforce'
+import salesforceJWT from '@/lib/salesforce-jwt'
 
 function generateReferralNumber(): string {
   const date = new Date()
@@ -26,9 +26,8 @@ export async function POST(request: NextRequest) {
     // Generate unique referral number
     const referral_number = generateReferralNumber()
     
-    // Create initial Registration Request in Salesforce
-    const salesforce = new SalesforceService()
-    const initialData: InitialRegistrationData = {
+    // Create initial Registration Request in Salesforce using JWT service
+    const initialData = {
       referralNumber: referral_number,
       counselorName: counselor_name,
       counselorEmail: counselor_email,
@@ -37,7 +36,7 @@ export async function POST(request: NextRequest) {
       parentPhone: parent_phone,
     }
     
-    const sfResult = await salesforce.createInitialRegistration(initialData)
+    const sfResult = await salesforceJWT.createInitialRegistration(initialData)
     
     if (!sfResult.success) {
       console.error('Failed to create Salesforce record:', sfResult.error)
