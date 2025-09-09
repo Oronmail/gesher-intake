@@ -63,6 +63,11 @@ class ActiveTrailSMS {
       return { success: false, error: 'SMS service not configured' };
     }
 
+    // Check if API key looks valid (should be alphanumeric)
+    if (this.config.apiKey.startsWith('0X')) {
+      console.warn('ActiveTrail API key format may be incorrect (starts with 0X)');
+    }
+
     try {
       const formattedPhone = this.formatPhoneNumber(phone);
       
@@ -84,8 +89,8 @@ class ActiveTrailSMS {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': this.config.apiKey, // Try as Bearer token first
-          'X-API-KEY': this.config.apiKey,    // Alternative header format
+          'Authorization': `Bearer ${this.config.apiKey}`, // Use Bearer token format
+          'Accept': 'application/json',
         },
         body: JSON.stringify(requestBody),
       });
