@@ -63,9 +63,9 @@ class ActiveTrailSMS {
       return { success: false, error: 'SMS service not configured' };
     }
 
-    // Check if API key looks valid (should be alphanumeric)
+    // Log API key format for debugging
     if (this.config.apiKey.startsWith('0X')) {
-      console.warn('ActiveTrail API key format may be incorrect (starts with 0X)');
+      console.log('Using ActiveTrail API key with 0X prefix format');
     }
 
     try {
@@ -85,13 +85,24 @@ class ActiveTrailSMS {
       console.log('Sending SMS to:', formattedPhone);
       console.log('Message:', message);
 
+      // Try different authentication methods based on API key format
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
+      
+      // ActiveTrail might use different auth formats
+      if (this.config.apiKey.startsWith('0X')) {
+        // Try with the API key as-is in Authorization header
+        headers['Authorization'] = this.config.apiKey;
+      } else {
+        // Use Bearer format for other keys
+        headers['Authorization'] = `Bearer ${this.config.apiKey}`;
+      }
+      
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.config.apiKey}`, // Use Bearer token format
-          'Accept': 'application/json',
-        },
+        headers,
         body: JSON.stringify(requestBody),
       });
 
@@ -150,12 +161,20 @@ class ActiveTrailSMS {
         from: this.config.senderId,
       };
 
+      // Use same auth method as primary endpoint
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      
+      if (this.config.apiKey.startsWith('0X')) {
+        headers['Authorization'] = this.config.apiKey;
+      } else {
+        headers['Authorization'] = `Bearer ${this.config.apiKey}`;
+      }
+      
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.config.apiKey}`,
-        },
+        headers,
         body: JSON.stringify(requestBody),
       });
 
