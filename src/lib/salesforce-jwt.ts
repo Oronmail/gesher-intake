@@ -210,7 +210,7 @@ class SalesforceJWTService {
   }> {
     try {
       const initialRequest = {
-        Referral_Number__c: data.referralNumber,
+        Name: data.referralNumber,  // Use standard Name field instead of Referral_Number__c
         Status__c: 'Pending Consent',
         Counselor_Name__c: data.counselorName,
         Counselor_Email__c: data.counselorEmail,

@@ -30,7 +30,7 @@ async function testConnection() {
 
     console.log('\n3. Checking critical fields...');
     const criticalFields = [
-      'Referral_Number__c',
+      'Name',  // Standard Name field now stores the referral number
       'Status__c',
       'Counselor_Name__c',
       'Student_First_Name__c',
@@ -48,20 +48,20 @@ async function testConnection() {
 
     console.log('\n4. Testing query...');
     const records = await conn.query(
-      "SELECT Id, Name, Status__c, Referral_Number__c FROM Registration_Request__c LIMIT 5"
+      "SELECT Id, Name, Status__c FROM Registration_Request__c LIMIT 5"
     );
     console.log('✅ Query successful!');
     console.log('   Records found:', records.totalSize);
     if (records.records.length > 0) {
       console.log('   Sample records:');
       records.records.forEach(r => {
-        console.log(`     - ${r.Name}: ${r.Status__c} (${r.Referral_Number__c})`);
+        console.log(`     - ${r.Name}: ${r.Status__c}`);
       });
     }
 
     console.log('\n5. Testing create capability...');
     const testData = {
-      Referral_Number__c: 'TEST-' + Date.now(),
+      Name: 'TEST-' + Date.now(),  // Use standard Name field instead of Referral_Number__c
       Status__c: 'Pending Consent',
       Counselor_Name__c: 'Test Counselor',
       Counselor_Email__c: 'test@example.com',

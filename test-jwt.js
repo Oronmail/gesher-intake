@@ -108,7 +108,7 @@ async function testJWTAuth() {
     // Test create capability
     console.log('\n✏️ Testing create capability...');
     const testData = {
-      Referral_Number__c: 'JWT-TEST-' + Date.now(),
+      Name: 'JWT-TEST-' + Date.now(),  // Use standard Name field instead of Referral_Number__c
       Status__c: 'Pending Consent',
       Counselor_Name__c: 'JWT Test',
       Counselor_Email__c: 'jwt@test.com',
