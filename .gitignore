@@ -39,3 +39,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Salesforce
+.sf/
+.sfdx/
+sfdx-auth-url.txt
+sfdx-auth.json
+*.zip
+
+# Certificates - NEVER commit private keys
+certs/server.key
+certs/*.key
+
+# Keep certificate public part
+!certs/server.crt

@@ -3,6 +3,10 @@ import jsforce from 'jsforce';
 // Salesforce connection configuration
 const SF_INSTANCE_URL = process.env.SALESFORCE_INSTANCE_URL || '';
 const SF_ACCESS_TOKEN = process.env.SALESFORCE_ACCESS_TOKEN || '';
+const SF_USERNAME = process.env.SALESFORCE_USERNAME || '';
+const SF_PASSWORD = process.env.SALESFORCE_PASSWORD || '';
+const SF_SECURITY_TOKEN = process.env.SALESFORCE_SECURITY_TOKEN || '';
+const SF_LOGIN_URL = process.env.SALESFORCE_LOGIN_URL || 'https://test.salesforce.com';
 
 // Interface for the complete registration request data
 export interface RegistrationRequestData {
@@ -143,18 +147,95 @@ export interface ConsentUpdateData {
 
 class SalesforceService {
   private conn: jsforce.Connection | null = null;
+  private lastLoginTime: number = 0;
+  private SESSION_DURATION = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
 
   constructor() {
-    // Initialize connection with access token
-    if (SF_INSTANCE_URL && SF_ACCESS_TOKEN) {
-      this.conn = new jsforce.Connection({
-        instanceUrl: SF_INSTANCE_URL,
-        accessToken: SF_ACCESS_TOKEN,
-        version: '64.0'
-      });
-      console.log('Salesforce connection initialized');
-    } else {
-      console.error('Salesforce credentials not configured');
+    // We'll initialize connection lazily when needed
+    console.log('Salesforce service initialized');
+  }
+
+  /**
+   * Get or create a valid Salesforce connection
+   * This method handles automatic login and session refresh
+   */
+  private async getConnection(): Promise<jsforce.Connection> {
+    const now = Date.now();
+    
+    // Check if we need to refresh the session (older than 2 hours)
+    if (!this.conn || (now - this.lastLoginTime) > this.SESSION_DURATION) {
+      console.log('Establishing new Salesforce connection...');
+      
+      // Try to use access token first if available
+      if (SF_INSTANCE_URL && SF_ACCESS_TOKEN) {
+        try {
+          this.conn = new jsforce.Connection({
+            instanceUrl: SF_INSTANCE_URL,
+            accessToken: SF_ACCESS_TOKEN,
+            version: '64.0'
+          });
+          
+          // Test the connection
+          await this.conn.identity();
+          console.log('Connected using access token');
+          this.lastLoginTime = now;
+          return this.conn;
+        } catch (error) {
+          console.log('Access token failed, falling back to username/password');
+        }
+      }
+      
+      // Fall back to username/password authentication
+      if (SF_USERNAME && SF_PASSWORD) {
+        try {
+          this.conn = new jsforce.Connection({
+            loginUrl: SF_LOGIN_URL,
+            version: '64.0'
+          });
+          
+          // Combine password and security token
+          const passwordWithToken = SF_PASSWORD + (SF_SECURITY_TOKEN || '');
+          
+          console.log('Logging in with username/password...');
+          const userInfo = await this.conn.login(SF_USERNAME, passwordWithToken);
+          
+          console.log('Successfully logged in as:', userInfo.organizationId);
+          console.log('Session ID obtained, will auto-refresh as needed');
+          this.lastLoginTime = now;
+          
+          return this.conn;
+        } catch (error) {
+          console.error('Username/password login failed:', error);
+          throw new Error('Failed to authenticate with Salesforce. Please check credentials.');
+        }
+      } else {
+        throw new Error('No valid Salesforce credentials configured');
+      }
+    }
+    
+    return this.conn;
+  }
+
+  /**
+   * Wrapper to execute Salesforce operations with automatic retry on session expiry
+   */
+  private async executeWithRetry<T>(
+    operation: (conn: jsforce.Connection) => Promise<T>
+  ): Promise<T> {
+    try {
+      const conn = await this.getConnection();
+      return await operation(conn);
+    } catch (error: any) {
+      // If session expired, force re-login and retry once
+      if (error?.errorCode === 'INVALID_SESSION_ID') {
+        console.log('Session expired, re-authenticating...');
+        this.conn = null;
+        this.lastLoginTime = 0;
+        
+        const conn = await this.getConnection();
+        return await operation(conn);
+      }
+      throw error;
     }
   }
 
@@ -166,13 +247,6 @@ class SalesforceService {
     recordId?: string;
     error?: string;
   }> {
-    if (!this.conn) {
-      return {
-        success: false,
-        error: 'Salesforce connection not available'
-      };
-    }
-
     try {
       // Map data to Salesforce Registration_Request__c object
       const registrationRequest = {
@@ -296,7 +370,10 @@ class SalesforceService {
       };
 
       console.log('Creating Registration Request in Salesforce...');
-      const result = await this.conn.sobject('Registration_Request__c').create(registrationRequest);
+      
+      const result = await this.executeWithRetry(async (conn) => {
+        return await conn.sobject('Registration_Request__c').create(registrationRequest);
+      });
       
       if (result.success) {
         console.log('Registration Request created successfully:', result.id);
@@ -328,13 +405,6 @@ class SalesforceService {
     recordId?: string;
     error?: string;
   }> {
-    if (!this.conn) {
-      return {
-        success: false,
-        error: 'Salesforce connection not available'
-      };
-    }
-
     try {
       const initialRequest = {
         Referral_Number__c: data.referralNumber,
@@ -348,7 +418,10 @@ class SalesforceService {
       };
 
       console.log('Creating initial Registration Request in Salesforce...');
-      const result = await this.conn.sobject('Registration_Request__c').create(initialRequest);
+      
+      const result = await this.executeWithRetry(async (conn) => {
+        return await conn.sobject('Registration_Request__c').create(initialRequest);
+      });
       
       if (result.success) {
         console.log('Initial Registration Request created:', result.id);
@@ -378,13 +451,6 @@ class SalesforceService {
     success: boolean;
     error?: string;
   }> {
-    if (!this.conn) {
-      return {
-        success: false,
-        error: 'Salesforce connection not available'
-      };
-    }
-
     try {
       const consentUpdate = {
         Id: recordId,
@@ -403,7 +469,10 @@ class SalesforceService {
       };
 
       console.log('Updating Registration Request with consent data...');
-      const result = await this.conn.sobject('Registration_Request__c').update(consentUpdate);
+      
+      const result = await this.executeWithRetry(async (conn) => {
+        return await conn.sobject('Registration_Request__c').update(consentUpdate);
+      });
       
       if (result.success) {
         console.log('Registration Request updated with consent');
@@ -430,13 +499,6 @@ class SalesforceService {
     success: boolean;
     error?: string;
   }> {
-    if (!this.conn) {
-      return {
-        success: false,
-        error: 'Salesforce connection not available'
-      };
-    }
-
     try {
       // Map all student data fields
       const studentUpdate = {
@@ -539,7 +601,10 @@ class SalesforceService {
       };
 
       console.log('Updating Registration Request with student data...');
-      const result = await this.conn.sobject('Registration_Request__c').update(studentUpdate);
+      
+      const result = await this.executeWithRetry(async (conn) => {
+        return await conn.sobject('Registration_Request__c').update(studentUpdate);
+      });
       
       if (result.success) {
         console.log('Registration Request updated with student data');
@@ -566,16 +631,11 @@ class SalesforceService {
     success: boolean;
     message: string;
   }> {
-    if (!this.conn) {
-      return {
-        success: false,
-        message: 'Salesforce connection not configured'
-      };
-    }
-
     try {
       // Try to describe the Registration_Request__c object
-      const objectMetadata = await this.conn.sobject('Registration_Request__c').describe();
+      const objectMetadata = await this.executeWithRetry(async (conn) => {
+        return await conn.sobject('Registration_Request__c').describe();
+      });
       
       console.log('Registration_Request__c object found');
       console.log(`Object has ${objectMetadata.fields.length} fields`);

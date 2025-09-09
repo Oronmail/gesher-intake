@@ -11,9 +11,12 @@
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
     "@supabase/supabase-js": "^2.57.2",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/nodemailer": "^7.0.1",
+    "adm-zip": "^0.5.16",
     "dotenv": "^17.2.2",
     "jsforce": "^3.10.7",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.542.0",
     "next": "15.5.2",
     "nodemailer": "^7.0.6",

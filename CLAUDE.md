@@ -295,12 +295,14 @@ SUPABASE_SERVICE_KEY=sb_secret_NRd5IXZ8dWPaa6eriTwiNQ_6daaBaFS
 # Email Service (Resend)
 RESEND_API_KEY=re_CxNvBTmc_KqPVvVKJoyCo8L5tJPHpZToN
 
-# Salesforce Integration
+# Salesforce Integration (JWT Bearer Authentication)
 SALESFORCE_INSTANCE_URL=https://geh--partialsb.sandbox.my.salesforce.com
-SALESFORCE_ACCESS_TOKEN=your_access_token
-SALESFORCE_USERNAME=your_salesforce_username
-SALESFORCE_PASSWORD=your_salesforce_password
-SALESFORCE_SECURITY_TOKEN=your_security_token
+SALESFORCE_LOGIN_URL=https://test.salesforce.com
+SALESFORCE_CLIENT_ID=your_connected_app_consumer_key
+SALESFORCE_CLIENT_SECRET=your_connected_app_consumer_secret
+SALESFORCE_USERNAME=oronmail@geh.com.partialsb
+# Fallback (temporary access token - expires after 2 hours)
+SALESFORCE_ACCESS_TOKEN=your_access_token_if_jwt_not_configured
 
 # Application
 NEXT_PUBLIC_APP_URL=https://gesher-intake.vercel.app
@@ -374,6 +376,118 @@ NEXT_PUBLIC_APP_URL=https://gesher-intake.vercel.app
 - Signature pad touch-compatible
 - Responsive grid layouts
 - Optimized for field use by House Managers
+
+---
+
+## 🔐 Salesforce JWT Bearer Authentication (Server-to-Server)
+
+### Overview
+The system now uses JWT Bearer Token flow for fully automated server-to-server authentication with Salesforce. This eliminates the need for manual token refresh or user intervention - the system operates completely autonomously.
+
+### How It Works
+1. **Certificate-Based Authentication**: Uses RSA-256 signed JWT tokens
+2. **Automatic Token Generation**: Creates new access tokens as needed
+3. **No User Interaction**: Completely automated, no login required
+4. **Self-Healing**: Automatically handles expired sessions
+5. **Multiple Fallbacks**: Falls back to direct token if JWT not configured
+
+### Implementation Files
+- `src/lib/salesforce-jwt.ts` - JWT Bearer authentication service
+- `test-jwt.js` - Test script to verify JWT authentication
+- `generate-jwt-cert.sh` - Certificate generation script
+- `certs/server.key` - Private key for JWT signing (DO NOT SHARE)
+- `certs/server.crt` - Public certificate for Salesforce
+
+### Setup Process (One-Time)
+
+#### 1. Generate Certificate and Private Key
+```bash
+./generate-jwt-cert.sh
+# This creates:
+# - certs/server.key (private key - keep secure)
+# - certs/server.crt (certificate - upload to Salesforce)
+```
+
+#### 2. Configure Connected App in Salesforce
+1. Go to Setup → App Manager → Find your Connected App
+2. Click "Edit" on the Connected App
+3. In OAuth Settings:
+   - Enable "Use digital signatures"
+   - Upload `certs/server.crt` as the certificate
+   - Add OAuth Scope: "Perform requests at any time (refresh_token, offline_access)"
+   - Add OAuth Scope: "Access the identity URL service (id, profile, email, address, phone)"
+   - Add OAuth Scope: "Access unique user identifiers (openid)"
+   - Add OAuth Scope: "Manage user data via APIs (api)"
+4. Save the Connected App
+
+#### 3. Pre-Authorize User
+1. Go to Setup → Connected Apps → Manage Connected Apps
+2. Find your app and click "Manage"
+3. Click "Edit Policies"
+4. Set "Permitted Users" to "Admin approved users are pre-authorized"
+5. Save
+6. Go to "Manage Profiles" or "Manage Permission Sets"
+7. Add the integration user's profile/permission set
+
+#### 4. Test Authentication
+```bash
+node test-jwt.js
+# Should show:
+# ✅ JWT authentication successful
+# ✅ Connected as: [User Name]
+# ✅ Test record created
+```
+
+### Authentication Flow
+```javascript
+// Automatic authentication happens internally:
+1. Generate JWT with claims (iss, sub, aud, exp)
+2. Sign JWT with private key (RSA-256)
+3. Exchange JWT for access token via OAuth endpoint
+4. Use access token for API calls
+5. Automatically refresh before expiry (50 minutes)
+```
+
+### Environment Variables Required
+```env
+# JWT Bearer Authentication (Fully Automated)
+SALESFORCE_CLIENT_ID=your_connected_app_consumer_key
+SALESFORCE_USERNAME=oronmail@geh.com.partialsb
+SALESFORCE_LOGIN_URL=https://test.salesforce.com
+
+# Optional Fallback (if JWT not configured)
+SALESFORCE_INSTANCE_URL=https://geh--partialsb.sandbox.my.salesforce.com
+SALESFORCE_ACCESS_TOKEN=temporary_access_token
+```
+
+### Key Features
+- **Zero Manual Intervention**: Once configured, runs indefinitely without user input
+- **Automatic Token Refresh**: Refreshes tokens before they expire
+- **Session Recovery**: Automatically re-authenticates on session errors
+- **Multiple Auth Methods**: Falls back to direct token if JWT fails
+- **Secure**: Private key never leaves server, only JWT sent to Salesforce
+
+### Troubleshooting
+
+#### "invalid_grant: invalid assertion" Error
+- Certificate not uploaded to Connected App
+- Username doesn't match exactly (check sandbox suffix)
+- User not pre-authorized for the Connected App
+- JWT Bearer flow not enabled
+
+#### Certificate Issues
+- Ensure `certs/server.crt` is uploaded to Salesforce
+- Verify private key exists at `certs/server.key`
+- Check certificate hasn't expired (valid for 2 years)
+
+#### Testing Connection
+```bash
+# Test JWT authentication
+node test-jwt.js
+
+# If JWT fails, test with direct token
+SALESFORCE_ACCESS_TOKEN=your_token node test-connection.js
+```
 
 ---
 
