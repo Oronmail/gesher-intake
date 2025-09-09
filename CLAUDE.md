@@ -8,6 +8,12 @@
 ### ALWAYS Maintain Active CLI Connections
 **IMPORTANT**: Claude must maintain and verify CLI connections at session start and prefer automated CLI actions over manual instructions.
 
+### Quick Status Check
+```bash
+# Run this at session start
+./verify-connections.sh
+```
+
 #### Required CLI Authentication Status:
 1. **Salesforce (SF CLI)**: 
    - Check: `sf org list`
@@ -588,6 +594,13 @@ NODE_ENV=production
   - [x] Environment variables configured in Vercel
   - [x] Production deployment complete
   - [x] Test script for SMS verification
+  - [x] API authentication troubleshooting documented
+- [x] **UI/UX FIXES - January 2025**
+  - [x] Fixed student form success message premature display
+  - [x] Success screen shows only after submission
+  - [x] Form hidden on successful submission
+  - [x] Error messages display inline
+  - [x] Beautiful success confirmation screen
 
 ### 🚧 Pending Features
 - [ ] Authentication for counselors

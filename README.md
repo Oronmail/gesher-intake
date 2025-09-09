@@ -1,6 +1,8 @@
 # Gesher Al HaNoar - Digital Intake System
 
-🔗 **Live Production**: https://gesher-intake.vercel.app
+🔗 **Live Production**: https://gesher-intake.vercel.app  
+📅 **Last Updated**: January 2025  
+✅ **Status**: Fully Operational
 
 A privacy-compliant digital intake system for Gesher Al HaNoar (גשר אל הנוער), a non-profit organization providing free tutoring and family support to at-risk youth in Israel.
 
