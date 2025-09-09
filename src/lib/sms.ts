@@ -63,9 +63,9 @@ class ActiveTrailSMS {
       return { success: false, error: 'SMS service not configured' };
     }
 
-    // Log API key format for debugging
-    if (this.config.apiKey.startsWith('0X')) {
-      console.log('Using ActiveTrail API key with 0X prefix format');
+    // Verify API key format (must be uppercase 0X)
+    if (!this.config.apiKey.startsWith('0X')) {
+      console.warn('ActiveTrail API key should start with uppercase 0X');
     }
 
     try {
@@ -85,19 +85,12 @@ class ActiveTrailSMS {
       console.log('Sending SMS to:', formattedPhone);
       console.log('Message:', message);
 
-      // Try different authentication methods based on API key format
+      // ActiveTrail authentication: Use API key directly in Authorization header
+      // Must be uppercase 0X prefix (case sensitive)
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-      };
-      
-      // ActiveTrail might use different auth formats
-      if (this.config.apiKey.startsWith('0X')) {
-        // Try with the API key as-is in Authorization header
-        headers['Authorization'] = this.config.apiKey;
-      } else {
-        // Use Bearer format for other keys
-        headers['Authorization'] = `Bearer ${this.config.apiKey}`;
+        'Authorization': this.config.apiKey, // Format: 0X30FB9158CD1513BA935C2C2BB2A4B86B...
       }
       
       const response = await fetch(endpoint, {
@@ -164,12 +157,7 @@ class ActiveTrailSMS {
       // Use same auth method as primary endpoint
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
-      };
-      
-      if (this.config.apiKey.startsWith('0X')) {
-        headers['Authorization'] = this.config.apiKey;
-      } else {
-        headers['Authorization'] = `Bearer ${this.config.apiKey}`;
+        'Authorization': this.config.apiKey, // Direct API key with 0X prefix
       }
       
       const response = await fetch(endpoint, {
