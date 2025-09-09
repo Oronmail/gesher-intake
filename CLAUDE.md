@@ -3,6 +3,114 @@
 
 ---
 
+## 🚀 CRITICAL: CLI CONTROL & AUTOMATION REQUIREMENTS
+
+### ALWAYS Maintain Active CLI Connections
+**IMPORTANT**: Claude must maintain and verify CLI connections at session start and prefer automated CLI actions over manual instructions.
+
+#### Required CLI Authentication Status:
+1. **Salesforce (SF CLI)**: 
+   - Check: `sf org list`
+   - Default org: `gesher-sandbox` (oronmail@geh.com.partialsb)
+   - If disconnected: `sf auth:web:login -a gesher-sandbox`
+
+2. **Vercel CLI**:
+   - Check: `vercel whoami`
+   - Expected: `oronmail`
+   - If disconnected: `vercel login` (select GitHub)
+
+3. **GitHub**:
+   - Repository: `https://github.com/Oronmail/gesher-intake`
+   - Check: `git remote -v`
+   - Auto-push allowed: YES
+
+4. **Supabase Database**:
+   - Use: `node supabase-query.js` for queries
+   - Connection via API (no CLI needed)
+   - Service key in `.env.local`
+
+5. **Production Monitoring**:
+   - Live URL: `https://gesher-intake.vercel.app`
+   - Check: `curl -s https://gesher-intake.vercel.app | grep -o '<title>.*</title>'`
+
+### Automation Preferences
+**ALWAYS prefer automated CLI actions:**
+- ✅ Deploy via `vercel --prod` instead of "go to dashboard"
+- ✅ Query DB via `node supabase-query.js` instead of "check Supabase dashboard"
+- ✅ Create SF records via `node test-jwt.js` instead of manual creation
+- ✅ Push to GitHub via `git push` instead of manual upload
+- ✅ Test locally via `npm run dev` instead of production testing
+
+### Session Start Checklist
+Run these commands at the beginning of each session:
+```bash
+# 1. Verify all connections
+sf org list | grep gesher-sandbox
+vercel whoami
+git status
+node test-jwt.js | grep "JWT Bearer Authentication is working"
+
+# 2. Check production status
+curl -s https://gesher-intake.vercel.app | grep -o '<title>.*</title>'
+
+# 3. Database status
+node supabase-query.js | grep "Total Records"
+```
+
+### Connection Maintenance Scripts
+Use `verify-connections.sh` to check all services:
+```bash
+./verify-connections.sh
+```
+
+### Automated Actions Reference
+
+#### Instead of Manual Dashboard Actions, Use:
+
+| Manual Action | ❌ AVOID | ✅ USE INSTEAD |
+|--------------|----------|----------------|
+| "Check Vercel dashboard" | Dashboard UI | `vercel list --yes` |
+| "Deploy to production" | Vercel UI | `vercel --prod` |
+| "Check Supabase data" | Supabase dashboard | `node supabase-query.js` |
+| "Create test record in SF" | Salesforce UI | `node test-jwt.js` |
+| "Push code to GitHub" | GitHub web upload | `git add . && git commit -m "msg" && git push` |
+| "Check deployment status" | Vercel dashboard | `vercel list --yes \| head -5` |
+| "View error logs" | Vercel Functions tab | `vercel logs --yes` |
+| "Test locally" | Production testing | `npm run dev` |
+| "Query specific records" | SQL Editor | `node query-supabase.js "SELECT..."` |
+| "Check build status" | GitHub Actions | `git log --oneline -5` |
+
+#### Quick Action Commands
+
+```bash
+# Deploy immediately
+vercel --prod --yes
+
+# Query database
+node supabase-query.js
+
+# Test full workflow
+npm run dev
+# Then test at http://localhost:3000
+
+# Check all connections
+./verify-connections.sh
+
+# View recent deployments
+vercel list --yes | head -10
+
+# Salesforce operations
+node test-jwt.js              # Test connection
+sf data query --query "SELECT Id, Name, Status__c FROM Registration_Request__c LIMIT 5" -o gesher-sandbox
+
+# Git operations (auto-allowed)
+git add .
+git commit -m "Update: [description]"
+git push origin main
+```
+
+---
+
 ## 🎯 Project Overview
 
 ### Client
