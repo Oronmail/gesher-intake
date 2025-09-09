@@ -252,7 +252,7 @@ class SalesforceService {
       // Map data to Salesforce Registration_Request__c object
       const registrationRequest = {
         // Metadata
-        Referral_Number__c: data.referralNumber,  // Using Referral_Number__c field
+        Name: data.referralNumber,  // Using standard Name field
         Status__c: 'Pending Review',
         Priority__c: data.riskLevel >= 7 ? 'High' : data.riskLevel >= 4 ? 'Medium' : 'Low',
         Submission_Date__c: data.submissionDate,
@@ -408,7 +408,7 @@ class SalesforceService {
   }> {
     try {
       const initialRequest = {
-        Referral_Number__c: data.referralNumber,  // Using Referral_Number__c field
+        Name: data.referralNumber,  // Using standard Name field
         Status__c: 'Pending Consent',
         Counselor_Name__c: data.counselorName,
         Counselor_Email__c: data.counselorEmail,
