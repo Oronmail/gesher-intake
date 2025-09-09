@@ -24,7 +24,9 @@ export function sanitizeInput(input: string): string {
 /**
  * Sanitize object recursively
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function sanitizeObject<T extends Record<string, any>>(obj: T): T {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sanitized: any = {}
   
   for (const [key, value] of Object.entries(obj)) {
@@ -146,6 +148,7 @@ export function verifyCSRFToken(token: string, sessionToken: string): boolean {
 /**
  * Redact sensitive information for logging
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function redactSensitiveData(obj: any): any {
   const sensitiveFields = [
     'password', 'token', 'key', 'secret', 'signature', 

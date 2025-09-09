@@ -122,7 +122,6 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
     watch,
     trigger,
     setValue,
-    reset,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {

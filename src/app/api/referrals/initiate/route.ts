@@ -4,8 +4,6 @@ import { sendConsentEmail } from '@/lib/email'
 import salesforceJWT from '@/lib/salesforce-jwt'
 import { 
   secureFormSchemas, 
-  sanitizeObject, 
-  generateSecureToken,
   redactSensitiveData 
 } from '@/lib/security'
 import crypto from 'crypto'
@@ -99,7 +97,7 @@ export async function POST(request: NextRequest) {
     if (parent_email) {
       const emailResult = await sendConsentEmail({
         parentEmail: parent_email,
-        parentPhone: parent_phone,
+        parentPhone: parent_phone || '',
         counselorName: counselor_name,
         schoolName: school_name,
         referralNumber: referral_number,
