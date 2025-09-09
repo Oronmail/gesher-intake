@@ -332,7 +332,83 @@ class SalesforceJWTService {
         Student_Mobile__c: data.studentMobile || '',
         School_System_Password__c: data.schoolSystemPassword || '',
         
-        // Add all other fields as needed...
+        // Family Information
+        Siblings_Count__c: data.siblingsCount || 0,
+        Father_Name__c: data.fatherName || '',
+        Father_Mobile__c: data.fatherMobile || '',
+        Father_Occupation__c: data.fatherOccupation || '',
+        Father_Profession__c: data.fatherProfession || '',
+        Father_Income__c: data.fatherIncome || '',
+        Mother_Name__c: data.motherName || '',
+        Mother_Mobile__c: data.motherMobile || '',
+        Mother_Occupation__c: data.motherOccupation || '',
+        Mother_Profession__c: data.motherProfession || '',
+        Mother_Income__c: data.motherIncome || '',
+        Debts_Loans__c: data.debtsLoans || '',
+        Parent_Involvement__c: data.parentInvolvement ? 
+          (data.parentInvolvement === 'inhibiting' ? 'Inhibiting' : 
+           data.parentInvolvement === 'promoting' ? 'Promoting' : 'No Involvement') : '',
+        Economic_Status__c: data.economicStatus ? 
+          (data.economicStatus === 'low' ? 'Low' : 
+           data.economicStatus === 'medium' ? 'Medium' : 'High') : '',
+        Economic_Details__c: data.economicDetails || '',
+        Family_Background__c: data.familyBackground || '',
+        
+        // School & Academic Information
+        Grade__c: data.grade || '',
+        Homeroom_Teacher__c: data.homeroomTeacher || '',
+        Teacher_Phone__c: data.teacherPhone || '',
+        School_Counselor_Name__c: data.schoolCounselorName || '',
+        School_Counselor_Phone__c: data.schoolCounselorPhone || '',
+        Failing_Grades_Count__c: data.failingGradesCount || 0,
+        Failing_Subjects__c: data.failingSubjects || '',
+        
+        // Welfare & Social Services
+        Known_to_Welfare__c: data.knownToWelfare || false,
+        Social_Worker_Name__c: data.socialWorkerName || '',
+        Social_Worker_Phone__c: data.socialWorkerPhone || '',
+        Youth_Promotion__c: data.youthPromotion || false,
+        Youth_Worker_Name__c: data.youthWorkerName || '',
+        Youth_Worker_Phone__c: data.youthWorkerPhone || '',
+        
+        // Assessment
+        Behavioral_Issues__c: data.behavioralIssues || false,
+        Has_Potential__c: data.hasPotential || false,
+        Motivation_Level__c: data.motivationLevel ? 
+          (data.motivationLevel === 'low' ? 'Low' : 
+           data.motivationLevel === 'medium' ? 'Medium' : 'High') : '',
+        Motivation_Type__c: data.motivationType ? 
+          (data.motivationType === 'internal' ? 'Internal' : 'External') : '',
+        External_Motivators__c: data.externalMotivators || '',
+        Social_Status__c: data.socialStatus || '',
+        Afternoon_Activities__c: data.afternoonActivities || '',
+        
+        // Learning & Health
+        Learning_Disability__c: data.learningDisability || false,
+        Requires_Remedial_Teaching__c: data.requiresRemedialTeaching || false,
+        ADHD__c: data.adhd || false,
+        ADHD_Treatment__c: data.adhdTreatment || '',
+        Assessment_Done__c: data.assessmentDone || false,
+        Assessment_Needed__c: data.assessmentNeeded || false,
+        Assessment_Details__c: data.assessmentDetails || '',
+        
+        // Risk Assessment
+        Criminal_Record__c: data.criminalRecord || false,
+        Drug_Use__c: data.drugUse || false,
+        Smoking__c: data.smoking || false,
+        Probation_Officer__c: data.probationOfficer || '',
+        Youth_Probation_Officer__c: data.youthProbationOfficer || '',
+        Psychological_Treatment__c: data.psychologicalTreatment || false,
+        Psychiatric_Treatment__c: data.psychiatricTreatment || false,
+        Takes_Medication__c: data.takesMedication || false,
+        Medication_Description__c: data.medicationDescription || '',
+        Risk_Level__c: data.riskLevel || 1,
+        Risk_Factors__c: data.riskFactors || '',
+        
+        // Final Assessment
+        Military_Service_Potential__c: data.militaryServicePotential || false,
+        Can_Handle_Program__c: data.canHandleProgram || false,
+        Personal_Opinion__c: data.personalOpinion || ''
       };
 
       console.log('Updating Registration Request with student data...');
