@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Parent_Involvement__c</fullName>
-    <label>Parent Involvement</label>
+    <label>רמת מעורבות ההורים</label>
     <type>Picklist</type>
     <valueSet>
         <restricted>true</restricted>
@@ -10,17 +10,17 @@
             <value>
                 <fullName>Inhibiting</fullName>
                 <default>false</default>
-                <label>Inhibiting</label>
+                <label>מעכבת</label>
             </value>
             <value>
                 <fullName>Promoting</fullName>
                 <default>false</default>
-                <label>Promoting</label>
+                <label>מקדמת</label>
             </value>
             <value>
                 <fullName>No Involvement</fullName>
                 <default>false</default>
-                <label>No Involvement</label>
+                <label>ללא מעורבות</label>
             </value>
         </valueSetDefinition>
     </valueSet>

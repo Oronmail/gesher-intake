@@ -2,12 +2,20 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { sendConsentEmail } from '@/lib/email'
 import salesforceJWT from '@/lib/salesforce-jwt'
+import { 
+  secureFormSchemas, 
+  sanitizeObject, 
+  generateSecureToken,
+  redactSensitiveData 
+} from '@/lib/security'
+import crypto from 'crypto'
 
 function generateReferralNumber(): string {
   const date = new Date()
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
-  const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0')
+  // Use crypto for better randomness
+  const random = crypto.randomInt(1000, 9999).toString()
   return `REF-${year}${month}-${random}`
 }
 
@@ -15,13 +23,23 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     
+    // Validate and sanitize input
+    const validationResult = secureFormSchemas.counselorInitial.safeParse(body)
+    
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: 'Invalid input data', details: validationResult.error.flatten() },
+        { status: 400 }
+      )
+    }
+    
     const {
       counselor_name,
       counselor_email,
       school_name,
       parent_email,
       parent_phone,
-    } = body
+    } = validationResult.data
 
     // Generate unique referral number
     const referral_number = generateReferralNumber()
@@ -44,7 +62,8 @@ export async function POST(request: NextRequest) {
     }
     
     const salesforceRecordId = sfResult.recordId || null
-    console.log('Salesforce Record ID:', salesforceRecordId)
+    // Log with redacted sensitive data
+    console.log('Salesforce Record Created:', redactSensitiveData({ recordId: salesforceRecordId }))
     
     // Create referral in Supabase (with Salesforce record ID)
     const { data, error } = await supabase

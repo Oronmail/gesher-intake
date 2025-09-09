@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Motivation_Type__c</fullName>
-    <label>Motivation Type</label>
+    <label>סוג מוטיבציה</label>
     <type>Picklist</type>
     <valueSet>
         <restricted>true</restricted>
@@ -10,12 +10,12 @@
             <value>
                 <fullName>Internal</fullName>
                 <default>false</default>
-                <label>Internal</label>
+                <label>פנימית</label>
             </value>
             <value>
                 <fullName>External</fullName>
                 <default>false</default>
-                <label>External</label>
+                <label>חיצונית</label>
             </value>
         </valueSetDefinition>
     </valueSet>

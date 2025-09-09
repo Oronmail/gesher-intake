@@ -2,10 +2,10 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Parent2_Signature_Display__c</fullName>
     <externalId>false</externalId>
-    <label>Parent 2 Signature Display</label>
+    <label>תצוגת חתימת הורה 2</label>
     <length>32768</length>
     <type>Html</type>
     <visibleLines>10</visibleLines>
-    <description>Rich text field to display Parent 2 signature as an image</description>
-    <inlineHelpText>Displays the parent 2 signature image</inlineHelpText>
+    <description>שדה טקסט עשיר להצגת חתימת הורה 2 כתמונה</description>
+    <inlineHelpText>מציג את תמונת חתימת הורה 2</inlineHelpText>
 </CustomField>

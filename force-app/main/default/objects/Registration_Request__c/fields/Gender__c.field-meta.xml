@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Gender__c</fullName>
-    <label>Gender</label>
+    <label>מין</label>
     <type>Picklist</type>
     <valueSet>
         <restricted>true</restricted>
@@ -10,12 +10,12 @@
             <value>
                 <fullName>Male</fullName>
                 <default>false</default>
-                <label>Male</label>
+                <label>זכר</label>
             </value>
             <value>
                 <fullName>Female</fullName>
                 <default>false</default>
-                <label>Female</label>
+                <label>נקבה</label>
             </value>
         </valueSetDefinition>
     </valueSet>
