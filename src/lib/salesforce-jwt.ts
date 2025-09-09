@@ -209,6 +209,7 @@ class SalesforceJWTService {
     error?: string;
   }> {
     try {
+      // IMPORTANT: Using Referral_Number__c field - cache bust v2
       const initialRequest = {
         Referral_Number__c: data.referralNumber,  // Using Referral_Number__c field
         Status__c: 'Pending Consent',
