@@ -9,6 +9,7 @@ Add these to your Vercel project settings:
 SALESFORCE_CLIENT_ID=3MVG9TSugzPK9MvrF9wgE3WgvBliLBDVIxzHvtI94iTIJdYAo0KqqtLENATXdmV9PkeiEpah3Bdgp1JVr7lrI
 SALESFORCE_USERNAME=oronmail@geh.com.partialsb
 SALESFORCE_LOGIN_URL=https://test.salesforce.com
+SALESFORCE_INSTANCE_URL=https://geh--partialsb.sandbox.my.salesforce.com
 ```
 
 ### 2. Private Key (CRITICAL)
@@ -34,6 +35,13 @@ RESEND_API_KEY=re_CxNvBTmc_KqPVvVKJoyCo8L5tJPHpZToN
 ```
 NEXT_PUBLIC_APP_URL=https://gesher-intake.vercel.app
 ```
+
+### 6. Optional Fallback (if JWT fails)
+If JWT authentication doesn't work, you can temporarily use a direct access token:
+```
+SALESFORCE_ACCESS_TOKEN=your_access_token_here
+```
+Note: This token expires after ~2 hours and needs manual refresh. JWT is the recommended approach.
 
 ## How to Add to Vercel
 
