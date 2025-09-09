@@ -30,6 +30,17 @@ input, textarea, select {
   color: #000000 !important; /* black text */
 }
 
+/* Fix checkbox styling - make them black */
+input[type="checkbox"] {
+  accent-color: #000000 !important; /* black checkboxes */
+  border-color: #000000 !important;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #000000 !important;
+  border-color: #000000 !important;
+}
+
 input::placeholder, textarea::placeholder {
   color: #9ca3af; /* light gray for placeholders */
 }

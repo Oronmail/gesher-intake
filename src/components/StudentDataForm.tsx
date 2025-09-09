@@ -223,6 +223,9 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
   }
 
   const onSubmit = async (data: FormData) => {
+    // Prevent accidental double submission
+    if (isSubmitting) return
+    
     setIsSubmitting(true)
     setSubmitResult(null)
 
@@ -337,7 +340,10 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
           </div>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={(e) => {
+          e.preventDefault()
+          handleSubmit(onSubmit)(e)
+        }} className="space-y-6">
           {/* Step 1: Personal Information */}
           {currentStep === 1 && (
             <div className="space-y-4">
