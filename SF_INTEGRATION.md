@@ -41,7 +41,7 @@ For easy field mapping in code:
 ```javascript
 const fieldMapping = {
   // Metadata
-  referralNumber: 'Referral_Number__c',
+  referralNumber: 'Name',  // Standard Name field stores the referral number
   status: 'Status__c',
   priority: 'Priority__c',
   submissionDate: 'Submission_Date__c',
@@ -160,7 +160,7 @@ const fieldMapping = {
 ### Text Fields
 | Field | Max Length |
 |-------|------------|
-| Referral_Number__c | 50 |
+| Name (standard field) | 80 |
 | Student_First_Name__c | 100 |
 | Student_Last_Name__c | 100 |
 | School_Name__c | 200 |
@@ -277,7 +277,7 @@ class SalesforceService {
   // 1. Create initial record when counselor submits
   async createInitialRegistration(data: InitialRegistrationData) {
     const initialRequest = {
-      Referral_Number__c: data.referralNumber,
+      Name: data.referralNumber,  // Use standard Name field
       Status__c: 'Pending Consent',
       Counselor_Name__c: data.counselorName,
       Counselor_Email__c: data.counselorEmail,

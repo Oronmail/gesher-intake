@@ -524,7 +524,7 @@ SALESFORCE_ACCESS_TOKEN=your_token node test-connection.js
 ### Field Mappings (89 Custom Fields)
 
 #### Metadata Fields
-- `Referral_Number__c` - Text(50) - Unique referral ID
+- `Name` - Text(80) - Unique referral ID (standard field, stores REF-YYYYMM-XXXX)
 - `Status__c` - Picklist - ['Pending Consent', 'Consent Signed', 'Data Submitted', 'Pending Review', 'In Review', 'Approved', 'Rejected']
 - `Priority__c` - Picklist - ['High', 'Medium', 'Low']
 - `Submission_Date__c` - DateTime

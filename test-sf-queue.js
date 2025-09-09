@@ -48,7 +48,7 @@ async function testSalesforceQueue() {
       
       // Group fields by category for easier reading
       const fieldCategories = {
-        'Metadata': ['Referral_Number__c', 'Status__c', 'Priority__c', 'Submission_Date__c', 'Consent_Date__c'],
+        'Metadata': ['Name', 'Status__c', 'Priority__c', 'Submission_Date__c', 'Consent_Date__c'],  // Name field now holds referral number
         'Student': ['Student_First_Name__c', 'Student_Last_Name__c', 'Student_ID__c', 'Date_of_Birth__c', 'Gender__c'],
         'Parent': ['Parent1_Name__c', 'Parent1_ID__c', 'Parent1_Signature__c', 'Parent2_Name__c', 'Parent2_Signature__c'],
         'School': ['School_Name__c', 'Grade__c', 'Counselor_Name__c', 'Counselor_Email__c'],

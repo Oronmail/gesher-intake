@@ -4,7 +4,8 @@ const path = require('path');
 // Define all fields with their properties
 const fields = [
   // Metadata Fields
-  { name: 'Referral_Number__c', label: 'Referral Number', type: 'Text', length: 50 },
+  // Note: Referral Number is now stored in the standard Name field (Text 80)
+  // { name: 'Referral_Number__c', label: 'Referral Number', type: 'Text', length: 50 },  // REMOVED - using Name field instead
   { name: 'Status__c', label: 'Status', type: 'Picklist', values: ['Pending Review', 'In Review', 'Approved', 'Rejected'] },
   { name: 'Priority__c', label: 'Priority', type: 'Picklist', values: ['High', 'Medium', 'Low'] },
   { name: 'Submission_Date__c', label: 'Submission Date', type: 'DateTime' },
