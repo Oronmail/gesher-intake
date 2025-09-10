@@ -1,8 +1,9 @@
 # Gesher Al HaNoar - Digital Intake System
 
 🔗 **Live Production**: https://gesher-intake.vercel.app  
-📅 **Last Updated**: January 2025  
-✅ **Status**: Fully Operational
+📅 **Last Updated**: January 10, 2025  
+✅ **Status**: Fully Operational  
+📧 **Email Service**: Gmail SMTP (gesheryouth@gmail.com)
 
 A privacy-compliant digital intake system for Gesher Al HaNoar (גשר אל הנוער), a non-profit organization providing free tutoring and family support to at-risk youth in Israel.
 
@@ -13,19 +14,21 @@ This system digitizes the student referral process, replacing paper forms with a
 ## 🚀 Features
 
 - **Privacy-First Design**: No student data collected before parental consent
+- **Auto Data Cleanup**: Personal data deleted from Supabase after Salesforce submission
 - **Digital Signatures**: Secure electronic signature capture for parents
 - **Hebrew Interface**: Full RTL support with Hebrew UI
-- **Dual Notifications**: Email via Resend + SMS via Inwise
-- **Mobile Responsive**: Works on all devices
+- **Gmail SMTP Integration**: Reliable email delivery via dedicated Gmail account
+- **Mobile Responsive**: Works on all devices with optimized mobile navigation
 - **Multi-Step Forms**: Comprehensive data collection with validation
 - **Production Ready**: Deployed on Vercel with Supabase database
 - **Mock Database**: Built-in testing mode for development
 - **Salesforce Integration**: Direct sync with Registration_Request__c object
 - **JWT Authentication**: Fully automated server-to-server authentication
 - **Page Layouts**: Custom Salesforce layouts for data visualization
-- **SMS Support**: Automatic Israeli phone number formatting and Hebrew SMS
+- **SMS Support**: Automatic Israeli phone number formatting and Hebrew SMS (Inwise)
 - **Modern UI/UX**: Beautiful gradient designs with smooth transitions
-- **Progress Indicators**: Clear visual progress through multi-step forms
+- **Progress Indicators**: Mobile-optimized progress bar, desktop circular navigation
+- **Security Hardened**: Rate limiting, CORS protection, input sanitization
 
 ## 🔄 Workflow
 
@@ -41,7 +44,7 @@ This system digitizes the student referral process, replacing paper forms with a
 - **Forms**: React Hook Form + Zod validation
 - **Signatures**: React Signature Canvas
 - **Database**: Supabase (production) or built-in mock
-- **Email Service**: Resend
+- **Email Service**: Gmail SMTP (primary) via nodemailer
 - **SMS Service**: Inwise (Israeli SMS provider)
 - **CRM**: Salesforce with JWT Bearer authentication
 - **Hosting**: Vercel
@@ -79,8 +82,9 @@ NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 SUPABASE_SERVICE_KEY=your_service_key
 
-# Email Service (Required for notifications)
-RESEND_API_KEY=your_resend_api_key
+# Email Service - Gmail SMTP (Required for notifications)
+GMAIL_USER=gesheryouth@gmail.com
+GMAIL_APP_PASSWORD=your_16_char_app_password
 
 # Salesforce JWT Authentication (Automated)
 SALESFORCE_CLIENT_ID=your_connected_app_consumer_key
@@ -141,27 +145,48 @@ The application includes a mock database for local testing. No external services
 
 ## 📱 Mobile Support
 
-All forms are fully responsive and optimized for mobile devices, enabling field workers to collect data on-site.
+All forms are fully responsive and optimized for mobile devices:
+
+- **Student Form Navigation**: 
+  - Mobile: Compact progress bar showing "Step X/7" with current step title
+  - Desktop: Full circular navigation with all 7 steps visible
+  - Tablet: Optimized circle sizes for medium screens
+- **Touch-Friendly**: Large buttons and signature pads
+- **Field Work Ready**: Enables data collection on-site
 
 ## 🔒 Privacy & Security
 
-- No student data collected without consent
-- Signatures stored securely
-- Data encrypted in transit
-- Temporary storage auto-expires
-- GDPR/Privacy compliant workflow
+- **No student data collected without consent**
+- **Automatic data cleanup**: Personal data removed from Supabase after completion
+- **Minimal data retention**: Only referral ID and status kept for link validation
+- **Input validation**: Comprehensive sanitization and Israeli ID validation
+- **Rate limiting**: 100 requests per minute per IP
+- **Security headers**: HSTS, CSP, X-Frame-Options
+- **Signatures stored securely**
+- **Data encrypted in transit**
+- **Temporary storage auto-expires**
+- **GDPR/Privacy compliant workflow**
 
 ## 📧 Email Notifications
 
-The system sends automated emails at key workflow points:
+The system uses Gmail SMTP for reliable email delivery:
 
+### Configuration
+1. **Gmail Account**: gesheryouth@gmail.com (dedicated account)
+2. **Authentication**: App Password (2-factor authentication required)
+3. **Sender Name**: "גשר אל הנוער" (configured in Gmail settings)
+4. **Daily Limit**: 500 emails (sufficient for intake system)
+
+### Automated Emails
 1. **Parent Consent Request**: Sent when counselor initiates referral
    - Subject: "טופס ויתור סודיות - גשר אל הנוער"
    - Contains consent form link
+   - No external images (uses gradient header for better deliverability)
 
 2. **Counselor Notification**: Sent when parent signs consent
    - Subject: "הסכמת הורים התקבלה - [Student Name]"
    - Contains student data form link
+   - Plain text + HTML versions for compatibility
 
 ## 🤝 Contributing
 
@@ -175,10 +200,36 @@ MIT License - Free to use and modify
 
 Developed pro bono for Gesher Al HaNoar (גשר אל הנוער) to support their mission of helping at-risk youth in Israel.
 
+## 🆕 Recent Updates (January 2025)
+
+### Gmail SMTP Migration
+- Switched from Resend to Gmail SMTP for email delivery
+- Dedicated account: gesheryouth@gmail.com
+- Improved email deliverability without domain verification
+- App Password authentication for security
+
+### Privacy Enhancements
+- Automatic deletion of personal data from Supabase after Salesforce submission
+- Only minimal record (referral ID, status) retained
+- Prevents link reuse while maximizing privacy
+
+### Mobile Navigation Improvements
+- Student form: New compact progress bar for mobile devices
+- Shows "Step X/7" with current step title
+- Horizontal progress indicator below
+- Desktop view unchanged with circular navigation
+
+### Security Hardening
+- Rate limiting implementation
+- CORS protection
+- Input validation and sanitization
+- Security headers added
+
 ---
 
 **For technical documentation and development details, see:**
 - [CLAUDE.md](./CLAUDE.md) - Comprehensive project documentation
 - [JWT_AUTHENTICATION.md](./JWT_AUTHENTICATION.md) - JWT Bearer setup guide
 - [SF_INTEGRATION.md](./SF_INTEGRATION.md) - Salesforce integration details
-# Force rebuild at 2025-09-09 19:57:22
+- [SECURITY.md](./SECURITY.md) - Security implementation details
+- [SMS-INTEGRATION.md](./SMS-INTEGRATION.md) - SMS service setup
