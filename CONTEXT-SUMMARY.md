@@ -13,7 +13,7 @@
 - **Frontend**: Next.js 15.5 + TypeScript + Tailwind
 - **Database**: Supabase (fftnsfaakvahqyfwhtku)
 - **Email**: Resend (working)
-- **SMS**: ActiveTrail (API auth issue - email fallback active)
+- **SMS**: Inwise (configured - awaiting API key)
 - **CRM**: Salesforce (JWT auth working)
 - **Hosting**: Vercel
 
@@ -48,12 +48,12 @@ node test-sms.js
 - `.env.local` - Environment variables
 
 ## 🚨 Current Issues
-- **SMS**: ActiveTrail API key authentication failing (401)
-  - Email notifications working as fallback
-  - See `ACTIVETRAIL-TROUBLESHOOTING.md`
+- **SMS**: Awaiting Inwise API key from client
+  - Email notifications working as primary channel
+  - See `SMS-INTEGRATION.md` for setup instructions
 
 ## ✅ Recent Updates (Jan 2025)
-- SMS integration (pending API fix)
+- Migrated SMS from ActiveTrail to Inwise
 - Fixed student form success message
 - Security hardening complete
 - Salesforce JWT working

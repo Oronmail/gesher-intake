@@ -1,18 +1,19 @@
 # SMS Integration Documentation
-## ActiveTrail SMS Service for Gesher Intake System
+## Inwise SMS Service for Gesher Intake System
 
 ---
 
 ## 📱 Overview
 
-The Gesher Intake System now includes SMS notifications via ActiveTrail, an Israeli SMS service provider. This enables dual-channel communication with parents, ensuring they receive consent form links through both email and SMS.
+The Gesher Intake System now includes SMS notifications via Inwise, an Israeli SMS service provider. This enables dual-channel communication with parents, ensuring they receive consent form links through both email and SMS.
 
 ## 🚀 Current Status
 
-- **Status**: ✅ Fully Operational in Production
-- **Provider**: ActiveTrail (webapi.mymarketing.co.il)
-- **Deployment**: Live on Vercel with environment variables configured
+- **Status**: ⚙️ Configured - Awaiting API Key
+- **Provider**: Inwise (api.inwise.com)
+- **Deployment**: Ready for production once API key provided
 - **Last Updated**: January 2025
+- **Migration**: Successfully migrated from ActiveTrail
 
 ## 🔧 Technical Implementation
 
@@ -20,7 +21,7 @@ The Gesher Intake System now includes SMS notifications via ActiveTrail, an Isra
 
 ```
 src/lib/sms.ts
-├── ActiveTrailSMS class
+├── InwiseSMS class
 ├── Phone number formatting (Israeli)
 ├── SMS templates (Hebrew)
 ├── Error handling & fallbacks
@@ -52,18 +53,25 @@ src/lib/sms.ts
 Add to `.env.local` for local development:
 
 ```env
-# ActiveTrail SMS Configuration
-ACTIVETRAIL_API_KEY=your_api_key_here
-ACTIVETRAIL_BASE_URL=https://webapi.mymarketing.co.il
-ACTIVETRAIL_SENDER_ID=GesherYouth
+# Inwise SMS Configuration
+INWISE_API_KEY=your_api_key_here
+INWISE_BASE_URL=https://api.inwise.com/rest/v1
+INWISE_SENDER_ID=GesherYouth
 ```
 
 ### Vercel Production Variables
 
-Already configured in Vercel dashboard:
-- ✅ `ACTIVETRAIL_API_KEY` (encrypted)
-- ✅ `ACTIVETRAIL_BASE_URL`
-- ✅ `ACTIVETRAIL_SENDER_ID`
+To be configured in Vercel dashboard:
+- [ ] `INWISE_API_KEY` (pending)
+- [x] `INWISE_BASE_URL` (configured)
+- [x] `INWISE_SENDER_ID` (configured)
+
+## 🔑 Authentication
+
+Inwise uses header-based authentication:
+- **Header**: `X-API-Key`
+- **Value**: Your Inwise API key
+- **Documentation**: https://developers.inwise.com/docs/api/guides/
 
 ## 🧪 Testing
 
@@ -85,18 +93,28 @@ node test-sms.js 0521234567
 
 ## 📊 API Integration
 
-### Endpoints Used
+### Endpoint
 
-1. **Primary**: `/api/external/operational/sms_message`
-2. **Fallback**: `/api/smscampaign/OperationalMessage`
+**Transactional SMS**: `/transactional/sms/send`
 
 ### Request Format
 
 ```javascript
 {
-  phone_number: "+972501234567",
+  phoneNumber: "+972501234567",
   message: "Hebrew message text",
-  sender_id: "GesherYouth"
+  sender: "GesherYouth",
+  customField: "REF-2025-001" // Optional tracking
+}
+```
+
+### Headers
+
+```javascript
+{
+  'Content-Type': 'application/json',
+  'Accept': 'application/json',
+  'X-API-Key': 'your_api_key_here'
 }
 ```
 
@@ -117,7 +135,7 @@ node test-sms.js 0521234567
 graph LR
     A[Counselor Form] --> B{Phone Provided?}
     B -->|Yes| C[Format Number]
-    C --> D[Send SMS]
+    C --> D[Send SMS via Inwise]
     D --> E[Log Result]
     B -->|No| F[Skip SMS]
 ```
@@ -143,6 +161,11 @@ graph LR
 השלם את הרישום: [form_url]
 ```
 
+### Consent Reminder
+```hebrew
+תזכורת - גשר אל הנוער: טופס ויתור סודיות עבור [student_name] ממתין לחתימתך: [consent_url]
+```
+
 ## 🛠️ Troubleshooting
 
 ### Common Issues
@@ -150,7 +173,7 @@ graph LR
 1. **SMS Not Sending**
    - Check API key is valid
    - Verify phone format (+972...)
-   - Check ActiveTrail credits
+   - Check Inwise credits
    - Review logs in Vercel Functions
 
 2. **Invalid Phone Number**
@@ -162,12 +185,13 @@ graph LR
    - Check environment variables
    - Verify API endpoint availability
    - Review error logs
+   - Check X-API-Key header is present
 
 ### Debug Commands
 
 ```bash
 # Check environment variables
-vercel env ls production | grep ACTIVETRAIL
+vercel env ls production | grep INWISE
 
 # View function logs
 vercel logs --yes
@@ -185,9 +209,10 @@ node test-sms.js
 - Error frequency
 
 ### Log Messages
-- `Consent SMS sent to parent: [phone]`
-- `Failed to send SMS: [error]`
-- `SMS fallback attempted`
+- `Sending SMS via Inwise to: [phone]`
+- `SMS sent successfully via Inwise: [result]`
+- `Inwise SMS sending error: [error]`
+- `Inwise SMS API Error: [status] [details]`
 
 ## 🔐 Security Considerations
 
@@ -206,27 +231,66 @@ node test-sms.js
    - Middleware protection
    - Fallback on failures
 
+## 🔄 Migration from ActiveTrail
+
+### What Changed
+- **Class Name**: `ActiveTrailSMS` → `InwiseSMS`
+- **Authentication**: Authorization header → X-API-Key header
+- **API Endpoint**: webapi.mymarketing.co.il → api.inwise.com
+- **Request Format**: Updated to Inwise schema
+- **Environment Variables**: ACTIVETRAIL_* → INWISE_*
+
+### Migration Steps Completed
+1. ✅ Updated SMS service class
+2. ✅ Changed authentication method
+3. ✅ Updated API endpoints
+4. ✅ Modified request/response handling
+5. ✅ Updated environment variables
+6. ✅ Updated test scripts
+7. ✅ Updated documentation
+8. ⏳ Awaiting API key configuration
+
 ## 📞 Support
 
-### ActiveTrail Support
-- Documentation: https://webapi.mymarketing.co.il/api/docs
-- Contact: Via ActiveTrail dashboard
+### Inwise Support
+- Documentation: https://developers.inwise.com/docs/api/guides/
+- API Reference: https://api.inwise.com/rest/v1/docs/
+- Transactional SMS: https://api.inwise.com/rest/v1/docs/index?#!/transactional_sms/
 
 ### System Issues
 - Check Vercel logs
 - Review this documentation
 - Test with `test-sms.js`
 
-## ✅ Checklist for New Deployments
+## ✅ Checklist for Activation
 
-- [ ] Get ActiveTrail API key
-- [ ] Add environment variables to Vercel
+- [ ] Obtain Inwise API key
+- [ ] Add API key to `.env.local` for testing
 - [ ] Test SMS locally with `test-sms.js`
+- [ ] Add API key to Vercel environment variables
 - [ ] Deploy to production
 - [ ] Verify SMS delivery in production
 - [ ] Monitor logs for first 24 hours
+
+## 📋 Quick Reference
+
+### Test Command
+```bash
+node test-sms.js 0501234567
+```
+
+### Environment Variable
+```env
+INWISE_API_KEY=your_api_key_here
+```
+
+### Vercel Configuration
+```bash
+vercel env add INWISE_API_KEY production
+```
 
 ---
 
 *This documentation is part of the Gesher Intake System*
 *Last Updated: January 2025*
+*Migration Status: Complete - Awaiting API Key*
