@@ -50,11 +50,34 @@ export async function sendConsentEmail({
     return { success: false, error: 'Email service not configured' };
   }
 
+  // Generate unique message ID
+  const messageId = `${Date.now()}.${Math.random().toString(36).substr(2, 9)}@gesher-intake.vercel.app`;
+  
+  // Plain text version for better deliverability
+  const textContent = `
+    גשר אל הנוער - טופס ויתור סודיות
+    
+    שלום,
+    
+    יועץ משפחה מבית ספר ${schoolName} הפנה את ילדכם לתוכנית "גשר אל הנוער".
+    
+    לצורך המשך הטיפול בבקשה, אנו זקוקים להסכמתכם לויתור סודיות לימודית/פסיכולוגית/רפואית.
+    
+    לחצו על הקישור למילוי טופס ויתור הסודיות:
+    ${consentUrl}
+    
+    זהו מייל אוטומטי. אנא אל תשיבו למייל זה.
+    לשאלות ובירורים, צרו קשר עם היועצ/ת החינוכי/ת.
+  `.trim();
+
   try {
     const result = await transporter.sendMail({
-      from: `"גשר אל הנוער" <${process.env.GMAIL_USER}>`,
+      from: process.env.GMAIL_USER, // Simple format, display name comes from Gmail account
       to: parentEmail,
       subject: `טופס ויתור סודיות - גשר אל הנוער`,
+      text: textContent, // Plain text version
+      replyTo: process.env.GMAIL_USER,
+      messageId: messageId,
       html: `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="text-align: center; margin-bottom: 30px;">
@@ -117,11 +140,33 @@ export async function sendCounselorNotification({
     return { success: false, error: 'Email service not configured' };
   }
 
+  // Generate unique message ID
+  const messageId = `${Date.now()}.${Math.random().toString(36).substr(2, 9)}@gesher-intake.vercel.app`;
+  
+  // Plain text version for better deliverability
+  const textContent = `
+    הסכמת הורים התקבלה בהצלחה
+    
+    שלום ${counselorName},
+    
+    ההורים ${parentNames} חתמו על טופס ההסכמה.
+    
+    שם התלמיד/ה: ${studentName}
+    
+    כעת ניתן למלא את טופס נתוני התלמיד/ה:
+    ${studentFormUrl}
+    
+    זהו מייל אוטומטי מהמערכת.
+  `.trim();
+
   try {
     const result = await transporter.sendMail({
-      from: `"גשר אל הנוער" <${process.env.GMAIL_USER}>`,
+      from: process.env.GMAIL_USER, // Simple format, display name comes from Gmail account
       to: counselorEmail,
       subject: `הסכמת הורים התקבלה - ${studentName}`,
+      text: textContent, // Plain text version
+      replyTo: process.env.GMAIL_USER,
+      messageId: messageId,
       html: `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="text-align: center; margin-bottom: 30px;">
