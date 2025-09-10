@@ -1,6 +1,6 @@
 /**
- * ActiveTrail SMS Service
- * Sends SMS notifications via ActiveTrail API
+ * Inwise SMS Service
+ * Sends SMS notifications via Inwise API
  */
 
 interface SMSConfig {
@@ -21,14 +21,14 @@ interface SMSResponse {
   error?: string;
 }
 
-class ActiveTrailSMS {
+class InwiseSMS {
   private config: SMSConfig;
 
   constructor() {
     this.config = {
-      apiKey: process.env.ACTIVETRAIL_API_KEY || '',
-      baseUrl: process.env.ACTIVETRAIL_BASE_URL || 'https://webapi.mymarketing.co.il',
-      senderId: process.env.ACTIVETRAIL_SENDER_ID || 'GesherYouth', // Default sender ID
+      apiKey: process.env.INWISE_API_KEY || '',
+      baseUrl: process.env.INWISE_BASE_URL || 'https://api.inwise.com/rest/v1',
+      senderId: process.env.INWISE_SENDER_ID || 'GesherYouth',
     };
   }
 
@@ -53,44 +53,38 @@ class ActiveTrailSMS {
   }
 
   /**
-   * Send SMS via ActiveTrail Operational Message API
+   * Send SMS via Inwise Transactional SMS API
    */
   async sendSMS(params: SendSMSParams): Promise<SMSResponse> {
     const { phone, message, referralNumber } = params;
 
     if (!this.config.apiKey) {
-      console.error('ActiveTrail API key not configured');
+      console.error('Inwise API key not configured');
       return { success: false, error: 'SMS service not configured' };
-    }
-
-    // Verify API key format (must be uppercase 0X)
-    if (!this.config.apiKey.startsWith('0X')) {
-      console.warn('ActiveTrail API key should start with uppercase 0X');
     }
 
     try {
       const formattedPhone = this.formatPhoneNumber(phone);
       
-      // ActiveTrail API endpoint for operational SMS
-      const endpoint = `${this.config.baseUrl}/api/external/operational/sms_message`;
+      // Inwise API endpoint for transactional SMS
+      const endpoint = `${this.config.baseUrl}/transactional/sms/send`;
       
       const requestBody = {
-        phone_number: formattedPhone,
+        phoneNumber: formattedPhone,
         message: message,
-        sender_id: this.config.senderId,
+        sender: this.config.senderId,
         // Add tracking info if available
-        custom_field: referralNumber || undefined,
+        customField: referralNumber || undefined,
       };
 
-      console.log('Sending SMS to:', formattedPhone);
+      console.log('Sending SMS via Inwise to:', formattedPhone);
       console.log('Message:', message);
 
-      // ActiveTrail authentication: Use API key directly in Authorization header
-      // Must be uppercase 0X prefix (case sensitive)
+      // Inwise authentication: Use X-API-Key header
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Authorization': this.config.apiKey, // Format: 0X30FB9158CD1513BA935C2C2BB2A4B86B...
+        'X-API-Key': this.config.apiKey,
       }
       
       const response = await fetch(endpoint, {
@@ -102,12 +96,7 @@ class ActiveTrailSMS {
       const responseText = await response.text();
       
       if (!response.ok) {
-        console.error('SMS API Error:', response.status, responseText);
-        
-        // Try alternative endpoint if first one fails
-        if (response.status === 404) {
-          return this.sendSMSAlternative(params);
-        }
+        console.error('Inwise SMS API Error:', response.status, responseText);
         
         return {
           success: false,
@@ -120,71 +109,21 @@ class ActiveTrailSMS {
       try {
         result = JSON.parse(responseText);
       } catch {
-        result = { message_id: responseText };
+        // If response is not JSON, treat as success with the response as ID
+        result = { messageId: responseText };
       }
 
-      console.log('SMS sent successfully:', result);
+      console.log('SMS sent successfully via Inwise:', result);
       
       return {
         success: true,
-        messageId: result.message_id || result.id || 'sent',
+        messageId: result.messageId || result.id || 'sent',
       };
     } catch (error) {
-      console.error('SMS sending error:', error);
+      console.error('Inwise SMS sending error:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-      };
-    }
-  }
-
-  /**
-   * Alternative SMS sending method using campaign API
-   */
-  private async sendSMSAlternative(params: SendSMSParams): Promise<SMSResponse> {
-    const { phone, message } = params;
-    
-    try {
-      const formattedPhone = this.formatPhoneNumber(phone);
-      const endpoint = `${this.config.baseUrl}/api/smscampaign/OperationalMessage`;
-      
-      const requestBody = {
-        to: formattedPhone,
-        message: message,
-        from: this.config.senderId,
-      };
-
-      // Use same auth method as primary endpoint
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-        'Authorization': this.config.apiKey, // Direct API key with 0X prefix
-      }
-      
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(requestBody),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Alternative SMS API Error:', response.status, errorText);
-        return {
-          success: false,
-          error: `SMS sending failed (alt): ${response.status}`,
-        };
-      }
-
-      const result = await response.json();
-      return {
-        success: true,
-        messageId: result.message_id || 'sent',
-      };
-    } catch (error) {
-      console.error('Alternative SMS error:', error);
-      return {
-        success: false,
-        error: 'SMS service unavailable',
       };
     }
   }
@@ -203,7 +142,7 @@ export const SMS_TEMPLATES = {
 };
 
 // Export singleton instance
-const smsService = new ActiveTrailSMS();
+const smsService = new InwiseSMS();
 
 /**
  * Send consent request SMS to parent

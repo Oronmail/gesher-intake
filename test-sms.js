@@ -1,26 +1,26 @@
 #!/usr/bin/env node
 
 /**
- * Test ActiveTrail SMS Integration
+ * Test Inwise SMS Integration
  * Tests the SMS sending functionality
  */
 
 require('dotenv').config({ path: '.env.local' });
 
 // Check if API key is configured
-if (!process.env.ACTIVETRAIL_API_KEY) {
-  console.error('❌ ACTIVETRAIL_API_KEY not found in .env.local');
+if (!process.env.INWISE_API_KEY) {
+  console.error('❌ INWISE_API_KEY not found in .env.local');
   console.log('\nPlease add the following to your .env.local file:');
-  console.log('ACTIVETRAIL_API_KEY=your_api_key_here');
-  console.log('ACTIVETRAIL_BASE_URL=https://webapi.mymarketing.co.il (optional)');
-  console.log('ACTIVETRAIL_SENDER_ID=GesherYouth (optional)');
+  console.log('INWISE_API_KEY=your_api_key_here');
+  console.log('INWISE_BASE_URL=https://api.inwise.com/rest/v1 (optional)');
+  console.log('INWISE_SENDER_ID=GesherYouth (optional)');
   process.exit(1);
 }
 
-console.log('=== ActiveTrail SMS Test ===\n');
+console.log('=== Inwise SMS Test ===\n');
 console.log('API Key configured: ✅');
-console.log('Base URL:', process.env.ACTIVETRAIL_BASE_URL || 'https://webapi.mymarketing.co.il');
-console.log('Sender ID:', process.env.ACTIVETRAIL_SENDER_ID || 'GesherYouth');
+console.log('Base URL:', process.env.INWISE_BASE_URL || 'https://api.inwise.com/rest/v1');
+console.log('Sender ID:', process.env.INWISE_SENDER_ID || 'GesherYouth');
 
 // Import the SMS service
 import('./src/lib/sms.js').then(async (smsModule) => {
@@ -58,8 +58,8 @@ import('./src/lib/sms.js').then(async (smsModule) => {
 });
 
 async function testDirectAPI() {
-  const apiKey = process.env.ACTIVETRAIL_API_KEY;
-  const baseUrl = process.env.ACTIVETRAIL_BASE_URL || 'https://webapi.mymarketing.co.il';
+  const apiKey = process.env.INWISE_API_KEY;
+  const baseUrl = process.env.INWISE_BASE_URL || 'https://api.inwise.com/rest/v1';
   const testPhone = process.argv[2] || '0501234567';
   
   // Format phone number
@@ -72,50 +72,44 @@ async function testDirectAPI() {
   console.log('Testing direct API call...');
   console.log('Formatted phone:', formattedPhone);
   
-  const endpoints = [
-    '/api/external/operational/sms_message',
-    '/api/smscampaign/OperationalMessage',
-  ];
+  const endpoint = '/transactional/sms/send';
   
-  for (const endpoint of endpoints) {
-    console.log(`\nTrying endpoint: ${endpoint}`);
+  console.log(`\nTrying endpoint: ${endpoint}`);
+  
+  try {
+    const response = await fetch(`${baseUrl}${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-API-Key': apiKey,
+      },
+      body: JSON.stringify({
+        phoneNumber: formattedPhone,
+        message: 'גשר אל הנוער: בדיקת מערכת SMS. אם קיבלת הודעה זו, המערכת עובדת כראוי.',
+        sender: process.env.INWISE_SENDER_ID || 'GesherYouth',
+      }),
+    });
     
-    try {
-      const response = await fetch(`${baseUrl}${endpoint}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': apiKey,
-          'X-API-KEY': apiKey,
-        },
-        body: JSON.stringify({
-          phone_number: formattedPhone,
-          to: formattedPhone, // Alternative field name
-          message: 'גשר אל הנוער: בדיקת מערכת SMS. אם קיבלת הודעה זו, המערכת עובדת כראוי.',
-          sender_id: process.env.ACTIVETRAIL_SENDER_ID || 'GesherYouth',
-          from: process.env.ACTIVETRAIL_SENDER_ID || 'GesherYouth',
-        }),
-      });
-      
-      const responseText = await response.text();
-      console.log('Response status:', response.status);
-      console.log('Response:', responseText);
-      
-      if (response.ok) {
-        console.log('✅ SMS might have been sent via', endpoint);
-        break;
-      }
-    } catch (error) {
-      console.log('❌ Error with endpoint:', error.message);
+    const responseText = await response.text();
+    console.log('Response status:', response.status);
+    console.log('Response:', responseText);
+    
+    if (response.ok) {
+      console.log('✅ SMS sent successfully via Inwise!');
+    } else {
+      console.log('❌ Failed to send SMS');
     }
+  } catch (error) {
+    console.log('❌ Error with endpoint:', error.message);
   }
   
   console.log('\n=== Test Complete ===');
   console.log('\nIf SMS is not working, please check:');
   console.log('1. API key is valid and has SMS permissions');
   console.log('2. Phone number format is correct');
-  console.log('3. ActiveTrail account has SMS credits');
-  console.log('4. Contact ActiveTrail support for exact API documentation');
+  console.log('3. Inwise account has SMS credits');
+  console.log('4. Contact Inwise support at https://developers.inwise.com');
 }
 
 // Instructions for running the test

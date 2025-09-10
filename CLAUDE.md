@@ -586,7 +586,7 @@ NODE_ENV=production
   - [x] Successfully creating records in Salesforce
   - [x] Email notifications functioning properly
 - [x] **SMS INTEGRATION - January 2025**
-  - [x] ActiveTrail SMS service integration
+  - [x] Inwise SMS service integration
   - [x] Dual notification system (Email + SMS)
   - [x] Automatic Israeli phone number formatting
   - [x] SMS templates in Hebrew
@@ -1048,7 +1048,7 @@ This is a pro bono project developed for Gesher Al HaNoar. For technical questio
 *Live URL: https://gesher-intake.vercel.app*
 *Repository: https://github.com/Oronmail/gesher-intake (Private)*
 *Email Service: Resend (Working)*
-*SMS Service: ActiveTrail (Working)*
+*SMS Service: Inwise (Configured - API key pending)*
 *Database: Supabase (Secured with RLS)*
 *Salesforce: ✅ Successfully integrated and creating records*
 *Security Status: ✅ All vulnerabilities patched, API security configured*
