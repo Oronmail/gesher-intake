@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Loader2 } from 'lucide-react'
+import { Loader2, CheckCircle, User, CreditCard, MapPin, Phone, PenTool, Shield, FileSignature, Users } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import Logo from './Logo'
 
@@ -33,6 +33,7 @@ export default function ParentConsentForm({ referralNumber }: ParentConsentFormP
   const [signature1, setSignature1] = useState<string>('')
   const [signature2, setSignature2] = useState<string>('')
   const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string } | null>(null)
+  const [showSecondParent, setShowSecondParent] = useState(false)
 
   const {
     register,
@@ -109,22 +110,30 @@ export default function ParentConsentForm({ referralNumber }: ParentConsentFormP
   // Show success page after successful submission
   if (submitResult?.success) {
     return (
-      <div className="max-w-3xl mx-auto p-6">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <div className="flex flex-col items-center text-center space-y-6">
-            <Logo className="h-20 w-20" />
-            <div className="bg-green-50 border border-green-200 rounded-lg p-8 w-full">
-              <h1 className="text-2xl font-bold text-green-800 mb-4">
-                הטופס נשלח בהצלחה!
-              </h1>
-              <p className="text-green-700 text-lg">
-                {submitResult.message}
-              </p>
-            </div>
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg w-full">
-              <p className="text-blue-800">
-                מספר סימוכין: {referralNumber}
-              </p>
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 p-6">
+        <div className="max-w-3xl mx-auto">
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-2"></div>
+            <div className="p-12">
+              <div className="flex flex-col items-center text-center space-y-8">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-green-100 rounded-full blur-xl animate-pulse"></div>
+                  <CheckCircle className="h-24 w-24 text-green-500 relative z-10" />
+                </div>
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent">
+                  הטופס נשלח בהצלחה!
+                </h1>
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-8 w-full shadow-sm">
+                  <p className="text-green-800 text-xl leading-relaxed">
+                    {submitResult.message}
+                  </p>
+                </div>
+                <div className="mt-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl w-full border border-blue-200">
+                  <p className="text-blue-800 font-medium text-lg">
+                    מספר סימוכין: <span className="font-mono text-xl">{referralNumber}</span>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -133,197 +142,295 @@ export default function ParentConsentForm({ referralNumber }: ParentConsentFormP
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <div className="bg-white rounded-lg shadow-lg p-8">
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <Logo className="h-20 w-20" />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-800">
-            ויתור סודיות לימודית/פסיכולוגית/רפואית
-          </h1>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 p-6">
+      <div className="max-w-4xl mx-auto">
+        {/* Logo above the form */}
+        <div className="flex justify-center mb-6">
+          <Logo className="h-20 w-20" />
         </div>
-
-        <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
-          <p className="text-gray-700">
-            אני מאפשר להנהלת &quot;גשר אל הנוער&quot; לקבל מביה&quot;ס/ רווחה/ גורם מטפל אחר כל מידע
-            לימודי/פסיכולוגי/רפואי על בני/ביתי. אנו מוותרים בזאת על סודיות לגבי המידע הרלוונטי.
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div>
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">פרטי התלמיד/ה</h3>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                שם התלמיד/ה *
-              </label>
-              <input
-                {...register('student_name')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                placeholder="שם מלא של התלמיד/ה"
-              />
-              {errors.student_name && (
-                <p className="mt-1 text-sm text-red-600">{errors.student_name.message}</p>
-              )}
+        
+        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">
+            <div className="text-center">
+              <h1 className="text-3xl font-bold">
+                ויתור סודיות לימודית/פסיכולוגית/רפואית
+              </h1>
             </div>
           </div>
 
-          <div>
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">הורה/אפוטרופוס 1</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  שם מלא *
-                </label>
-                <input
-                  {...register('parent1_name')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                  placeholder="שם מלא"
-                />
-                {errors.parent1_name && (
-                  <p className="mt-1 text-sm text-red-600">{errors.parent1_name.message}</p>
-                )}
-              </div>
+          {/* Consent Notice */}
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-6 m-6 rounded-lg">
+            <div className="flex items-start">
+              <FileSignature className="h-6 w-6 text-blue-600 mt-1 ml-3 flex-shrink-0" />
+              <p className="text-gray-700 leading-relaxed">
+                אני מאפשר להנהלת &quot;גשר אל הנוער&quot; לקבל מביה&quot;ס/ רווחה/ גורם מטפל אחר כל מידע
+                לימודי/פסיכולוגי/רפואי על בני/ביתי. אנו מוותרים בזאת על סודיות לגבי המידע הרלוונטי.
+              </p>
+            </div>
+          </div>
 
+          <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-8">
+            {/* Student Name */}
+            <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-6 border border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <div className="bg-blue-100 p-2 rounded-lg ml-3">
+                  <User className="w-5 h-5 text-blue-600" />
+                </div>
+                פרטי התלמיד/ה
+              </h2>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  מספר תעודת זהות *
-                </label>
-                <input
-                  {...register('parent1_id')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                  placeholder="123456789"
-                  dir="ltr"
-                />
-                {errors.parent1_id && (
-                  <p className="mt-1 text-sm text-red-600">{errors.parent1_id.message}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  כתובת
-                </label>
-                <input
-                  {...register('parent1_address')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                  placeholder="רחוב, מספר, עיר"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  טלפון
-                </label>
-                <input
-                  {...register('parent1_phone')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                  placeholder="050-123-4567"
-                  dir="ltr"
-                />
-              </div>
-
-              <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  חתימת הורה/אפוטרופוס 1 *
-                </label>
-                <SignaturePad 
-                  onSave={setSignature1} 
-                  disabled={isSubmitting}
-                />
-                {signature1 && (
-                  <p className="mt-2 text-sm text-green-600">החתימה נקלטה ✓</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">הורה/אפוטרופוס 2 (אופציונלי)</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
                   שם מלא
+                  <span className="text-red-500 mr-1">*</span>
                 </label>
-                <input
-                  {...register('parent2_name')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                  placeholder="שם מלא"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  מספר תעודת זהות
-                </label>
-                <input
-                  {...register('parent2_id')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                  placeholder="123456789"
-                  dir="ltr"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  כתובת
-                </label>
-                <input
-                  {...register('parent2_address')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                  placeholder="רחוב, מספר, עיר"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  טלפון
-                </label>
-                <input
-                  {...register('parent2_phone')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                  placeholder="050-123-4567"
-                  dir="ltr"
-                />
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  חתימת הורה/אפוטרופוס 2
-                </label>
-                <SignaturePad 
-                  onSave={setSignature2} 
-                  disabled={isSubmitting}
-                />
-                {signature2 && (
-                  <p className="mt-2 text-sm text-green-600">החתימה נקלטה ✓</p>
+                <div className="relative">
+                  <input
+                    {...register('student_name')}
+                    className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                    placeholder="שם פרטי ומשפחה"
+                  />
+                  <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                </div>
+                {errors.student_name && (
+                  <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                    <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                    {errors.student_name.message}
+                  </p>
                 )}
               </div>
             </div>
-          </div>
 
-          {submitResult && !submitResult.success && (
-            <div className="p-4 rounded-md bg-red-50 text-red-800">
-              {submitResult.message}
+            {/* Parent 1 */}
+            <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200">
+              <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                <div className="bg-purple-100 p-2 rounded-lg ml-3">
+                  <Users className="w-5 h-5 text-purple-600" />
+                </div>
+                הורה/אפוטרופוס 1
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    שם מלא
+                    <span className="text-red-500 mr-1">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      {...register('parent1_name')}
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                      placeholder="שם פרטי ומשפחה"
+                    />
+                    <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                  </div>
+                  {errors.parent1_name && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                      <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                      {errors.parent1_name.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    מספר תעודת זהות
+                    <span className="text-red-500 mr-1">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      {...register('parent1_id')}
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                      placeholder="000000000"
+                      dir="ltr"
+                    />
+                    <CreditCard className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                  </div>
+                  {errors.parent1_id && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                      <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                      {errors.parent1_id.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    כתובת
+                    <span className="text-gray-500 text-xs mr-2">(אופציונלי)</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      {...register('parent1_address')}
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                      placeholder="רחוב, מספר, עיר"
+                    />
+                    <MapPin className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    טלפון
+                    <span className="text-gray-500 text-xs mr-2">(אופציונלי)</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      {...register('parent1_phone')}
+                      type="tel"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                      placeholder="050-0000000"
+                      dir="ltr"
+                    />
+                    <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Signature 1 */}
+              <div className="mt-6">
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  חתימה דיגיטלית
+                  <span className="text-red-500 mr-1">*</span>
+                </label>
+                <div className="bg-gray-50 p-4 rounded-xl border-2 border-dashed border-gray-300">
+                  <SignaturePad
+                    onSave={setSignature1}
+                  />
+                </div>
+              </div>
             </div>
-          )}
 
-          <button
-            type="submit"
-            disabled={isSubmitting || !signature1}
-            className="w-full bg-blue-600 text-white py-3 px-4 rounded-md font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="animate-spin ml-2 h-5 w-5" />
-                מעבד...
-              </>
-            ) : (
-              'שליחת הסכמה'
+            {/* Toggle for second parent */}
+            {!showSecondParent && (
+              <button
+                type="button"
+                onClick={() => setShowSecondParent(true)}
+                className="w-full py-3 px-4 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-xl font-medium hover:from-gray-200 hover:to-gray-300 transition-all duration-200 flex items-center justify-center"
+              >
+                <Users className="h-5 w-5 ml-2" />
+                הוסף הורה/אפוטרופוס נוסף
+              </button>
             )}
-          </button>
-        </form>
+
+            {/* Parent 2 (Optional) */}
+            {showSecondParent && (
+              <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-6 border border-indigo-200 animate-fadeIn">
+                <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                  <div className="bg-indigo-100 p-2 rounded-lg ml-3">
+                    <Users className="w-5 h-5 text-indigo-600" />
+                  </div>
+                  הורה/אפוטרופוס 2
+                  <span className="text-gray-500 text-sm mr-2">(אופציונלי)</span>
+                </h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      שם מלא
+                    </label>
+                    <div className="relative">
+                      <input
+                        {...register('parent2_name')}
+                        className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                        placeholder="שם פרטי ומשפחה"
+                      />
+                      <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      מספר תעודת זהות
+                    </label>
+                    <div className="relative">
+                      <input
+                        {...register('parent2_id')}
+                        className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                        placeholder="000000000"
+                        dir="ltr"
+                      />
+                      <CreditCard className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      כתובת
+                    </label>
+                    <div className="relative">
+                      <input
+                        {...register('parent2_address')}
+                        className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                        placeholder="רחוב, מספר, עיר"
+                      />
+                      <MapPin className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      טלפון
+                    </label>
+                    <div className="relative">
+                      <input
+                        {...register('parent2_phone')}
+                        type="tel"
+                        className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                        placeholder="050-0000000"
+                        dir="ltr"
+                      />
+                      <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Signature 2 */}
+                <div className="mt-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    חתימה דיגיטלית
+                  </label>
+                  <div className="bg-gray-50 p-4 rounded-xl border-2 border-dashed border-gray-300">
+                    <SignaturePad
+                      onSave={setSignature2}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {submitResult && !submitResult.success && (
+              <div className="bg-red-50 border-2 border-red-200 text-red-800 px-6 py-4 rounded-xl flex items-start animate-fadeIn">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-red-400 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <p className="mr-3 font-medium">{submitResult.message}</p>
+              </div>
+            )}
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full flex justify-center items-center py-4 px-6 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl font-medium text-lg hover:from-purple-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transform transition-all duration-200 hover:scale-[1.02] shadow-xl group"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="animate-spin h-5 w-5 ml-2" />
+                  שולח את הטופס...
+                </>
+              ) : (
+                <>
+                  שליחת טופס הסכמה
+                  <PenTool className="h-5 w-5 mr-3 group-hover:rotate-12 transition-transform" />
+                </>
+              )}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   )

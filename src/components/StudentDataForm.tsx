@@ -4,9 +4,50 @@ import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Loader2, ChevronRight, ChevronLeft } from 'lucide-react'
+import { 
+  Loader2, 
+  ChevronRight, 
+  ChevronLeft, 
+  User, 
+  Users, 
+  School, 
+  GraduationCap, 
+  Brain, 
+  AlertTriangle, 
+  FileText, 
+  CheckCircle,
+  Calendar,
+  MapPin,
+  Phone,
+  CreditCard,
+  Home,
+  Heart,
+  BookOpen,
+  Trophy,
+  Zap,
+  Activity,
+  Shield
+} from 'lucide-react'
 import Logo from './Logo'
 import { supabase } from '@/lib/supabase'
+
+// Add CSS for animations
+const styles = `
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fadeIn {
+    animation: fadeIn 0.5s ease-out;
+  }
+`
 
 const formSchema = z.object({
   // פרטים אישיים
@@ -265,11 +306,24 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <div className="flex items-center justify-center">
-            <Loader2 className="animate-spin h-8 w-8 text-blue-600" />
-            <span className="mr-3 text-gray-600">טוען נתונים...</span>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2"></div>
+            <div className="p-12">
+              <div className="flex flex-col items-center justify-center space-y-6">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-blue-100 rounded-full blur-xl animate-pulse"></div>
+                  <Loader2 className="animate-spin h-12 w-12 text-blue-600 relative z-10" />
+                </div>
+                <div className="text-center">
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-700 bg-clip-text text-transparent mb-2">
+                    טוען נתונים
+                  </h2>
+                  <p className="text-gray-600">מכין את הטופס...</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -279,24 +333,42 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
   // Show success screen after successful submission
   if (submitResult?.success) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <div className="text-center">
-            <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 p-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-2"></div>
+            <div className="p-12">
+              <div className="flex flex-col items-center text-center space-y-8">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-green-100 rounded-full blur-xl animate-pulse"></div>
+                  <CheckCircle className="h-24 w-24 text-green-500 relative z-10" />
+                </div>
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent">
+                  הטופס נשלח בהצלחה!
+                </h1>
+                <p className="text-xl text-gray-600 leading-relaxed">
+                  המידע נשמר במערכת ויועבר לבדיקה
+                </p>
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-8 w-full shadow-sm">
+                  <div className="flex items-center justify-center mb-4">
+                    <div className="bg-green-100 p-2 rounded-lg ml-3">
+                      <GraduationCap className="w-6 h-6 text-green-600" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-green-800">מערכת גשר אל הנוער</h3>
+                  </div>
+                  <p className="text-green-800 text-lg">
+                    פרטי התלמיד/ה נקלטו במערכת ויועברו לצוות המקצועי לבחינה ואישור
+                  </p>
+                </div>
+                <div className="mt-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl w-full border border-blue-200">
+                  <div className="flex items-center justify-center">
+                    <Shield className="w-6 h-6 text-blue-600 ml-2" />
+                    <p className="text-blue-800 font-medium">
+                      המידע נשמר באופן מאובטח ומוגן
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              הטופס נשלח בהצלחה!
-            </h2>
-            <p className="text-lg text-gray-600 mb-6">
-              המידע נשמר במערכת ויועבר לבדיקה.
-            </p>
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-green-800">
-              פרטי התלמיד/ה נקלטו במערכת גשר אל הנוער
             </div>
           </div>
         </div>
@@ -304,687 +376,1052 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
     )
   }
 
+  const getStepIcon = (stepNumber: number) => {
+    const icons = [
+      User,          // Step 1: Personal Information
+      Users,         // Step 2: Family Information  
+      School,        // Step 3: School Information
+      GraduationCap, // Step 4: Intake Assessment
+      Brain,         // Step 5: Learning Assessment
+      AlertTriangle, // Step 6: Risk Assessment
+      FileText       // Step 7: Final Opinion
+    ]
+    return icons[stepNumber - 1]
+  }
+
+  const getStepTitle = (stepNumber: number) => {
+    const titles = [
+      'פרטים אישיים',
+      'מידע משפחתי', 
+      'פרטי בית ספר',
+      'נתוני קליטה',
+      'אבחונים',
+      'הערכת סיכון',
+      'חוות דעת אישית'
+    ]
+    return titles[stepNumber - 1]
+  }
+
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-white rounded-lg shadow-lg p-8">
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <Logo className="h-20 w-20" />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-800">
-            טופס רישום מועמד/ת
-          </h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
+      <style dangerouslySetInnerHTML={{ __html: styles }} />
+      <div className="max-w-5xl mx-auto">
+        {/* Logo above the form */}
+        <div className="flex justify-center mb-6">
+          <Logo className="h-20 w-20" />
         </div>
-
-        {/* Progress indicator */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center relative">
-            {[...Array(totalSteps)].map((_, index) => (
-              <div key={index} className="flex-1 relative">
-                {index < totalSteps - 1 && (
-                  <div className={`absolute top-5 h-0.5 ${index < currentStep - 1 ? 'bg-blue-600' : 'bg-gray-300'}`} 
-                       style={{ 
-                         left: '50%',
-                         right: index === totalSteps - 2 ? '-50%' : '-50%',
-                         width: '100%',
-                         transform: 'translateX(0)',
-                         zIndex: 0
-                       }} />
-                )}
-                <div className={`relative z-10 w-10 h-10 mx-auto rounded-full flex items-center justify-center text-white font-bold
-                  ${index < currentStep ? 'bg-blue-600' : 'bg-gray-300'}`}>
-                  {index + 1}
-                </div>
-              </div>
-            ))}
+        
+        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">
+            <div className="text-center">
+              <h1 className="text-3xl font-bold">
+                טופס רישום מועמד/ת
+              </h1>
+            </div>
           </div>
-        </div>
 
-        <form onSubmit={(e) => {
-          e.preventDefault()
-          handleSubmit(onSubmit)(e)
-        }} className="space-y-6">
-          {/* Step 1: Personal Information */}
-          {currentStep === 1 && (
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold mb-4">פרטים אישיים</h2>
+          {/* Enhanced Progress indicator */}
+          <div className="bg-gradient-to-r from-gray-50 to-blue-50 p-6 border-b border-gray-200">
+            <div className="flex justify-between items-center relative max-w-4xl mx-auto">
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    שם פרטי *
-                  </label>
-                  <input
-                    {...register('student_first_name')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  {errors.student_first_name && (
-                    <p className="mt-1 text-sm text-red-600">{errors.student_first_name.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    שם משפחה *
-                  </label>
-                  <input
-                    {...register('student_last_name')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  {errors.student_last_name && (
-                    <p className="mt-1 text-sm text-red-600">{errors.student_last_name.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    מספר תעודת זהות *
-                  </label>
-                  <input
-                    {...register('student_id')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    dir="ltr"
-                  />
-                  {errors.student_id && (
-                    <p className="mt-1 text-sm text-red-600">{errors.student_id.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    תאריך לידה *
-                  </label>
-                  <input
-                    {...register('date_of_birth')}
-                    type="date"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  {errors.date_of_birth && (
-                    <p className="mt-1 text-sm text-red-600">{errors.date_of_birth.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    ארץ לידה *
-                  </label>
-                  <input
-                    {...register('country_of_birth')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  {errors.country_of_birth && (
-                    <p className="mt-1 text-sm text-red-600">{errors.country_of_birth.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    שנת עלייה
-                  </label>
-                  <input
-                    {...register('immigration_year')}
-                    type="number"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    מין *
-                  </label>
-                  <select
-                    {...register('gender')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">בחר</option>
-                    <option value="male">זכר</option>
-                    <option value="female">נקבה</option>
-                  </select>
-                  {errors.gender && (
-                    <p className="mt-1 text-sm text-red-600">נא לבחור מין</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    כתובת *
-                  </label>
-                  <input
-                    {...register('address')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  {errors.address && (
-                    <p className="mt-1 text-sm text-red-600">{errors.address.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    קומה
-                  </label>
-                  <input
-                    {...register('floor')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    דירה
-                  </label>
-                  <input
-                    {...register('apartment')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    טלפון *
-                  </label>
-                  <input
-                    {...register('phone')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    dir="ltr"
-                  />
-                  {errors.phone && (
-                    <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    נייד של התלמיד/ה
-                  </label>
-                  <input
-                    {...register('student_mobile')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    dir="ltr"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Step 2: Family Information */}
-          {currentStep === 2 && (
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold mb-4">מידע משפחתי</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    מספר אחים
-                  </label>
-                  <input
-                    {...register('siblings_count', { valueAsNumber: true })}
-                    type="number"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <h3 className="font-semibold text-gray-700 mb-2">פרטי האב</h3>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    שם האב *
-                  </label>
-                  <input
-                    {...register('father_name')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  {errors.father_name && (
-                    <p className="mt-1 text-sm text-red-600">{errors.father_name.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    נייד האב *
-                  </label>
-                  <input
-                    {...register('father_mobile')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    dir="ltr"
-                  />
-                  {errors.father_mobile && (
-                    <p className="mt-1 text-sm text-red-600">{errors.father_mobile.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    עיסוק *
-                  </label>
-                  <input
-                    {...register('father_occupation')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  {errors.father_occupation && (
-                    <p className="mt-1 text-sm text-red-600">{errors.father_occupation.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    מקצוע *
-                  </label>
-                  <input
-                    {...register('father_profession')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  {errors.father_profession && (
-                    <p className="mt-1 text-sm text-red-600">{errors.father_profession.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    הכנסה
-                  </label>
-                  <input
-                    {...register('father_income')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <h3 className="font-semibold text-gray-700 mb-2">פרטי האם</h3>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    שם האם *
-                  </label>
-                  <input
-                    {...register('mother_name')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  {errors.mother_name && (
-                    <p className="mt-1 text-sm text-red-600">{errors.mother_name.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    נייד האם *
-                  </label>
-                  <input
-                    {...register('mother_mobile')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    dir="ltr"
-                  />
-                  {errors.mother_mobile && (
-                    <p className="mt-1 text-sm text-red-600">{errors.mother_mobile.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    עיסוק *
-                  </label>
-                  <input
-                    {...register('mother_occupation')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  {errors.mother_occupation && (
-                    <p className="mt-1 text-sm text-red-600">{errors.mother_occupation.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    מקצוע *
-                  </label>
-                  <input
-                    {...register('mother_profession')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  {errors.mother_profession && (
-                    <p className="mt-1 text-sm text-red-600">{errors.mother_profession.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    הכנסה
-                  </label>
-                  <input
-                    {...register('mother_income')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    חובות/הלוואות/משכנתא
-                  </label>
-                  <input
-                    {...register('debts_loans')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    רמת מעורבות ההורים
-                  </label>
-                  <select
-                    {...register('parent_involvement')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="promoting">מקדמת</option>
-                    <option value="no_involvement">ללא מעורבות</option>
-                    <option value="inhibiting">מעכבת</option>
-                  </select>
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    מצב כלכלי
-                  </label>
-                  <select
-                    {...register('economic_status')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="low">נמוך</option>
-                    <option value="medium">בינוני</option>
-                    <option value="high">גבוה</option>
-                  </select>
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    פירוט מצב כלכלי
-                  </label>
-                  <textarea
-                    {...register('economic_details')}
-                    rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="פרט את המצב הכלכלי של המשפחה..."
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    רקע משפחתי
-                  </label>
-                  <textarea
-                    {...register('family_background')}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Step 3: School Information */}
-          {currentStep === 3 && (
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold mb-4">פרטי בית ספר</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    בית ספר *
-                  </label>
-                  <input
-                    {...register('school_name')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  {errors.school_name && (
-                    <p className="mt-1 text-sm text-red-600">{errors.school_name.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    כיתה *
-                  </label>
-                  <input
-                    {...register('grade')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  {errors.grade && (
-                    <p className="mt-1 text-sm text-red-600">{errors.grade.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    מחנכת *
-                  </label>
-                  <input
-                    {...register('homeroom_teacher')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  {errors.homeroom_teacher && (
-                    <p className="mt-1 text-sm text-red-600">{errors.homeroom_teacher.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    טלפון מחנכת *
-                  </label>
-                  <input
-                    {...register('teacher_phone')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    dir="ltr"
-                  />
-                  {errors.teacher_phone && (
-                    <p className="mt-1 text-sm text-red-600">{errors.teacher_phone.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    יועצת *
-                  </label>
-                  <input
-                    {...register('counselor_name')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  {errors.counselor_name && (
-                    <p className="mt-1 text-sm text-red-600">{errors.counselor_name.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    טלפון יועצת *
-                  </label>
-                  <input
-                    {...register('counselor_phone')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    dir="ltr"
-                  />
-                  {errors.counselor_phone && (
-                    <p className="mt-1 text-sm text-red-600">{errors.counselor_phone.message}</p>
-                  )}
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    ססמא למערכת מידע בית ספרית
-                  </label>
-                  <input
-                    {...register('school_system_password')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-4 border-t pt-4">
-                <h3 className="font-semibold text-gray-700">מוכרות לרווחה</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="flex items-center">
-                      <input
-                        {...register('known_to_welfare')}
-                        type="checkbox"
-                        className="mr-2"
-                      />
-                      מוכרים ברווחה
-                    </label>
+              {[...Array(totalSteps)].map((_, index) => {
+                const StepIcon = getStepIcon(index + 1)
+                const isCompleted = index < currentStep - 1
+                const isCurrent = index === currentStep - 1
+                const isUpcoming = index > currentStep - 1
+                
+                return (
+                  <div key={index} className="flex flex-col items-center relative">
+                    <div className={`
+                      w-12 h-12 rounded-full flex items-center justify-center text-white font-bold mb-2 transition-all duration-300
+                      ${isCompleted ? 'bg-gradient-to-r from-green-500 to-green-600 shadow-lg scale-105' : 
+                        isCurrent ? 'bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg scale-110 animate-pulse' : 
+                        'bg-gray-300'}
+                    `}>
+                      {isCompleted ? (
+                        <CheckCircle className="w-6 h-6" />
+                      ) : (
+                        <StepIcon className="w-5 h-5" />
+                      )}
+                    </div>
+                    <div className="text-center">
+                      <div className={`text-xs font-medium ${isCurrent ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-500'}`}>
+                        שלב {index + 1}
+                      </div>
+                      <div className={`text-xs mt-1 max-w-20 ${isCurrent ? 'text-blue-600 font-medium' : isCompleted ? 'text-green-600' : 'text-gray-500'}`}>
+                        {getStepTitle(index + 1)}
+                      </div>
+                    </div>
                   </div>
-                  
-                  {watch('known_to_welfare') && (
-                    <>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          שם עו&quot;ס מטפל
-                        </label>
-                        <input
-                          {...register('social_worker_name')}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          טלפון עו&quot;ס
-                        </label>
-                        <input
-                          {...register('social_worker_phone')}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          dir="ltr"
-                        />
-                      </div>
-                    </>
-                  )}
-                </div>
+                )
+              })}
+            </div>
+          </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="flex items-center">
-                      <input
-                        {...register('youth_promotion')}
-                        type="checkbox"
-                        className="mr-2"
-                      />
-                      מטופל בקידום נוער
-                    </label>
+          <div className="p-8">
+            <form onSubmit={(e) => {
+              e.preventDefault()
+              handleSubmit(onSubmit)(e)
+            }} className="space-y-8">
+              {/* Step 1: Personal Information */}
+              {currentStep === 1 && (
+                <div className="space-y-6 animate-fadeIn">
+                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-200 shadow-sm">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          שם פרטי
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('student_first_name')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="שם פרטי"
+                          />
+                          <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.student_first_name && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.student_first_name.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          שם משפחה
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('student_last_name')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="שם משפחה"
+                          />
+                          <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.student_last_name && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.student_last_name.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          מספר תעודת זהות
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('student_id')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="000000000"
+                            dir="ltr"
+                          />
+                          <CreditCard className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.student_id && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.student_id.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          תאריך לידה
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('date_of_birth')}
+                            type="date"
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                          />
+                          <Calendar className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.date_of_birth && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.date_of_birth.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          ארץ לידה
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('country_of_birth')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="ישראל"
+                          />
+                          <MapPin className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.country_of_birth && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.country_of_birth.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          שנת עלייה
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('immigration_year')}
+                            type="number"
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="2020"
+                          />
+                          <Calendar className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          מין
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <select
+                            {...register('gender')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
+                          >
+                            <option value="">בחר מין</option>
+                            <option value="male">זכר</option>
+                            <option value="female">נקבה</option>
+                          </select>
+                          <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.gender && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            נא לבחור מין
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          כתובת
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('address')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="רחוב, מספר בית, עיר"
+                          />
+                          <Home className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.address && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.address.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          קומה
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('floor')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="5"
+                          />
+                          <Home className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          דירה
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('apartment')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="12"
+                          />
+                          <Home className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          טלפון
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('phone')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="050-1234567"
+                            dir="ltr"
+                          />
+                          <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.phone && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.phone.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          נייד של התלמיד/ה
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('student_mobile')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="050-1234567"
+                            dir="ltr"
+                          />
+                          <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  
-                  {watch('youth_promotion') && (
-                    <>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          שם עובד קידום נוער
-                        </label>
-                        <input
-                          {...register('youth_worker_name')}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          טלפון עובד קידום נוער
-                        </label>
-                        <input
-                          {...register('youth_worker_phone')}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          dir="ltr"
-                        />
-                      </div>
-                    </>
-                  )}
                 </div>
-              </div>
+              )}
+
+              {/* Step 2: Family Information */}
+              {currentStep === 2 && (
+                <div className="space-y-6 animate-fadeIn">
+                  {/* Basic Family Info */}
+                  <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200 shadow-sm">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          מספר אחים
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('siblings_count', { valueAsNumber: true })}
+                            type="number"
+                            min="0"
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="0"
+                          />
+                          <Users className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  {/* Father Information */}
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200 shadow-sm">
+                    <div className="flex items-center mb-6">
+                      <div className="bg-blue-100 p-3 rounded-xl ml-3">
+                        <User className="w-6 h-6 text-blue-600" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-800">פרטי האב</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          שם האב
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('father_name')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="שם מלא של האב"
+                          />
+                          <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.father_name && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.father_name.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          נייד האב
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('father_mobile')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="050-1234567"
+                            dir="ltr"
+                          />
+                          <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.father_mobile && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.father_mobile.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          עיסוק
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('father_occupation')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="עבודה, לא עובד, גמלאי"
+                          />
+                          <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.father_occupation && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.father_occupation.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          מקצוע
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('father_profession')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="מה המקצוע הספציפי"
+                          />
+                          <Trophy className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.father_profession && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.father_profession.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          הכנסה חודשית
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('father_income')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="10,000 ₪"
+                          />
+                          <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Mother Information */}
+                  <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-2xl p-6 border border-pink-200 shadow-sm">
+                    <div className="flex items-center mb-6">
+                      <div className="bg-pink-100 p-3 rounded-xl ml-3">
+                        <Heart className="w-6 h-6 text-pink-600" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-800">פרטי האם</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          שם האם
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('mother_name')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="שם מלא של האם"
+                          />
+                          <Heart className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.mother_name && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.mother_name.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          נייד האם
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('mother_mobile')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="050-1234567"
+                            dir="ltr"
+                          />
+                          <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.mother_mobile && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.mother_mobile.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          עיסוק
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('mother_occupation')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="עבודה, לא עובדת, גמלאית"
+                          />
+                          <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.mother_occupation && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.mother_occupation.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          מקצוע
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('mother_profession')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="מה המקצוע הספציפי"
+                          />
+                          <Trophy className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.mother_profession && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.mother_profession.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          הכנסה חודשית
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('mother_income')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="8,000 ₪"
+                          />
+                          <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Family Additional Information */}
+                  <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-2xl p-6 border border-green-200 shadow-sm">
+                    <div className="flex items-center mb-6">
+                      <div className="bg-green-100 p-3 rounded-xl ml-3">
+                        <Users className="w-6 h-6 text-green-600" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-800">מידע כללי על המשפחה</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          חובות/הלוואות/משכנתא
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('debts_loans')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="פרטי חובות והלוואות"
+                          />
+                          <CreditCard className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          רמת מעורבות ההורים
+                        </label>
+                        <div className="relative">
+                          <select
+                            {...register('parent_involvement')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
+                          >
+                            <option value="promoting">מקדמת</option>
+                            <option value="no_involvement">ללא מעורבות</option>
+                            <option value="inhibiting">מעכבת</option>
+                          </select>
+                          <Users className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          מצב כלכלי
+                        </label>
+                        <div className="relative">
+                          <select
+                            {...register('economic_status')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
+                          >
+                            <option value="low">נמוך</option>
+                            <option value="medium">בינוני</option>
+                            <option value="high">גבוה</option>
+                          </select>
+                          <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </div>
+
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          פירוט מצב כלכלי
+                        </label>
+                        <div className="relative">
+                          <textarea
+                            {...register('economic_details')}
+                            rows={2}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
+                            placeholder="פרט את המצב הכלכלי של המשפחה..."
+                          />
+                          <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </div>
+
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          רקע משפחתי
+                        </label>
+                        <div className="relative">
+                          <textarea
+                            {...register('family_background')}
+                            rows={3}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
+                            placeholder="רקע כללי על המשפחה והמצב..."
+                          />
+                          <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 3: School Information */}
+              {currentStep === 3 && (
+                <div className="space-y-6 animate-fadeIn">
+                  {/* Basic School Info */}
+                  <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-6 border border-indigo-200 shadow-sm">
+                    <div className="flex items-center mb-6">
+                      <div className="bg-indigo-100 p-3 rounded-xl ml-3">
+                        <School className="w-6 h-6 text-indigo-600" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-800">פרטי בית הספר</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          שם בית הספר
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('school_name')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="שם בית הספר המלא"
+                          />
+                          <School className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.school_name && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.school_name.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          כיתה
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('grade')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="ט' א'"
+                          />
+                          <GraduationCap className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.grade && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.grade.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          מחנכ/ת
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('homeroom_teacher')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="שם מלא של המחנכ/ת"
+                          />
+                          <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.homeroom_teacher && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.homeroom_teacher.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          טלפון מחנכ/ת
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('teacher_phone')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="050-1234567"
+                            dir="ltr"
+                          />
+                          <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.teacher_phone && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.teacher_phone.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          יועץ/ת
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('counselor_name')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="שם מלא של היועץ/ת"
+                          />
+                          <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.counselor_name && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.counselor_name.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          טלפון יועץ/ת
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('counselor_phone')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="050-1234567"
+                            dir="ltr"
+                          />
+                          <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        {errors.counselor_phone && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.counselor_phone.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          ססמא למערכת מידע בית ספרית
+                        </label>
+                        <div className="relative">
+                          <input
+                            {...register('school_system_password')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                            placeholder="ססמא למערכת המידע"
+                          />
+                          <Shield className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Welfare Services Section */}
+                  <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-6 border border-orange-100 shadow-sm mt-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center">
+                      <div className="bg-orange-100 p-2 rounded-lg ml-3">
+                        <Users className="w-5 h-5 text-orange-600" />
+                      </div>
+                      מוכרות לרווחה
+                    </h3>
+                    
+                    {/* Known to Welfare */}
+                    <div className="mb-6">
+                      <div className="bg-white rounded-xl p-4 border border-gray-200">
+                        <label className="flex items-center cursor-pointer group">
+                          <input
+                            {...register('known_to_welfare')}
+                            type="checkbox"
+                            className="ml-3 w-5 h-5 text-orange-600 border-2 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
+                          />
+                          <span className="text-gray-700 font-medium group-hover:text-orange-600 transition-colors">
+                            מוכרים ברווחה
+                          </span>
+                        </label>
+                      </div>
+                      
+                      {watch('known_to_welfare') && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 animate-fadeIn">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              שם עו&quot;ס מטפל
+                            </label>
+                            <div className="relative">
+                              <input
+                                {...register('social_worker_name')}
+                                className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                                placeholder="שם מלא של העו&quot;ס"
+                              />
+                              <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              טלפון עו&quot;ס
+                            </label>
+                            <div className="relative">
+                              <input
+                                {...register('social_worker_phone')}
+                                className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                                placeholder="050-1234567"
+                                dir="ltr"
+                              />
+                              <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Youth Promotion */}
+                    <div>
+                      <div className="bg-white rounded-xl p-4 border border-gray-200">
+                        <label className="flex items-center cursor-pointer group">
+                          <input
+                            {...register('youth_promotion')}
+                            type="checkbox"
+                            className="ml-3 w-5 h-5 text-orange-600 border-2 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
+                          />
+                          <span className="text-gray-700 font-medium group-hover:text-orange-600 transition-colors">
+                            מטופל בקידום נוער
+                          </span>
+                        </label>
+                      </div>
+                      
+                      {watch('youth_promotion') && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 animate-fadeIn">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              שם עובד קידום נוער
+                            </label>
+                            <div className="relative">
+                              <input
+                                {...register('youth_worker_name')}
+                                className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                                placeholder="שם מלא של העובד"
+                              />
+                              <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              טלפון עובד קידום נוער
+                            </label>
+                            <div className="relative">
+                              <input
+                                {...register('youth_worker_phone')}
+                                className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                                placeholder="050-1234567"
+                                dir="ltr"
+                              />
+                              <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
             </div>
           )}
 
           {/* Step 4: Intake Assessment */}
           {currentStep === 4 && (
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold mb-4">נתוני קליטה</h2>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="flex items-center">
-                    <input
-                      {...register('behavioral_issues')}
-                      type="checkbox"
-                      className="mr-2"
-                    />
-                    בעיות התנהגות
-                  </label>
-                </div>
+            <div className="space-y-6 animate-fadeIn">
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-100 shadow-sm">
+                <div className="space-y-6">
+                  {/* Checkboxes Section */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-white rounded-xl p-4 border border-gray-200">
+                      <label className="flex items-center cursor-pointer group">
+                        <input
+                          {...register('behavioral_issues')}
+                          type="checkbox"
+                          className="ml-3 w-5 h-5 text-purple-600 border-2 border-gray-300 rounded focus:ring-purple-500 focus:ring-2"
+                        />
+                        <span className="text-gray-700 font-medium group-hover:text-purple-600 transition-colors">
+                          בעיות התנהגות
+                        </span>
+                      </label>
+                    </div>
 
-                <div>
-                  <label className="flex items-center">
-                    <input
-                      {...register('has_potential')}
-                      type="checkbox"
-                      className="mr-2"
-                    />
-                    פוטנציאל
-                  </label>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    רמת מוטיבציה
-                  </label>
-                  <select
-                    {...register('motivation_level')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="low">נמוך</option>
-                    <option value="medium">בינוני</option>
-                    <option value="high">גבוה</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    סוג מוטיבציה
-                  </label>
-                  <select
-                    {...register('motivation_type')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="internal">פנימית</option>
-                    <option value="external">חיצונית</option>
-                  </select>
-                </div>
-
-                {watch('motivation_type') === 'external' && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      גורמים חיצוניים
-                    </label>
-                    <textarea
-                      {...register('external_motivators')}
-                      rows={2}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                    <div className="bg-white rounded-xl p-4 border border-gray-200">
+                      <label className="flex items-center cursor-pointer group">
+                        <input
+                          {...register('has_potential')}
+                          type="checkbox"
+                          className="ml-3 w-5 h-5 text-purple-600 border-2 border-gray-300 rounded focus:ring-purple-500 focus:ring-2"
+                        />
+                        <span className="text-gray-700 font-medium group-hover:text-purple-600 transition-colors">
+                          פוטנציאל
+                        </span>
+                      </label>
+                    </div>
                   </div>
-                )}
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    מצב חברתי
-                  </label>
-                  <textarea
-                    {...register('social_status')}
-                    rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
+                  {/* Motivation Section */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        רמת מוטיבציה
+                      </label>
+                      <div className="relative">
+                        <select
+                          {...register('motivation_level')}
+                          className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                        >
+                          <option value="low">נמוך</option>
+                          <option value="medium">בינוני</option>
+                          <option value="high">גבוה</option>
+                        </select>
+                        <Zap className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                      </div>
+                    </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    פעילויות בשעות אחה&quot;צ (חוגים, תנועות נוער, אימוני כושר, עבודה)
-                  </label>
-                  <textarea
-                    {...register('afternoon_activities')}
-                    rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        סוג מוטיבציה
+                      </label>
+                      <div className="relative">
+                        <select
+                          {...register('motivation_type')}
+                          className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                        >
+                          <option value="internal">פנימית</option>
+                          <option value="external">חיצונית</option>
+                        </select>
+                        <Heart className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {watch('motivation_type') === 'external' && (
+                    <div className="animate-fadeIn">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        גורמים חיצוניים
+                      </label>
+                      <textarea
+                        {...register('external_motivators')}
+                        rows={3}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                        placeholder="פרט את הגורמים החיצוניים..."
+                      />
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      מצב חברתי
+                    </label>
+                    <div className="relative">
+                      <textarea
+                        {...register('social_status')}
+                        rows={3}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                        placeholder="תאר את המצב החברתי..."
+                      />
+                      <Users className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      פעילויות בשעות אחה&quot;צ
+                      <span className="text-gray-500 text-xs mr-2">(חוגים, תנועות נוער, אימוני כושר, עבודה)</span>
+                    </label>
+                    <div className="relative">
+                      <textarea
+                        {...register('afternoon_activities')}
+                        rows={3}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                        placeholder="פרט את הפעילויות..."
+                      />
+                      <Activity className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -992,203 +1429,298 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
 
           {/* Step 5: Learning Assessment */}
           {currentStep === 5 && (
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold mb-4">אבחונים והמלצות</h2>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="flex items-center">
-                    <input
-                      {...register('learning_disability')}
-                      type="checkbox"
-                      className="mr-2"
-                    />
-                    לקוי למידה
-                  </label>
-                  
-                  {watch('learning_disability') && (
-                    <div className="mt-2">
-                      <label className="flex items-center">
-                        <input
-                          {...register('requires_remedial_teaching')}
-                          type="checkbox"
-                          className="mr-2"
-                        />
-                        מחייב הוראה מתקנת
-                      </label>
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <label className="flex items-center">
-                    <input
-                      {...register('adhd')}
-                      type="checkbox"
-                      className="mr-2"
-                    />
-                    הפרעת קשב וריכוז
-                  </label>
-                  
-                  {watch('adhd') && (
-                    <div className="mt-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        האם הפרעת הקשב מטופלת? כיצד?
-                      </label>
-                      <textarea
-                        {...register('adhd_treatment')}
-                        rows={2}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <label className="flex items-center">
-                    <input
-                      {...register('assessment_done')}
-                      type="checkbox"
-                      className="mr-2"
-                    />
-                    נעשה אבחון
-                  </label>
-                </div>
-
-                <div>
-                  <label className="flex items-center">
-                    <input
-                      {...register('assessment_needed')}
-                      type="checkbox"
-                      className="mr-2"
-                    />
-                    יש צורך באבחון
-                  </label>
-                </div>
-
-                {(watch('assessment_done') || watch('assessment_needed')) && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      פרטים נוספים
-                    </label>
-                    <textarea
-                      {...register('assessment_details')}
-                      rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+            <div className="space-y-6 animate-fadeIn">
+              {/* Learning Disabilities Section */}
+              <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-2xl p-6 border border-green-200 shadow-sm">
+                <div className="flex items-center mb-6">
+                  <div className="bg-green-100 p-3 rounded-xl ml-3">
+                    <BookOpen className="w-6 h-6 text-green-600" />
                   </div>
-                )}
+                  <h3 className="text-lg font-semibold text-gray-800">לקויות למידה</h3>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="bg-white rounded-xl p-4 border border-gray-200">
+                    <label className="flex items-center cursor-pointer group">
+                      <input
+                        {...register('learning_disability')}
+                        type="checkbox"
+                        className="ml-3 w-5 h-5 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+                      />
+                      <span className="text-gray-700 font-medium group-hover:text-green-600 transition-colors">
+                        לקוי למידה
+                      </span>
+                    </label>
+                    
+                    {watch('learning_disability') && (
+                      <div className="mt-4 animate-fadeIn">
+                        <div className="bg-green-50 rounded-xl p-4 border border-green-100">
+                          <label className="flex items-center cursor-pointer group">
+                            <input
+                              {...register('requires_remedial_teaching')}
+                              type="checkbox"
+                              className="ml-3 w-5 h-5 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+                            />
+                            <span className="text-gray-700 font-medium group-hover:text-green-600 transition-colors">
+                              מחייב הוראה מתקנת
+                            </span>
+                          </label>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="bg-white rounded-xl p-4 border border-gray-200">
+                    <label className="flex items-center cursor-pointer group">
+                      <input
+                        {...register('adhd')}
+                        type="checkbox"
+                        className="ml-3 w-5 h-5 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+                      />
+                      <span className="text-gray-700 font-medium group-hover:text-green-600 transition-colors">
+                        הפרעת קשב וריכוז (ADHD)
+                      </span>
+                    </label>
+                    
+                    {watch('adhd') && (
+                      <div className="mt-4 animate-fadeIn">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          האם הפרעת הקשב מטופלת? כיצד?
+                        </label>
+                        <div className="relative">
+                          <textarea
+                            {...register('adhd_treatment')}
+                            rows={3}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
+                            placeholder="תאר את הטיפול הנוכחי..."
+                          />
+                          <Brain className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Assessment Section */}
+              <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-2xl p-6 border border-teal-200 shadow-sm">
+                <div className="flex items-center mb-6">
+                  <div className="bg-teal-100 p-3 rounded-xl ml-3">
+                    <FileText className="w-6 h-6 text-teal-600" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">אבחונים</h3>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-white rounded-xl p-4 border border-gray-200">
+                      <label className="flex items-center cursor-pointer group">
+                        <input
+                          {...register('assessment_done')}
+                          type="checkbox"
+                          className="ml-3 w-5 h-5 text-teal-600 border-2 border-gray-300 rounded focus:ring-teal-500 focus:ring-2"
+                        />
+                        <span className="text-gray-700 font-medium group-hover:text-teal-600 transition-colors">
+                          נעשה אבחון
+                        </span>
+                      </label>
+                    </div>
+
+                    <div className="bg-white rounded-xl p-4 border border-gray-200">
+                      <label className="flex items-center cursor-pointer group">
+                        <input
+                          {...register('assessment_needed')}
+                          type="checkbox"
+                          className="ml-3 w-5 h-5 text-teal-600 border-2 border-gray-300 rounded focus:ring-teal-500 focus:ring-2"
+                        />
+                        <span className="text-gray-700 font-medium group-hover:text-teal-600 transition-colors">
+                          יש צורך באבחון
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {(watch('assessment_done') || watch('assessment_needed')) && (
+                    <div className="animate-fadeIn">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        פרטים נוספים על האבחון
+                      </label>
+                      <div className="relative">
+                        <textarea
+                          {...register('assessment_details')}
+                          rows={4}
+                          className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
+                          placeholder="פרט על האבחון שנעשה או נדרש..."
+                        />
+                        <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
 
           {/* Step 6: Risk Assessment */}
           {currentStep === 6 && (
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold mb-4">הערכת סיכון</h2>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="flex items-center">
-                    <input
-                      {...register('criminal_record')}
-                      type="checkbox"
-                      className="mr-2"
-                    />
-                    בעל/ת עבר פלילי
-                  </label>
+            <div className="space-y-6 animate-fadeIn">
+              {/* Risk Factors Section */}
+              <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl p-6 border border-red-200 shadow-sm">
+                <div className="flex items-center mb-6">
+                  <div className="bg-red-100 p-3 rounded-xl ml-3">
+                    <AlertTriangle className="w-6 h-6 text-red-600" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">גורמי סיכון עיקריים</h3>
                 </div>
 
-                <div>
-                  <label className="flex items-center">
-                    <input
-                      {...register('drug_use')}
-                      type="checkbox"
-                      className="mr-2"
-                    />
-                    שימוש בסמים
-                  </label>
-                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-red-200 transition-all duration-200">
+                    <label className="flex items-center cursor-pointer group">
+                      <input
+                        {...register('criminal_record')}
+                        type="checkbox"
+                        className="ml-3 w-5 h-5 text-red-600 border-2 border-gray-300 rounded focus:ring-red-500 focus:ring-2"
+                      />
+                      <span className="text-gray-700 font-medium group-hover:text-red-600 transition-colors">
+                        בעל/ת עבר פלילי
+                      </span>
+                    </label>
+                  </div>
 
-                <div>
-                  <label className="flex items-center">
-                    <input
-                      {...register('smoking')}
-                      type="checkbox"
-                      className="mr-2"
-                    />
-                    מעשן/ת
-                  </label>
+                  <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-red-200 transition-all duration-200">
+                    <label className="flex items-center cursor-pointer group">
+                      <input
+                        {...register('drug_use')}
+                        type="checkbox"
+                        className="ml-3 w-5 h-5 text-red-600 border-2 border-gray-300 rounded focus:ring-red-500 focus:ring-2"
+                      />
+                      <span className="text-gray-700 font-medium group-hover:text-red-600 transition-colors">
+                        שימוש בסמים
+                      </span>
+                    </label>
+                  </div>
+
+                  <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-red-200 transition-all duration-200">
+                    <label className="flex items-center cursor-pointer group">
+                      <input
+                        {...register('smoking')}
+                        type="checkbox"
+                        className="ml-3 w-5 h-5 text-red-600 border-2 border-gray-300 rounded focus:ring-red-500 focus:ring-2"
+                      />
+                      <span className="text-gray-700 font-medium group-hover:text-red-600 transition-colors">
+                        מעשן/ת
+                      </span>
+                    </label>
+                  </div>
                 </div>
 
                 {watch('criminal_record') && (
-                  <>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        קצין ביקור סדיר
-                      </label>
-                      <input
-                        {...register('probation_officer')}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
+                  <div className="mt-6 animate-fadeIn">
+                    <div className="bg-red-50 rounded-xl p-4 border border-red-100">
+                      <h4 className="text-sm font-semibold text-red-800 mb-4 flex items-center">
+                        <Shield className="w-4 h-4 ml-2" />
+                        פרטי גורמים מטפלים
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            קצין ביקור סדיר
+                          </label>
+                          <div className="relative">
+                            <input
+                              {...register('probation_officer')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="שם הקצין"
+                            />
+                            <Shield className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            ק. שירות מבחן לנוער
+                          </label>
+                          <div className="relative">
+                            <input
+                              {...register('youth_probation_officer')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="שם הקצין"
+                            />
+                            <Shield className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                          </div>
+                        </div>
+                      </div>
                     </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        ק. שירות מבחן לנוער
-                      </label>
-                      <input
-                        {...register('youth_probation_officer')}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                  </>
+                  </div>
                 )}
+              </div>
 
-                <div>
-                  <label className="flex items-center">
-                    <input
-                      {...register('psychological_treatment')}
-                      type="checkbox"
-                      className="mr-2"
-                    />
-                    טיפול פסיכולוגי
-                  </label>
+              {/* Medical Treatment Section */}
+              <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-6 border border-orange-200 shadow-sm">
+                <div className="flex items-center mb-6">
+                  <div className="bg-orange-100 p-3 rounded-xl ml-3">
+                    <Heart className="w-6 h-6 text-orange-600" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">טיפולים רפואיים ונפשיים</h3>
                 </div>
 
-                <div>
-                  <label className="flex items-center">
-                    <input
-                      {...register('psychiatric_treatment')}
-                      type="checkbox"
-                      className="mr-2"
-                    />
-                    טיפול פסיכיאטרי
-                  </label>
-                </div>
-
-                <div>
-                  <label className="flex items-center">
-                    <input
-                      {...register('takes_medication')}
-                      type="checkbox"
-                      className="mr-2"
-                    />
-                    נוטל/ת תרופות
-                  </label>
-                  
-                  {watch('takes_medication') && (
-                    <div className="mt-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        תיאור התרופות
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-orange-200 transition-all duration-200">
+                      <label className="flex items-center cursor-pointer group">
+                        <input
+                          {...register('psychological_treatment')}
+                          type="checkbox"
+                          className="ml-3 w-5 h-5 text-orange-600 border-2 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
+                        />
+                        <span className="text-gray-700 font-medium group-hover:text-orange-600 transition-colors">
+                          טיפול פסיכולוגי
+                        </span>
                       </label>
-                      <textarea
-                        {...register('medication_description')}
-                        rows={2}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
                     </div>
-                  )}
+
+                    <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-orange-200 transition-all duration-200">
+                      <label className="flex items-center cursor-pointer group">
+                        <input
+                          {...register('psychiatric_treatment')}
+                          type="checkbox"
+                          className="ml-3 w-5 h-5 text-orange-600 border-2 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
+                        />
+                        <span className="text-gray-700 font-medium group-hover:text-orange-600 transition-colors">
+                          טיפול פסיכיאטרי
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-orange-200 transition-all duration-200">
+                    <label className="flex items-center cursor-pointer group">
+                      <input
+                        {...register('takes_medication')}
+                        type="checkbox"
+                        className="ml-3 w-5 h-5 text-orange-600 border-2 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
+                      />
+                      <span className="text-gray-700 font-medium group-hover:text-orange-600 transition-colors">
+                        נוטל/ת תרופות
+                      </span>
+                    </label>
+                    
+                    {watch('takes_medication') && (
+                      <div className="mt-4 animate-fadeIn">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          תיאור התרופות והמינונים
+                        </label>
+                        <div className="relative">
+                          <textarea
+                            {...register('medication_description')}
+                            rows={3}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
+                            placeholder="פרט את סוגי התרופות, מינונים ומטרת הטיפול..."
+                          />
+                          <Heart className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -1196,95 +1728,160 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
 
           {/* Step 7: Final Assessment */}
           {currentStep === 7 && (
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold mb-4">חוות דעת אישית</h2>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="flex items-center">
-                    <input
-                      {...register('military_service_potential')}
-                      type="checkbox"
-                      className="mr-2"
-                    />
-                    בעל/ת סיכויים להתגייס לצה&quot;ל
-                  </label>
+            <div className="space-y-6 animate-fadeIn">
+              {/* Assessment Results Section */}
+              <div className="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-2xl p-6 border border-amber-200 shadow-sm">
+                <div className="flex items-center mb-6">
+                  <div className="bg-amber-100 p-3 rounded-xl ml-3">
+                    <CheckCircle className="w-6 h-6 text-amber-600" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">הערכה כללית</h3>
                 </div>
 
-                <div>
-                  <label className="flex items-center">
-                    <input
-                      {...register('can_handle_program')}
-                      type="checkbox"
-                      className="mr-2"
-                    />
-                    יכול/ה לעמוד בעומס המסגרת המוצעת
-                  </label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-amber-200 transition-all duration-200">
+                    <label className="flex items-center cursor-pointer group">
+                      <input
+                        {...register('military_service_potential')}
+                        type="checkbox"
+                        className="ml-3 w-5 h-5 text-amber-600 border-2 border-gray-300 rounded focus:ring-amber-500 focus:ring-2"
+                      />
+                      <span className="text-gray-700 font-medium group-hover:text-amber-600 transition-colors">
+                        בעל/ת סיכויים להתגייס לצה&quot;ל
+                      </span>
+                    </label>
+                  </div>
+
+                  <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-amber-200 transition-all duration-200">
+                    <label className="flex items-center cursor-pointer group">
+                      <input
+                        {...register('can_handle_program')}
+                        type="checkbox"
+                        className="ml-3 w-5 h-5 text-amber-600 border-2 border-gray-300 rounded focus:ring-amber-500 focus:ring-2"
+                      />
+                      <span className="text-gray-700 font-medium group-hover:text-amber-600 transition-colors">
+                        יכול/ה לעמוד בעומס המסגרת המוצעת
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Risk Level Section */}
+              <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 border border-yellow-200 shadow-sm">
+                <div className="flex items-center mb-6">
+                  <div className="bg-yellow-100 p-3 rounded-xl ml-3">
+                    <AlertTriangle className="w-6 h-6 text-yellow-600" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">הערכת סיכון</h3>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    רמת הסיכון של הנער/ה (1-10)
-                  </label>
-                  <input
-                    {...register('risk_level', { valueAsNumber: true })}
-                    type="number"
-                    min="1"
-                    max="10"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  {errors.risk_level && (
-                    <p className="mt-1 text-sm text-red-600">{errors.risk_level.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    מה הגורמים לסיכון?
-                  </label>
-                  <textarea
-                    {...register('risk_factors')}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    דעה אישית
-                  </label>
-                  <textarea
-                    {...register('personal_opinion')}
-                    rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="border-t pt-4">
-                  <h3 className="font-semibold text-gray-700 mb-2">תפקוד בבית הספר</h3>
-                  
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      רמת הסיכון של הנער/ה (1-10)
+                    </label>
+                    <div className="relative">
+                      <input
+                        {...register('risk_level', { valueAsNumber: true })}
+                        type="number"
+                        min="1"
+                        max="10"
+                        className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                        placeholder="1-10"
+                      />
+                      <Zap className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                    </div>
+                    {errors.risk_level && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        {errors.risk_level.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      מה הגורמים לסיכון?
+                    </label>
+                    <div className="relative">
+                      <textarea
+                        {...register('risk_factors')}
+                        rows={4}
+                        className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
+                        placeholder="פרט את הגורמים העיקריים לסיכון..."
+                      />
+                      <AlertTriangle className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Personal Opinion Section */}
+              <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-6 border border-orange-200 shadow-sm">
+                <div className="flex items-center mb-6">
+                  <div className="bg-orange-100 p-3 rounded-xl ml-3">
+                    <FileText className="w-6 h-6 text-orange-600" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">דעה מקצועית</h3>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    דעה אישית והמלצות
+                  </label>
+                  <div className="relative">
+                    <textarea
+                      {...register('personal_opinion')}
+                      rows={5}
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
+                      placeholder="שתף את דעתך המקצועית והמלצותיך לגבי קבלת המועמד/ת..."
+                    />
+                    <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Academic Performance Section */}
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200 shadow-sm">
+                <div className="flex items-center mb-6">
+                  <div className="bg-blue-100 p-3 rounded-xl ml-3">
+                    <GraduationCap className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">תפקוד בבית הספר</h3>
+                </div>
+
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       מספר ציונים שליליים
                     </label>
-                    <input
-                      {...register('failing_grades_count', { valueAsNumber: true })}
-                      type="number"
-                      min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                    <div className="relative">
+                      <input
+                        {...register('failing_grades_count', { valueAsNumber: true })}
+                        type="number"
+                        min="0"
+                        className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                        placeholder="0"
+                      />
+                      <BookOpen className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                    </div>
                   </div>
 
                   {watch('failing_grades_count') > 0 && (
-                    <div className="mt-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <div className="animate-fadeIn">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
                         תיאור המקצועות בהם יש שליליים
                       </label>
-                      <textarea
-                        {...register('failing_subjects')}
-                        rows={2}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
+                      <div className="relative">
+                        <textarea
+                          {...register('failing_subjects')}
+                          rows={3}
+                          className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
+                          placeholder="פרט את המקצועות והסיבות לציונים השליליים..."
+                        />
+                        <BookOpen className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -1292,51 +1889,67 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
             </div>
           )}
 
-          {submitResult && !submitResult.success && (
-            <div className="p-4 rounded-md bg-red-50 text-red-800">
-              {submitResult.message}
-            </div>
-          )}
+              {/* Error Display */}
+              {submitResult && !submitResult.success && (
+                <div className="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-2xl p-6 shadow-sm animate-fadeIn">
+                  <div className="flex items-center">
+                    <div className="bg-red-100 p-2 rounded-lg ml-3">
+                      <AlertTriangle className="w-5 h-5 text-red-600" />
+                    </div>
+                    <div className="text-red-800 font-medium">
+                      {submitResult.message}
+                    </div>
+                  </div>
+                </div>
+              )}
 
-          <div className="flex justify-between pt-6">
-            {currentStep > 1 && (
-              <button
-                type="button"
-                onClick={prevStep}
-                className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 flex items-center"
-              >
-                <ChevronRight className="ml-2 h-4 w-4" />
-                הקודם
-              </button>
-            )}
-
-            {currentStep < totalSteps ? (
-              <button
-                type="button"
-                onClick={nextStep}
-                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center mr-auto"
-              >
-                הבא
-                <ChevronLeft className="mr-2 h-4 w-4" />
-              </button>
-            ) : (
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center mr-auto"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="animate-spin ml-2 h-5 w-5" />
-                    שולח...
-                  </>
+              {/* Navigation Buttons */}
+              <div className="flex justify-between items-center pt-8 border-t border-gray-200">
+                {currentStep > 1 ? (
+                  <button
+                    type="button"
+                    onClick={prevStep}
+                    className="group px-8 py-4 bg-white border-2 border-gray-200 rounded-2xl text-gray-700 hover:border-gray-300 hover:bg-gray-50 flex items-center transition-all duration-200 hover:shadow-sm font-medium"
+                  >
+                    <ChevronRight className="ml-3 h-5 w-5 group-hover:-translate-x-1 transition-transform duration-200" />
+                    הקודם
+                  </button>
                 ) : (
-                  'שליחת טופס'
+                  <div></div>
                 )}
-              </button>
-            )}
+
+                {currentStep < totalSteps ? (
+                  <button
+                    type="button"
+                    onClick={nextStep}
+                    className="group px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl hover:from-blue-600 hover:to-purple-700 flex items-center transition-all duration-200 hover:shadow-lg hover:scale-105 transform font-medium"
+                  >
+                    הבא
+                    <ChevronLeft className="mr-3 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="group px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl hover:from-green-600 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center transition-all duration-200 hover:shadow-lg hover:scale-105 transform font-medium text-lg"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="animate-spin ml-3 h-6 w-6" />
+                        שולח טופס...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="ml-3 h-6 w-6 group-hover:rotate-12 transition-transform duration-200" />
+                        שליחת טופס
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   )

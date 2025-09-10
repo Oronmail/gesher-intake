@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import ParentConsentForm from '@/components/ParentConsentForm'
 import { supabase } from '@/lib/supabase'
 import { CheckCircle } from 'lucide-react'
@@ -15,8 +15,9 @@ interface ConsentInfo {
 export default function ConsentPage({ 
   params 
 }: { 
-  params: { referralNumber: string } 
+  params: Promise<{ referralNumber: string }>
 }) {
+  const resolvedParams = use(params)
   const [loading, setLoading] = useState(true)
   const [alreadySigned, setAlreadySigned] = useState(false)
   const [consentInfo, setConsentInfo] = useState<ConsentInfo | null>(null)
@@ -31,7 +32,7 @@ export default function ConsentPage({
       const { data, error } = await supabase
         .from('referrals')
         .select('status, consent_timestamp, parent_names')
-        .eq('referral_number', params.referralNumber)
+        .eq('referral_number', resolvedParams.referralNumber)
         .single()
 
       if (error) {
@@ -78,7 +79,7 @@ export default function ConsentPage({
                 </h1>
                 <div className="bg-green-50 border border-green-200 rounded-lg p-6 max-w-lg w-full">
                   <p className="text-green-800 text-lg mb-4">
-                    טופס ההסכמה עבור הפניה מספר {params.referralNumber} נחתם בהצלחה
+                    טופס ההסכמה עבור הפניה מספר {resolvedParams.referralNumber} נחתם בהצלחה
                   </p>
                   {consentInfo.parent_names && (
                     <p className="text-gray-600 mb-2">
@@ -105,10 +106,8 @@ export default function ConsentPage({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="container mx-auto py-12">
-        <ParentConsentForm referralNumber={params.referralNumber} />
-      </div>
-    </div>
+    <>
+      <ParentConsentForm referralNumber={resolvedParams.referralNumber} />
+    </>
   )
 }
