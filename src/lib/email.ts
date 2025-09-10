@@ -40,6 +40,9 @@ export async function sendConsentEmail({
       subject: `טופס ויתור סודיות - גשר אל הנוער`,
       html: `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <img src="https://gesher-intake.vercel.app/logo.png" alt="גשר אל הנוער" style="height: 80px; width: auto;">
+          </div>
           <h2 style="color: #2563eb;">מועמדות במסגרת עמותת ״גשר אל הנוער״</h2>
           
           <p>שלום,</p>
@@ -103,6 +106,9 @@ export async function sendCounselorNotification({
       subject: `הסכמת הורים התקבלה - ${studentName}`,
       html: `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <img src="https://gesher-intake.vercel.app/logo.png" alt="גשר אל הנוער" style="height: 80px; width: auto;">
+          </div>
           <h2 style="color: #10b981;">✅ הסכמת הורים התקבלה בהצלחה</h2>
           
           <p>שלום ${counselorName},</p>
