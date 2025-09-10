@@ -127,6 +127,13 @@ export default function CounselorInitialForm() {
           </div>
           
           <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-8">
+            {/* Process Explanation */}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200 shadow-sm">
+              <p className="text-gray-700 leading-relaxed">
+                לאחר הגשת הטופס, יישלח להורים (באמצעי הקשר שהזנתם) טופס ויתור סודיות דיגיטלי לחתימה. כשההורים יאשרו, תקבל/י התראה במייל/סמס עם קישור למילוי נתוני התלמיד/ה והשלמת הגשת הבקשה
+              </p>
+            </div>
+
             {/* Counselor Section */}
             <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-6 border border-blue-100 shadow-sm">
               <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
@@ -222,7 +229,6 @@ export default function CounselorInitialForm() {
                 <div>
                   <label htmlFor="parent_email" className="block text-sm font-medium text-gray-700 mb-2">
                     אימייל הורה
-                    <span className="text-gray-500 text-xs mr-2">(אופציונלי)</span>
                   </label>
                   <div className="relative">
                     <input
@@ -245,7 +251,6 @@ export default function CounselorInitialForm() {
                 <div>
                   <label htmlFor="parent_phone" className="block text-sm font-medium text-gray-700 mb-2">
                     טלפון הורה
-                    <span className="text-gray-500 text-xs mr-2">(אופציונלי)</span>
                   </label>
                   <div className="relative">
                     <input
@@ -288,11 +293,11 @@ export default function CounselorInitialForm() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="animate-spin h-5 w-5 ml-2" />
-                  שולח את ההפניה...
+                  שולח...
                 </>
               ) : (
                 <>
-                  יצירת הפניה
+                  הגש
                   <ArrowRight className="h-5 w-5 mr-3 group-hover:translate-x-[-4px] transition-transform" />
                 </>
               )}
