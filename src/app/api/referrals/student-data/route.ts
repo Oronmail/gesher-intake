@@ -162,17 +162,33 @@ export async function POST(request: NextRequest) {
 
     console.log('Registration Request updated in Salesforce')
 
-    // Update referral status in Supabase to completed
+    // Privacy-focused cleanup: Remove all personal data from Supabase after successful Salesforce submission
+    // Keep only minimal record (referral_number, status, timestamps) to prevent link reuse
     const { error: updateError } = await supabase
       .from('referrals')
       .update({ 
         status: 'completed',
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
+        // Clear all personal/sensitive data for privacy
+        school_id: null,
+        school_name: null,
+        counselor_name: null,
+        counselor_email: null,
+        parent_email: null,
+        parent_phone: null,
+        signature_image: null,
+        signature_image2: null,
+        parent_names: null,
+        // Keep only the SF reference and status
+        // referral_number, created_at, and salesforce_contact_id are preserved
       })
       .eq('referral_number', referral_number)
 
     if (updateError) {
       console.error('Error updating referral status:', updateError)
+      // Continue anyway - data is in Salesforce, privacy cleanup is secondary
+    } else {
+      console.log(`Privacy cleanup completed for referral ${referral_number} - personal data removed from Supabase`)
     }
 
     return NextResponse.json({
