@@ -24,6 +24,8 @@ This system digitizes the student referral process, replacing paper forms with a
 - **JWT Authentication**: Fully automated server-to-server authentication
 - **Page Layouts**: Custom Salesforce layouts for data visualization
 - **SMS Support**: Automatic Israeli phone number formatting and Hebrew SMS
+- **Modern UI/UX**: Beautiful gradient designs with smooth transitions
+- **Progress Indicators**: Clear visual progress through multi-step forms
 
 ## 🔄 Workflow
 
