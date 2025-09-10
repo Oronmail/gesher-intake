@@ -72,11 +72,11 @@ export async function sendConsentEmail({
 
   try {
     const result = await transporter.sendMail({
-      from: process.env.GMAIL_USER, // Simple format, display name comes from Gmail account
+      from: `גשר אל הנוער <${process.env.GMAIL_USER}>`, // Include Hebrew name to match Gmail settings
       to: parentEmail,
       subject: `טופס ויתור סודיות - גשר אל הנוער`,
       text: textContent, // Plain text version
-      replyTo: process.env.GMAIL_USER,
+      replyTo: `גשר אל הנוער <${process.env.GMAIL_USER}>`,
       messageId: messageId,
       html: `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -161,11 +161,11 @@ export async function sendCounselorNotification({
 
   try {
     const result = await transporter.sendMail({
-      from: process.env.GMAIL_USER, // Simple format, display name comes from Gmail account
+      from: `גשר אל הנוער <${process.env.GMAIL_USER}>`, // Include Hebrew name to match Gmail settings
       to: counselorEmail,
       subject: `הסכמת הורים התקבלה - ${studentName}`,
       text: textContent, // Plain text version
-      replyTo: process.env.GMAIL_USER,
+      replyTo: `גשר אל הנוער <${process.env.GMAIL_USER}>`,
       messageId: messageId,
       html: `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
