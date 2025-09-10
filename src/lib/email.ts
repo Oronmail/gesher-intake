@@ -28,8 +28,10 @@ export async function sendConsentEmail({
   referralNumber, // eslint-disable-line @typescript-eslint/no-unused-vars
   consentUrl,
 }: SendConsentEmailParams) {
+  console.log(`[EMAIL] Attempting to send consent email to: ${parentEmail}`);
+  
   if (!process.env.RESEND_API_KEY) {
-    console.log('Resend API key not configured, skipping email');
+    console.log('[EMAIL] Resend API key not configured, skipping email');
     return { success: false, error: 'Email not configured' };
   }
 
@@ -74,14 +76,17 @@ export async function sendConsentEmail({
     });
 
     if (error) {
-      console.error('Error sending consent email:', error);
+      console.error(`[EMAIL] Error sending consent email to ${parentEmail}:`, error);
+      console.error('[EMAIL] Full error details:', JSON.stringify(error, null, 2));
       return { success: false, error: error.message };
     }
 
-    console.log('Consent email sent successfully:', data);
+    console.log(`[EMAIL] ✅ Consent email sent successfully to ${parentEmail}`);
+    console.log('[EMAIL] Resend response:', data);
     return { success: true, data };
   } catch (error) {
-    console.error('Failed to send consent email:', error);
+    console.error(`[EMAIL] Failed to send consent email to ${parentEmail}:`, error);
+    console.error('[EMAIL] Exception details:', error instanceof Error ? error.stack : error);
     return { success: false, error: 'Failed to send email' };
   }
 }
@@ -94,8 +99,10 @@ export async function sendCounselorNotification({
   studentFormUrl,
   referralNumber, // eslint-disable-line @typescript-eslint/no-unused-vars
 }: SendCounselorNotificationParams) {
+  console.log(`[EMAIL] Attempting to send counselor notification to: ${counselorEmail}`);
+  
   if (!process.env.RESEND_API_KEY) {
-    console.log('Resend API key not configured, skipping email');
+    console.log('[EMAIL] Resend API key not configured, skipping email');
     return { success: false, error: 'Email not configured' };
   }
 
@@ -138,14 +145,17 @@ export async function sendCounselorNotification({
     });
 
     if (error) {
-      console.error('Error sending counselor notification:', error);
+      console.error(`[EMAIL] Error sending counselor notification to ${counselorEmail}:`, error);
+      console.error('[EMAIL] Full error details:', JSON.stringify(error, null, 2));
       return { success: false, error: error.message };
     }
 
-    console.log('Counselor notification sent successfully:', data);
+    console.log(`[EMAIL] ✅ Counselor notification sent successfully to ${counselorEmail}`);
+    console.log('[EMAIL] Resend response:', data);
     return { success: true, data };
   } catch (error) {
-    console.error('Failed to send counselor notification:', error);
+    console.error(`[EMAIL] Failed to send counselor notification to ${counselorEmail}:`, error);
+    console.error('[EMAIL] Exception details:', error instanceof Error ? error.stack : error);
     return { success: false, error: 'Failed to send email' };
   }
 }

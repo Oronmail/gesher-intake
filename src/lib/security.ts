@@ -47,11 +47,23 @@ export function sanitizeObject<T extends Record<string, any>>(obj: T): T {
 }
 
 /**
- * Validate email format
+ * Validate email format - using loose validation to allow more email formats
+ * We rely on Zod's built-in email validation and just do a basic sanity check
  */
 export function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
+  if (!email || typeof email !== 'string') return false
+  
+  // Very loose validation - just check for @ and at least one character before and after
+  // This allows edge cases and international domains
+  const hasAtSign = email.includes('@')
+  const parts = email.split('@')
+  
+  // Must have exactly one @ and both parts must have content
+  if (parts.length !== 2) return false
+  if (parts[0].length === 0 || parts[1].length === 0) return false
+  
+  // Allow any valid email that has @ and content on both sides
+  return hasAtSign
 }
 
 /**
@@ -172,12 +184,9 @@ export function redactSensitiveData(obj: any): any {
 export const secureFormSchemas = {
   counselorInitial: z.object({
     counselor_name: z.string().min(2).max(100).transform(sanitizeInput),
-    counselor_email: z.string().email().refine(isValidEmail, 'Invalid email format'),
+    counselor_email: z.string().email(),  // Just use Zod's built-in email validation
     school_name: z.string().min(2).max(200).transform(sanitizeInput),
-    parent_email: z.string().email().optional().refine(
-      val => !val || isValidEmail(val), 
-      'Invalid email format'
-    ),
+    parent_email: z.string().email().optional(),  // Just use Zod's built-in email validation
     parent_phone: z.string().optional().refine(
       val => !val || isValidPhone(val), 
       'Invalid phone format'
