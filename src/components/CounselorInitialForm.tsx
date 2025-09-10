@@ -122,7 +122,7 @@ export default function CounselorInitialForm() {
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">
             <div className="text-center">
-              <h1 className="text-4xl font-bold">טופס הגשת מועמדות</h1>
+              <h1 className="text-4xl font-bold">הגשת מועמדות</h1>
             </div>
           </div>
           
