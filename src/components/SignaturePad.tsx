@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import SignatureCanvas from 'react-signature-canvas'
 
 interface SignaturePadProps {
@@ -10,15 +10,20 @@ interface SignaturePadProps {
 
 export default function SignaturePad({ onSave, disabled = false }: SignaturePadProps) {
   const sigCanvas = useRef<SignatureCanvas>(null)
+  const [isSaved, setIsSaved] = useState(false)
 
   const clear = () => {
     sigCanvas.current?.clear()
+    setIsSaved(false)
   }
 
   const save = () => {
     if (sigCanvas.current && !sigCanvas.current.isEmpty()) {
       const dataUrl = sigCanvas.current.toDataURL()
       onSave(dataUrl)
+      setIsSaved(true)
+      // Auto-hide the message after 3 seconds
+      setTimeout(() => setIsSaved(false), 3000)
     }
   }
 
@@ -38,7 +43,7 @@ export default function SignaturePad({ onSave, disabled = false }: SignaturePadP
           />
         </div>
       </div>
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2">
         <button
           type="button"
           onClick={clear}
@@ -55,6 +60,11 @@ export default function SignaturePad({ onSave, disabled = false }: SignaturePadP
         >
           שמור חתימה
         </button>
+        {isSaved && (
+          <span className="text-green-600 text-sm font-medium animate-fadeIn">
+            ✓ החתימה נשמרה בהצלחה
+          </span>
+        )}
       </div>
     </div>
   )
