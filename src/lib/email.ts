@@ -50,8 +50,8 @@ export async function sendConsentEmail({
     return { success: false, error: 'Email service not configured' };
   }
 
-  // Generate unique message ID
-  const messageId = `${Date.now()}.${Math.random().toString(36).substr(2, 9)}@gesher-intake.vercel.app`;
+  // Generate unique message ID using gmail domain to improve trust
+  const messageId = `${Date.now()}.${Math.random().toString(36).substr(2, 9)}@gmail.com`;
   
   // Plain text version for better deliverability
   const textContent = `
@@ -78,10 +78,17 @@ export async function sendConsentEmail({
       text: textContent, // Plain text version
       replyTo: `גשר אל הנוער <${process.env.GMAIL_USER}>`,
       messageId: messageId,
+      headers: {
+        'X-Priority': '3',
+        'X-Mailer': 'Gesher-Youth-Intake-System',
+        'Importance': 'Normal',
+        'List-Unsubscribe': `<mailto:${process.env.GMAIL_USER}?subject=Unsubscribe>`,
+        'Precedence': 'bulk'
+      },
       html: `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="text-align: center; margin-bottom: 30px;">
-            <img src="https://gesher-intake.vercel.app/logo.png" alt="גשר אל הנוער" style="height: 80px; width: auto;">
+          <div style="text-align: center; margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px;">
+            <h1 style="color: white; margin: 0; font-size: 24px;">גשר אל הנוער</h1>
           </div>
           <h2 style="color: #2563eb;">מועמדות במסגרת עמותת ״גשר אל הנוער״</h2>
           
@@ -140,8 +147,8 @@ export async function sendCounselorNotification({
     return { success: false, error: 'Email service not configured' };
   }
 
-  // Generate unique message ID
-  const messageId = `${Date.now()}.${Math.random().toString(36).substr(2, 9)}@gesher-intake.vercel.app`;
+  // Generate unique message ID using gmail domain to improve trust
+  const messageId = `${Date.now()}.${Math.random().toString(36).substr(2, 9)}@gmail.com`;
   
   // Plain text version for better deliverability
   const textContent = `
@@ -167,10 +174,17 @@ export async function sendCounselorNotification({
       text: textContent, // Plain text version
       replyTo: `גשר אל הנוער <${process.env.GMAIL_USER}>`,
       messageId: messageId,
+      headers: {
+        'X-Priority': '3',
+        'X-Mailer': 'Gesher-Youth-Intake-System',
+        'Importance': 'Normal',
+        'List-Unsubscribe': `<mailto:${process.env.GMAIL_USER}?subject=Unsubscribe>`,
+        'Precedence': 'bulk'
+      },
       html: `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="text-align: center; margin-bottom: 30px;">
-            <img src="https://gesher-intake.vercel.app/logo.png" alt="גשר אל הנוער" style="height: 80px; width: auto;">
+          <div style="text-align: center; margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px;">
+            <h1 style="color: white; margin: 0; font-size: 24px;">גשר אל הנוער</h1>
           </div>
           <h2 style="color: #10b981;">✅ הסכמת הורים התקבלה בהצלחה</h2>
           
