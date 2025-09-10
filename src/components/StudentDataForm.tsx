@@ -422,10 +422,30 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
             </div>
           </div>
 
-          {/* Enhanced Progress indicator */}
-          <div className="bg-gradient-to-r from-gray-50 to-blue-50 p-6 border-b border-gray-200">
-            <div className="flex justify-between items-center relative max-w-4xl mx-auto">
-              
+          {/* Enhanced Progress indicator - Responsive */}
+          <div className="bg-gradient-to-r from-gray-50 to-blue-50 p-4 sm:p-6 border-b border-gray-200">
+            {/* Mobile Progress Bar */}
+            <div className="sm:hidden">
+              <div className="flex flex-col items-center space-y-3">
+                <div className="flex items-center space-x-3 rtl:space-x-reverse">
+                  <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full px-4 py-2 font-bold">
+                    {currentStep} / {totalSteps}
+                  </div>
+                  <div className="text-gray-700 font-medium text-lg">
+                    {getStepTitle(currentStep)}
+                  </div>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop Circular Navigation */}
+            <div className="hidden sm:flex justify-between items-center relative max-w-4xl mx-auto">
               {[...Array(totalSteps)].map((_, index) => {
                 const StepIcon = getStepIcon(index + 1)
                 const isCompleted = index < currentStep - 1
@@ -435,18 +455,18 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                 return (
                   <div key={index} className="flex flex-col items-center relative">
                     <div className={`
-                      w-12 h-12 rounded-full flex items-center justify-center text-white font-bold mb-2 transition-all duration-300
+                      w-10 md:w-12 h-10 md:h-12 rounded-full flex items-center justify-center text-white font-bold mb-2 transition-all duration-300
                       ${isCompleted ? 'bg-gradient-to-r from-green-500 to-green-600 shadow-lg scale-105' : 
                         isCurrent ? 'bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg scale-110 animate-pulse' : 
                         'bg-gray-300'}
                     `}>
                       {isCompleted ? (
-                        <CheckCircle className="w-6 h-6" />
+                        <CheckCircle className="w-5 md:w-6 h-5 md:h-6" />
                       ) : (
-                        <StepIcon className="w-5 h-5" />
+                        <StepIcon className="w-4 md:w-5 h-4 md:h-5" />
                       )}
                     </div>
-                    <div className="text-center">
+                    <div className="text-center hidden md:block">
                       <div className={`text-xs font-medium ${isCurrent ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-500'}`}>
                         שלב {index + 1}
                       </div>
