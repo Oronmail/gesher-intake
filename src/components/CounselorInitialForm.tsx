@@ -127,13 +127,6 @@ export default function CounselorInitialForm() {
           </div>
           
           <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-8">
-            {/* Process Explanation */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200 shadow-sm">
-              <p className="text-gray-700 leading-relaxed">
-                לאחר הגשת הטופס, יישלח להורים (באמצעי הקשר שהזנתם) טופס ויתור סודיות דיגיטלי לחתימה. כשההורים יאשרו, תקבל/י התראה במייל/סמס עם קישור למילוי נתוני התלמיד/ה והשלמת הגשת הבקשה
-              </p>
-            </div>
-
             {/* Counselor Section */}
             <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-6 border border-blue-100 shadow-sm">
               <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
@@ -283,6 +276,13 @@ export default function CounselorInitialForm() {
                 <p className="mr-3 font-medium">{submitResult.message}</p>
               </div>
             )}
+
+            {/* Process Explanation */}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200 shadow-sm">
+              <p className="text-gray-700 leading-relaxed text-sm">
+                לאחר הגשת הטופס, יישלח להורים (באמצעי הקשר שהזנתם) טופס ויתור סודיות דיגיטלי לחתימה. כשההורים יאשרו, תקבל/י התראה במייל/סמס עם קישור למילוי נתוני התלמיד/ה והשלמת הגשת הבקשה
+              </p>
+            </div>
 
             {/* Submit Button */}
             <button
