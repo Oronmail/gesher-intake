@@ -153,6 +153,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string } | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isIntentionalSubmit, setIsIntentionalSubmit] = useState(false)
 
   const totalSteps = 7
 
@@ -460,10 +461,21 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
           </div>
 
           <div className="p-8">
-            <form onSubmit={(e) => {
-              e.preventDefault()
-              handleSubmit(onSubmit)(e)
-            }} className="space-y-8">
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault()
+                if (isIntentionalSubmit) {
+                  handleSubmit(onSubmit)(e)
+                  setIsIntentionalSubmit(false)
+                }
+              }}
+              onKeyDown={(e) => {
+                // Prevent Enter key from submitting form except in textarea
+                if (e.key === 'Enter' && (e.target as HTMLElement).tagName !== 'TEXTAREA') {
+                  e.preventDefault()
+                }
+              }}
+              className="space-y-8">
               {/* Step 1: Personal Information */}
               {currentStep === 1 && (
                 <div className="space-y-6 animate-fadeIn">
@@ -1931,6 +1943,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                   <button
                     type="submit"
                     disabled={isSubmitting}
+                    onClick={() => setIsIntentionalSubmit(true)}
                     className="group px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl hover:from-green-600 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center transition-all duration-200 hover:shadow-lg hover:scale-105 transform font-medium text-lg"
                   >
                     {isSubmitting ? (
