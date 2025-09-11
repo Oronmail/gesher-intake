@@ -434,7 +434,95 @@ class SalesforceJWTService {
   }
 
   /**
-   * Upload consent PDF to Salesforce
+   * Upload consent image to Salesforce with HTML storage
+   */
+  async uploadConsentImage(
+    registrationRequestId: string,
+    imageBase64: string,
+    filename: string,
+    consentHTML?: string
+  ): Promise<{ success: boolean; error?: string; contentDocumentId?: string }> {
+    try {
+      if (!imageBase64 || !filename) {
+        return {
+          success: false,
+          error: 'Missing image data or filename'
+        };
+      }
+
+      console.log(`Uploading consent image: ${filename} to Registration Request: ${registrationRequestId}`);
+      
+      // First, store the HTML in a custom field if provided
+      if (consentHTML) {
+        try {
+          const htmlUpdate = {
+            Id: registrationRequestId,
+            Consent_HTML__c: consentHTML
+          };
+          
+          await this.executeWithRetry(async (conn) => {
+            return await conn.sobject('Registration_Request__c').update(htmlUpdate);
+          });
+          
+          console.log('Consent HTML stored successfully in Registration_Request__c');
+        } catch (htmlError) {
+          console.error('Failed to store consent HTML:', htmlError);
+          // Continue with image upload even if HTML storage fails
+        }
+      }
+      
+      // Create ContentVersion for the image
+      const contentVersionResult = await this.executeWithRetry(async (conn) => {
+        return await conn.sobject('ContentVersion').create({
+          Title: filename.replace('.png', ''),
+          PathOnClient: filename,
+          VersionData: imageBase64,
+          FirstPublishLocationId: registrationRequestId,
+          Description: 'Consent form with parent signatures and timestamp'
+        });
+      });
+      
+      if (!contentVersionResult.success) {
+        console.error('Failed to create ContentVersion:', contentVersionResult);
+        return {
+          success: false,
+          error: 'Failed to upload image to Salesforce'
+        };
+      }
+
+      console.log('ContentVersion created successfully:', contentVersionResult.id);
+      
+      // Query to get the ContentDocumentId
+      const contentVersionQuery = await this.executeWithRetry(async (conn) => {
+        return await conn.query(
+          `SELECT ContentDocumentId FROM ContentVersion WHERE Id = '${contentVersionResult.id}'`
+        );
+      });
+      
+      if (contentVersionQuery.records && contentVersionQuery.records.length > 0) {
+        const contentDocumentId = (contentVersionQuery.records[0] as { ContentDocumentId: string }).ContentDocumentId;
+        console.log('Image uploaded successfully. ContentDocumentId:', contentDocumentId);
+        
+        return {
+          success: true,
+          contentDocumentId
+        };
+      }
+      
+      return {
+        success: true
+      };
+    } catch (error) {
+      console.error('Error uploading consent image:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  /**
+   * Upload consent PDF to Salesforce (legacy method kept for compatibility)
    */
   async uploadConsentPDF(
     registrationRequestId: string,

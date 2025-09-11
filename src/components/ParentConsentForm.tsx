@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { Loader2, CheckCircle, User, CreditCard, MapPin, Phone, PenTool, Shield, FileSignature, Users } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import Logo from './Logo'
-import { generateConsentPDF, getConsentPDFFilename } from '@/lib/pdf-generator-optimized'
+import { generateConsentImage, generateConsentHTMLForStorage, getConsentImageFilename } from '@/lib/consent-image-generator'
 
 const SignaturePad = dynamic(() => import('./SignaturePad'), { ssr: false })
 
@@ -63,12 +63,13 @@ export default function ParentConsentForm({ referralNumber }: ParentConsentFormP
     setSubmitResult(null)
 
     try {
-      // Generate PDF before sending to API
-      let pdfBase64 = ''
-      let pdfFilename = ''
+      // Generate consent image and HTML before sending to API
+      let imageBase64 = ''
+      let imageFilename = ''
+      let consentHTML = ''
       
       try {
-        const pdfData = {
+        const formData = {
           referralNumber,
           studentName: data.student_name,
           parent1Name: data.parent1_name,
@@ -84,12 +85,17 @@ export default function ParentConsentForm({ referralNumber }: ParentConsentFormP
           consentDate: new Date()
         }
         
-        pdfBase64 = await generateConsentPDF(pdfData)
-        pdfFilename = getConsentPDFFilename(referralNumber)
-        console.log('PDF generated successfully:', pdfFilename)
-      } catch (pdfError) {
-        console.error('Error generating PDF:', pdfError)
-        // Continue without PDF - don't block the submission
+        // Generate image with timestamp
+        imageBase64 = await generateConsentImage(formData)
+        imageFilename = getConsentImageFilename(referralNumber)
+        console.log('Consent image generated successfully:', imageFilename)
+        
+        // Generate HTML for storage
+        consentHTML = generateConsentHTMLForStorage(formData)
+        console.log('Consent HTML prepared for storage')
+      } catch (imageError) {
+        console.error('Error generating consent image:', imageError)
+        // Continue without image - don't block the submission
       }
 
       const response = await fetch('/api/referrals/consent', {
@@ -100,8 +106,9 @@ export default function ParentConsentForm({ referralNumber }: ParentConsentFormP
           signature: signature1,
           signature2: hasSecondParent ? signature2 : null,
           referral_number: referralNumber,
-          pdf_base64: pdfBase64,
-          pdf_filename: pdfFilename,
+          consent_image_base64: imageBase64,
+          consent_image_filename: imageFilename,
+          consent_html: consentHTML,
         }),
       })
 

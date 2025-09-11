@@ -20,8 +20,9 @@ export async function POST(request: NextRequest) {
       signature,
       signature2,
       student_name,
-      pdf_base64,
-      pdf_filename,
+      consent_image_base64,
+      consent_image_filename,
+      consent_html,
     } = body
 
     // Combine parent names
@@ -82,19 +83,20 @@ export async function POST(request: NextRequest) {
       } else {
         console.log('Salesforce record updated with consent data')
         
-        // Upload PDF if available
-        if (pdf_base64 && pdf_filename) {
-          const pdfResult = await salesforceJWT.uploadConsentPDF(
+        // Upload consent image if available
+        if (consent_image_base64 && consent_image_filename) {
+          const imageResult = await salesforceJWT.uploadConsentImage(
             data.salesforce_contact_id,
-            pdf_base64,
-            pdf_filename
+            consent_image_base64,
+            consent_image_filename,
+            consent_html
           )
           
-          if (pdfResult.success) {
-            console.log('Consent PDF uploaded successfully to Salesforce')
+          if (imageResult.success) {
+            console.log('Consent image uploaded successfully to Salesforce')
           } else {
-            console.error('Failed to upload consent PDF:', pdfResult.error)
-            // Continue anyway - PDF upload is not critical
+            console.error('Failed to upload consent image:', imageResult.error)
+            // Continue anyway - image upload is not critical
           }
         }
       }
