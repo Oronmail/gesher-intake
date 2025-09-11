@@ -253,7 +253,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
           // Prepopulate school and counselor info
           if (data.school_name) setValue('school_name', data.school_name)
           if (data.counselor_name) setValue('counselor_name', data.counselor_name)
-          if (data.counselor_email) setValue('counselor_phone', data.counselor_email) // Using email as phone if available
+          // Don't prepopulate counselor_phone with email - leave it empty for user to fill
           
           // Prepopulate parent contact info if available
           if (data.parent_phone) {
@@ -1905,11 +1905,6 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                         <span>8</span>
                         <span>9</span>
                         <span>10</span>
-                      </div>
-                      <div className="text-center">
-                        <span className="inline-block px-3 py-1 bg-gray-100 rounded-lg font-medium">
-                          רמה: {watch('risk_level') || 5}
-                        </span>
                       </div>
                     </div>
                     {errors.risk_level && (
