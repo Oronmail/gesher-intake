@@ -148,3 +148,7 @@ export async function POST(request: NextRequest) {
     )
   }
 }
+
+// Configure route to handle larger payloads (for PDF uploads)
+export const runtime = 'nodejs'
+export const maxDuration = 30

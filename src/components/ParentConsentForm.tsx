@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { Loader2, CheckCircle, User, CreditCard, MapPin, Phone, PenTool, Shield, FileSignature, Users } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import Logo from './Logo'
-import { generateConsentPDF, getConsentPDFFilename } from '@/lib/pdf-generator-hebrew'
+import { generateConsentPDF, getConsentPDFFilename } from '@/lib/pdf-generator-optimized'
 
 const SignaturePad = dynamic(() => import('./SignaturePad'), { ssr: false })
 
