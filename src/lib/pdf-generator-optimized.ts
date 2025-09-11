@@ -68,7 +68,7 @@ export const generateConsentPDF = async (data: ConsentFormData): Promise<string>
     const contentWidth = pageWidth - leftMargin - rightMargin
     
     // Helper function for RTL text (simple approach)
-    const addRTLText = (text: string, x: number, y: number, options?: any) => {
+    const addRTLText = (text: string, x: number, y: number, options?: { align?: 'left' | 'center' | 'right' }) => {
       // For Hebrew text, we'll add it as is and let the PDF reader handle RTL
       pdf.text(text, x, y, options)
     }
