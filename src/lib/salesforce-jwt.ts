@@ -434,6 +434,74 @@ class SalesforceJWTService {
   }
 
   /**
+   * Upload consent PDF to Salesforce
+   */
+  async uploadConsentPDF(
+    registrationRequestId: string,
+    pdfBase64: string,
+    filename: string
+  ): Promise<{ success: boolean; error?: string; contentDocumentId?: string }> {
+    try {
+      if (!pdfBase64 || !filename) {
+        return {
+          success: false,
+          error: 'Missing PDF data or filename'
+        };
+      }
+
+      console.log(`Uploading consent PDF: ${filename} to Registration Request: ${registrationRequestId}`);
+      
+      // Create ContentVersion (the file itself)
+      const contentVersionResult = await this.executeWithRetry(async (conn) => {
+        return await conn.sobject('ContentVersion').create({
+          Title: filename.replace('.pdf', ''),
+          PathOnClient: filename,
+          VersionData: pdfBase64,
+          FirstPublishLocationId: registrationRequestId, // This links it to the record
+          Description: 'Consent form with parent signatures'
+        });
+      });
+      
+      if (!contentVersionResult.success) {
+        console.error('Failed to create ContentVersion:', contentVersionResult);
+        return {
+          success: false,
+          error: 'Failed to upload PDF to Salesforce'
+        };
+      }
+
+      console.log('ContentVersion created successfully:', contentVersionResult.id);
+      
+      // Query to get the ContentDocumentId
+      const contentVersionQuery = await this.executeWithRetry(async (conn) => {
+        return await conn.query(
+          `SELECT ContentDocumentId FROM ContentVersion WHERE Id = '${contentVersionResult.id}'`
+        );
+      });
+      
+      if (contentVersionQuery.records && contentVersionQuery.records.length > 0) {
+        const contentDocumentId = (contentVersionQuery.records[0] as { ContentDocumentId: string }).ContentDocumentId;
+        console.log('PDF uploaded successfully. ContentDocumentId:', contentDocumentId);
+        
+        return {
+          success: true,
+          contentDocumentId
+        };
+      }
+      
+      return {
+        success: true
+      };
+    } catch (error) {
+      console.error('Error uploading consent PDF:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  /**
    * Test connection and authentication
    */
   async testConnection(): Promise<{

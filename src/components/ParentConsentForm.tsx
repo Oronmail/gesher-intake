@@ -7,6 +7,7 @@ import { z } from 'zod'
 import { Loader2, CheckCircle, User, CreditCard, MapPin, Phone, PenTool, Shield, FileSignature, Users } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import Logo from './Logo'
+import { generateConsentPDF, getConsentPDFFilename } from '@/lib/pdf-generator'
 
 const SignaturePad = dynamic(() => import('./SignaturePad'), { ssr: false })
 
@@ -62,6 +63,35 @@ export default function ParentConsentForm({ referralNumber }: ParentConsentFormP
     setSubmitResult(null)
 
     try {
+      // Generate PDF before sending to API
+      let pdfBase64 = ''
+      let pdfFilename = ''
+      
+      try {
+        const pdfData = {
+          referralNumber,
+          studentName: data.student_name,
+          parent1Name: data.parent1_name,
+          parent1Id: data.parent1_id,
+          parent1Address: data.parent1_address,
+          parent1Phone: data.parent1_phone,
+          parent1Signature: signature1,
+          parent2Name: data.parent2_name,
+          parent2Id: data.parent2_id,
+          parent2Address: data.parent2_address,
+          parent2Phone: data.parent2_phone,
+          parent2Signature: hasSecondParent ? signature2 : undefined,
+          consentDate: new Date()
+        }
+        
+        pdfBase64 = await generateConsentPDF(pdfData)
+        pdfFilename = getConsentPDFFilename(referralNumber)
+        console.log('PDF generated successfully:', pdfFilename)
+      } catch (pdfError) {
+        console.error('Error generating PDF:', pdfError)
+        // Continue without PDF - don't block the submission
+      }
+
       const response = await fetch('/api/referrals/consent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -70,6 +100,8 @@ export default function ParentConsentForm({ referralNumber }: ParentConsentFormP
           signature: signature1,
           signature2: hasSecondParent ? signature2 : null,
           referral_number: referralNumber,
+          pdf_base64: pdfBase64,
+          pdf_filename: pdfFilename,
         }),
       })
 
