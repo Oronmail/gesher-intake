@@ -1882,7 +1882,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      רמת הסיכון של הנער/ה (1-10)
+                      רמת הסיכון של הנער/ה
                     </label>
                     <div className="space-y-2">
                       <input
@@ -1891,10 +1891,8 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                         min="1"
                         max="10"
                         step="1"
-                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-                        style={{
-                          background: `linear-gradient(to right, #10b981 0%, #eab308 50%, #ef4444 100%)`
-                        }}
+                        defaultValue="5"
+                        className="w-full cursor-pointer"
                       />
                       <div className="flex justify-between text-xs text-gray-600">
                         <span>1</span>
@@ -1913,17 +1911,6 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                           רמה: {watch('risk_level') || 5}
                         </span>
                       </div>
-                    </div>
-                    <div className="relative hidden">
-                      <input
-                        {...register('risk_level', { valueAsNumber: true })}
-                        type="number"
-                        min="1"
-                        max="10"
-                        className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                        placeholder="1-10"
-                      />
-                      <Zap className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                     </div>
                     {errors.risk_level && (
                       <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
