@@ -150,12 +150,12 @@ A privacy-compliant digital workflow system that:
 - **Styling**: Tailwind CSS
 - **Forms**: React Hook Form + Zod validation
 - **Signatures**: React Signature Canvas
+- **Image Generation**: html2canvas (PNG from HTML)
 - **Database**: Supabase (Project: fftnsfaakvahqyfwhtku.supabase.co)
-- **Email Service**: Resend (API Key: re_CxNvBTmc_KqPVvVKJoyCo8L5tJPHpZToN)
-- **Email Sender**: onboarding@resend.dev
+- **Email Service**: Gmail SMTP (gesheryouth@gmail.com)
 - **SMS Service**: Inwise (Optional - when parent phone provided)
 - **SMS API**: https://webapi.mymarketing.co.il
-- **Final Storage**: Salesforce (ready for integration)
+- **Final Storage**: Salesforce with ContentDocument API
 - **Hosting**: Vercel (https://gesher-intake.vercel.app)
 - **Repository**: GitHub (Oronmail/gesher-intake)
 - **Cost**: $0 (completely free solution)
@@ -394,6 +394,7 @@ CREATE TABLE referrals (
    - Subject: "הסכמת הורים התקבלה - [Student Name]"
    - Shows "שם התלמיד/ה" instead of reference number
    - Contains student data form link
+   - Includes confirmation that consent image was generated
 
 ### Configuration
 ```typescript
@@ -615,6 +616,16 @@ NODE_ENV=production
   - [x] Created backup files for rollback capability
   - [x] Fixed progress bar display issues
   - [x] Enhanced form cards with shadows and rounded corners
+- [x] **IMAGE-BASED CONSENT SYSTEM - November 2025**
+  - [x] Replaced PDF generation with PNG image generation
+  - [x] Implemented html2canvas for Hebrew and signature support
+  - [x] Added visual timestamp badge with date/time/referral number
+  - [x] Triple storage strategy: PNG image + HTML backup + structured fields
+  - [x] Correct legal consent text: "אני מאפשר להנהלת "גשר אל הנוער" לקבל מביה"ס/ רווחה/ גורם מטפל אחר כל מידע לימודי/פסיכולוגי/רפואי על בני/ביתי. אנו מוותרים בזאת על סודיות לגבי המידע הרלוונטי."
+  - [x] ContentDocument API integration for Salesforce attachments
+  - [x] Image compression to avoid payload size limits
+  - [x] CSP headers updated for Google Fonts and Vercel scripts
+  - [x] Test files created for verification (test-consent-image.html, test-workflow.js)
 
 ### 🚧 Pending Features
 - [ ] Authentication for counselors
@@ -921,6 +932,92 @@ node create-sf-fields.js
 
 ---
 
+## 📸 Image-Based Consent System
+
+### Overview
+The system uses html2canvas to generate PNG images of consent forms instead of PDFs. This approach solves critical issues with Hebrew text rendering and digital signature display that were present in the PDF solution.
+
+### Why Images Instead of PDFs?
+1. **Hebrew Text Support**: jsPDF doesn't properly support Hebrew fonts or RTL text
+2. **Signature Preservation**: Base64 signatures render perfectly in HTML/images
+3. **Visual Timestamp**: Easy to overlay timestamp badges on images
+4. **Smaller File Sizes**: Compressed PNGs are smaller than PDFs with embedded images
+5. **Universal Compatibility**: PNG images display correctly everywhere
+
+### Implementation Architecture
+
+#### Triple Storage Strategy
+1. **PNG Image**: Primary visual record with timestamp badge
+2. **HTML Backup**: Complete HTML stored in Consent_HTML__c field
+3. **Structured Fields**: Individual signature fields for queries
+
+#### Key Components
+- `src/lib/consent-image-generator.ts` - Core image generation logic
+- `generateConsentImage()` - Converts HTML form to PNG with timestamp
+- `generateConsentHTMLForStorage()` - Creates HTML for backup storage
+- `compressImage()` - Optimizes image size for API limits
+
+### Visual Timestamp Badge
+Every consent image includes a timestamp badge in the top-left corner showing:
+- "נחתם דיגיטלית" (Digitally Signed)
+- Date and time of signature
+- Unique referral number
+- Blue gradient background for authenticity
+
+### Technical Implementation
+```typescript
+// Generate consent image with timestamp
+const imageBase64 = await generateConsentImage({
+  referralNumber,
+  studentName,
+  parent1Name,
+  parent1Id,
+  parent1Signature,
+  consentDate: new Date()
+})
+
+// Upload to Salesforce as ContentDocument
+await uploadConsentImage(registrationId, imageBase64, filename)
+```
+
+### Consent Declaration Text
+The system displays the legally required consent text:
+```
+אני מאפשר להנהלת "גשר אל הנוער" לקבל מביה"ס/ רווחה/ גורם מטפל אחר 
+כל מידע לימודי/פסיכולוגי/רפואי על בני/ביתי. 
+אנו מוותרים בזאת על סודיות לגבי המידע הרלוונטי.
+```
+
+### Testing Tools
+- `test-consent-image.html` - Standalone HTML test for image generation
+- `test-workflow.js` - Complete workflow testing guide
+- Browser console shows "Consent image generated successfully" on success
+
+### CSP Configuration
+Updated Content Security Policy to allow:
+- Google Fonts (fonts.googleapis.com, fonts.gstatic.com)
+- Vercel scripts (_vercel/speed-insights)
+- Inline styles required for html2canvas
+
+### Troubleshooting
+
+#### Hebrew Text Issues
+- Ensure html2canvas is loaded properly
+- Check browser console for encoding errors
+- Verify font-family is set to Arial
+
+#### Signature Display
+- Signatures must be valid base64 data URLs
+- Check format: `data:image/png;base64,...`
+- Verify signatures aren't empty strings
+
+#### Image Size
+- Images are automatically compressed if > 500KB
+- Maximum dimension limited to 1200px
+- JPEG quality adjusted dynamically
+
+---
+
 ## 🖼️ Signature Display in Salesforce
 
 ### Implementation
@@ -1043,13 +1140,13 @@ This is a pro bono project developed for Gesher Al HaNoar. For technical questio
 
 ---
 
-*Last Updated: January 2025 (UI/UX Redesign Complete)*
-*Project Status: ✅ Fully Operational in Production with Modern UI*
+*Last Updated: November 2025 (Image-Based Consent System Implemented)*
+*Project Status: ✅ Fully Operational in Production with Image Generation*
 *Live URL: https://gesher-intake.vercel.app*
 *Repository: https://github.com/Oronmail/gesher-intake (Private)*
-*Email Service: Resend (Working)*
-*SMS Service: Inwise (Configured - API key pending)*
+*Email Service: Gmail SMTP (gesheryouth@gmail.com)*
+*SMS Service: Inwise (Configured)*
 *Database: Supabase (Secured with RLS)*
-*Salesforce: ✅ Successfully integrated and creating records*
-*Security Status: ✅ All vulnerabilities patched, API security configured*
-*Notification Status: ✅ Dual channel (Email + SMS) operational*
+*Salesforce: ✅ Successfully integrated with image attachments*
+*Security Status: ✅ All vulnerabilities patched, CSP configured*
+*Consent Storage: ✅ PNG images with timestamp + HTML backup + structured fields*

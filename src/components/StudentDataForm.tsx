@@ -47,6 +47,56 @@ const styles = `
   .animate-fadeIn {
     animation: fadeIn 0.5s ease-out;
   }
+  
+  /* Slider styles */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+  
+  input[type="range"]::-webkit-slider-track {
+    background: linear-gradient(to right, #10b981 0%, #eab308 50%, #ef4444 100%);
+    height: 8px;
+    border-radius: 4px;
+  }
+  
+  input[type="range"]::-moz-range-track {
+    background: linear-gradient(to right, #10b981 0%, #eab308 50%, #ef4444 100%);
+    height: 8px;
+    border-radius: 4px;
+  }
+  
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background: white;
+    border: 2px solid #6b7280;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    margin-top: -6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  input[type="range"]::-moz-range-thumb {
+    background: white;
+    border: 2px solid #6b7280;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+  
+  input[type="range"]:hover::-webkit-slider-thumb {
+    border-color: #3b82f6;
+  }
+  
+  input[type="range"]:hover::-moz-range-thumb {
+    border-color: #3b82f6;
+  }
 `
 
 const formSchema = z.object({
@@ -612,12 +662,15 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                           שנת עלייה
                         </label>
                         <div className="relative">
-                          <input
+                          <select
                             {...register('immigration_year')}
-                            type="number"
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="2020"
-                          />
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
+                          >
+                            <option value="">בחר שנה</option>
+                            {Array.from({ length: new Date().getFullYear() - 2004 }, (_, i) => new Date().getFullYear() - i).map(year => (
+                              <option key={year} value={year}>{year}</option>
+                            ))}
+                          </select>
                           <Calendar className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                       </div>
@@ -1115,11 +1168,24 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                           <span className="text-red-500 mr-1">*</span>
                         </label>
                         <div className="relative">
-                          <input
+                          <select
                             {...register('grade')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="ט' א'"
-                          />
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
+                          >
+                            <option value="">בחר כיתה</option>
+                            <option value="א">א</option>
+                            <option value="ב">ב</option>
+                            <option value="ג">ג</option>
+                            <option value="ד">ד</option>
+                            <option value="ה">ה</option>
+                            <option value="ו">ו</option>
+                            <option value="ז">ז</option>
+                            <option value="ח">ח</option>
+                            <option value="ט">ט</option>
+                            <option value="י">י</option>
+                            <option value="יא">יא</option>
+                            <option value="יב">יב</option>
+                          </select>
                           <GraduationCap className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.grade && (
@@ -1602,7 +1668,12 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                   <div className="bg-red-100 p-3 rounded-xl ml-3">
                     <AlertTriangle className="w-6 h-6 text-red-600" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-800">גורמי סיכון עיקריים</h3>
+                  <h3 className="text-lg font-semibold text-gray-800">גורמי סיכון</h3>
+                </div>
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+                  <p className="text-sm text-amber-800">
+                    <strong>שים לב:</strong> אנא המנע/י מלענות על השאלות הבאות במידה ואינך יודע/ת את המצב הנוכחי
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1813,7 +1884,37 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       רמת הסיכון של הנער/ה (1-10)
                     </label>
-                    <div className="relative">
+                    <div className="space-y-2">
+                      <input
+                        {...register('risk_level', { valueAsNumber: true })}
+                        type="range"
+                        min="1"
+                        max="10"
+                        step="1"
+                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                        style={{
+                          background: `linear-gradient(to right, #10b981 0%, #eab308 50%, #ef4444 100%)`
+                        }}
+                      />
+                      <div className="flex justify-between text-xs text-gray-600">
+                        <span>1</span>
+                        <span>2</span>
+                        <span>3</span>
+                        <span>4</span>
+                        <span>5</span>
+                        <span>6</span>
+                        <span>7</span>
+                        <span>8</span>
+                        <span>9</span>
+                        <span>10</span>
+                      </div>
+                      <div className="text-center">
+                        <span className="inline-block px-3 py-1 bg-gray-100 rounded-lg font-medium">
+                          רמה: {watch('risk_level') || 5}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="relative hidden">
                       <input
                         {...register('risk_level', { valueAsNumber: true })}
                         type="number"

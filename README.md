@@ -1,8 +1,8 @@
 # Gesher Al HaNoar - Digital Intake System
 
 🔗 **Live Production**: https://gesher-intake.vercel.app  
-📅 **Last Updated**: January 10, 2025  
-✅ **Status**: Fully Operational  
+📅 **Last Updated**: November 11, 2025  
+✅ **Status**: Fully Operational with Image-Based Consent  
 📧 **Email Service**: Gmail SMTP (gesheryouth@gmail.com)
 
 A privacy-compliant digital intake system for Gesher Al HaNoar (גשר אל הנוער), a non-profit organization providing free tutoring and family support to at-risk youth in Israel.
@@ -14,6 +14,8 @@ This system digitizes the student referral process, replacing paper forms with a
 ## 🚀 Features
 
 - **Privacy-First Design**: No student data collected before parental consent
+- **Image-Based Consent Forms**: PNG generation with Hebrew text and signatures (replaces PDF)
+- **Visual Timestamp Badge**: Every consent form includes digital signature timestamp
 - **Auto Data Cleanup**: Personal data deleted from Supabase after Salesforce submission
 - **Digital Signatures**: Secure electronic signature capture for parents
 - **Hebrew Interface**: Full RTL support with Hebrew UI
@@ -22,7 +24,7 @@ This system digitizes the student referral process, replacing paper forms with a
 - **Multi-Step Forms**: Comprehensive data collection with validation
 - **Production Ready**: Deployed on Vercel with Supabase database
 - **Mock Database**: Built-in testing mode for development
-- **Salesforce Integration**: Direct sync with Registration_Request__c object
+- **Salesforce Integration**: Direct sync with Registration_Request__c object and ContentDocument
 - **JWT Authentication**: Fully automated server-to-server authentication
 - **Page Layouts**: Custom Salesforce layouts for data visualization
 - **SMS Support**: Automatic Israeli phone number formatting and Hebrew SMS (Inwise)
@@ -43,10 +45,12 @@ This system digitizes the student referral process, replacing paper forms with a
 - **Styling**: Tailwind CSS
 - **Forms**: React Hook Form + Zod validation
 - **Signatures**: React Signature Canvas
+- **Image Generation**: html2canvas for consent form PNG creation
 - **Database**: Supabase (production) or built-in mock
 - **Email Service**: Gmail SMTP (primary) via nodemailer
 - **SMS Service**: Inwise (Israeli SMS provider)
 - **CRM**: Salesforce with JWT Bearer authentication
+- **File Storage**: Salesforce ContentDocument API
 - **Hosting**: Vercel
 - **Repository**: GitHub (Oronmail/gesher-intake)
 
@@ -200,7 +204,18 @@ MIT License - Free to use and modify
 
 Developed pro bono for Gesher Al HaNoar (גשר אל הנוער) to support their mission of helping at-risk youth in Israel.
 
-## 🆕 Recent Updates (January 2025)
+## 🆕 Recent Updates (November 2025)
+
+### Image-Based Consent System (November 2025)
+- **Replaced PDF with PNG Images**: Solved Hebrew text and signature rendering issues
+- **Visual Timestamp Badge**: Added date/time/referral stamp to every consent form
+- **Triple Storage Strategy**: PNG image + HTML backup + structured fields
+- **ContentDocument Integration**: Images attached directly to Salesforce records
+- **Image Compression**: Automatic optimization to avoid API payload limits
+- **CSP Updates**: Configured for Google Fonts and html2canvas compatibility
+- **Test Tools**: Created test-consent-image.html and test-workflow.js for verification
+
+## 📜 Previous Updates (January 2025)
 
 ### Gmail SMTP Migration
 - Switched from Resend to Gmail SMTP for email delivery
@@ -228,8 +243,10 @@ Developed pro bono for Gesher Al HaNoar (גשר אל הנוער) to support thei
 ---
 
 **For technical documentation and development details, see:**
-- [CLAUDE.md](./CLAUDE.md) - Comprehensive project documentation
+- [CLAUDE.md](./CLAUDE.md) - Comprehensive project documentation with image consent details
 - [JWT_AUTHENTICATION.md](./JWT_AUTHENTICATION.md) - JWT Bearer setup guide
 - [SF_INTEGRATION.md](./SF_INTEGRATION.md) - Salesforce integration details
 - [SECURITY.md](./SECURITY.md) - Security implementation details
 - [SMS-INTEGRATION.md](./SMS-INTEGRATION.md) - SMS service setup
+- [test-consent-image.html](./test-consent-image.html) - Test image generation locally
+- [test-workflow.js](./test-workflow.js) - Complete workflow testing guide
