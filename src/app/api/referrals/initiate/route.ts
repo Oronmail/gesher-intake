@@ -36,19 +36,21 @@ export async function POST(request: NextRequest) {
       counselor_name,
       counselor_email,
       school_name,
+      warm_home_destination,
       parent_email,
       parent_phone,
     } = validationResult.data
 
     // Generate unique referral number
     const referral_number = generateReferralNumber()
-    
+
     // Create initial Registration Request in Salesforce using JWT service
     const initialData = {
       referralNumber: referral_number,
       counselorName: counselor_name,
       counselorEmail: counselor_email,
       schoolName: school_name,
+      warmHomeDestination: warm_home_destination,
       parentEmail: parent_email,
       parentPhone: parent_phone,
     }
@@ -71,6 +73,7 @@ export async function POST(request: NextRequest) {
         referral_number,
         school_id: school_name.toLowerCase().replace(/\s+/g, '-'),
         school_name,
+        warm_home_destination,
         counselor_name,
         counselor_email,
         parent_email: parent_email || null,

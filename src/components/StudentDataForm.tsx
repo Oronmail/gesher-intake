@@ -165,10 +165,12 @@ const formSchema = z.object({
   
   // הערכת למידה
   learning_disability: z.boolean(),
+  learning_disability_explanation: z.string().optional(),
   requires_remedial_teaching: z.boolean().optional(),
   adhd: z.boolean(),
   adhd_treatment: z.string().optional(),
   assessment_done: z.boolean(),
+  assessment_file: z.any().optional(),
   assessment_needed: z.boolean(),
   assessment_details: z.string().optional(),
   
@@ -192,7 +194,12 @@ const formSchema = z.object({
   
   // ביצועים אקדמיים
   failing_grades_count: z.number().min(0),
-  failing_subjects: z.string().optional(),
+  failing_subjects: z.array(z.object({
+    subject: z.string(),
+    grade: z.string(),
+    reason: z.string()
+  })).optional(),
+  grade_sheet: z.any().optional(),
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -1593,7 +1600,19 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                     </label>
 
                     {watch('learning_disability') && (
-                      <div className="mt-4 animate-fadeIn">
+                      <div className="mt-4 animate-fadeIn space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            פרט על לקות הלמידה
+                            <span className="text-red-500 mr-1">*</span>
+                          </label>
+                          <textarea
+                            {...register('learning_disability_explanation')}
+                            rows={3}
+                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 resize-none"
+                            placeholder="תאר את סוג הלקות ואופן ההתמודדות..."
+                          />
+                        </div>
                         <div className="bg-green-50 rounded-xl p-4 border border-green-100">
                           <label className="flex items-center cursor-pointer group">
                             <input
@@ -1680,17 +1699,51 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                     </div>
                   </div>
 
-                  {(watch('assessment_done') || watch('assessment_needed')) && (
+                  {watch('assessment_done') && (
+                    <div className="animate-fadeIn space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          העלאת קובץ אבחון
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <input
+                          {...register('assessment_file')}
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
+                        />
+                        <p className="mt-2 text-sm text-gray-500">
+                          קבצים מותרים: PDF, JPG, PNG (עד 10MB)
+                        </p>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          פרטים נוספים על האבחון
+                        </label>
+                        <div className="relative">
+                          <textarea
+                            {...register('assessment_details')}
+                            rows={4}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
+                            placeholder="פרט על האבחון שנעשה..."
+                          />
+                          <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {watch('assessment_needed') && !watch('assessment_done') && (
                     <div className="animate-fadeIn">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        פרטים נוספים על האבחון
+                        פרטים על האבחון הנדרש
                       </label>
                       <div className="relative">
                         <textarea
                           {...register('assessment_details')}
                           rows={4}
                           className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
-                          placeholder="פרט על האבחון שנעשה או נדרש..."
+                          placeholder="פרט על האבחון הנדרש..."
                         />
                         <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                       </div>
@@ -2011,6 +2064,23 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                 <div className="space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
+                      גליון ציונים
+                      <span className="text-red-500 mr-1">*</span>
+                    </label>
+                    <input
+                      {...register('grade_sheet')}
+                      type="file"
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      required
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    />
+                    <p className="mt-2 text-sm text-gray-500">
+                      חובה להעלות גליון ציונים עדכני (PDF, JPG, PNG - עד 10MB)
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       מספר ציונים שליליים
                     </label>
                     <div className="relative">
@@ -2018,27 +2088,71 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                         {...register('failing_grades_count', { valueAsNumber: true })}
                         type="number"
                         min="0"
+                        max="10"
                         className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                         placeholder="0"
+                        onChange={(e) => {
+                          const count = parseInt(e.target.value) || 0;
+                          setValue('failing_grades_count', count);
+                          // Initialize failing_subjects array based on count
+                          if (count > 0) {
+                            const subjects = Array(count).fill(null).map(() => ({
+                              subject: '',
+                              grade: '',
+                              reason: ''
+                            }));
+                            setValue('failing_subjects', subjects);
+                          } else {
+                            setValue('failing_subjects', []);
+                          }
+                        }}
                       />
                       <BookOpen className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                     </div>
                   </div>
 
                   {watch('failing_grades_count') > 0 && (
-                    <div className="animate-fadeIn">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        תיאור המקצועות בהם יש שליליים
-                      </label>
-                      <div className="relative">
-                        <textarea
-                          {...register('failing_subjects')}
-                          rows={3}
-                          className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
-                          placeholder="פרט את המקצועות והסיבות לציונים השליליים..."
-                        />
-                        <BookOpen className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                      </div>
+                    <div className="animate-fadeIn space-y-4">
+                      <h4 className="text-sm font-medium text-gray-700">פרט על הציונים השליליים:</h4>
+                      {Array.from({ length: watch('failing_grades_count') || 0 }).map((_, index) => (
+                        <div key={index} className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                              <label className="block text-xs font-medium text-gray-600 mb-1">
+                                מקצוע {index + 1}
+                              </label>
+                              <input
+                                {...register(`failing_subjects.${index}.subject`)}
+                                type="text"
+                                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                placeholder="שם המקצוע"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-gray-600 mb-1">
+                                ציון
+                              </label>
+                              <input
+                                {...register(`failing_subjects.${index}.grade`)}
+                                type="text"
+                                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                placeholder="הציון"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-gray-600 mb-1">
+                                סיבה לציון השלילי
+                              </label>
+                              <input
+                                {...register(`failing_subjects.${index}.reason`)}
+                                type="text"
+                                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                placeholder="הסיבה לכישלון"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>

@@ -2,6 +2,7 @@ export interface InitialReferralForm {
   counselor_name: string
   counselor_email: string
   school_name: string
+  warm_home_destination: string
   parent_email: string
   parent_phone: string
 }
@@ -85,10 +86,12 @@ export interface StudentDataForm {
   
   // Learning Assessment
   learning_disability: boolean
+  learning_disability_explanation?: string
   requires_remedial_teaching?: boolean
   adhd: boolean
   adhd_treatment?: string
   assessment_done: boolean
+  assessment_file?: any
   assessment_needed: boolean
   assessment_details?: string
   
@@ -112,5 +115,10 @@ export interface StudentDataForm {
   
   // Academic Performance
   failing_grades_count: number
-  failing_subjects?: string
+  failing_subjects?: Array<{
+    subject: string
+    grade: string
+    reason: string
+  }>
+  grade_sheet?: any
 }

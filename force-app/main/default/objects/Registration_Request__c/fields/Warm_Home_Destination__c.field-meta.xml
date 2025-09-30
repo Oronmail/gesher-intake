@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Warm_Home_Destination__c</fullName>
+    <description>The warm home destination selected for the student</description>
+    <externalId>false</externalId>
+    <label>Warm Home Destination</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>false</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>בן יהודה</fullName>
+                <default>false</default>
+                <label>בן יהודה</label>
+            </value>
+            <value>
+                <fullName>כפר שלם</fullName>
+                <default>false</default>
+                <label>כפר שלם</label>
+            </value>
+            <value>
+                <fullName>נוה שרת</fullName>
+                <default>false</default>
+                <label>נוה שרת</label>
+            </value>
+            <value>
+                <fullName>בית פרידמן - ר״ג</fullName>
+                <default>false</default>
+                <label>בית פרידמן - ר״ג</label>
+            </value>
+            <value>
+                <fullName>בית פרידמן - רעננה</fullName>
+                <default>false</default>
+                <label>בית פרידמן - רעננה</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

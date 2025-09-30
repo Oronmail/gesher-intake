@@ -11,6 +11,7 @@ const formSchema = z.object({
   counselor_name: z.string().min(2, 'נא להזין שם מלא'),
   counselor_email: z.string().email('כתובת אימייל לא תקינה'),
   school_name: z.string().min(2, 'נא להזין שם בית ספר'),
+  warm_home_destination: z.string().min(1, 'נא לבחור בית חם'),
   parent_email: z.string().email('כתובת אימייל לא תקינה').optional().or(z.literal('')),
   parent_phone: z.string().regex(/^[\d\-\+\(\)\s]*$/, 'מספר טלפון לא תקין').optional().or(z.literal('')),
 }).refine(
@@ -200,6 +201,34 @@ export default function CounselorInitialForm() {
                     <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                       <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
                       {errors.school_name.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* Warm Home Destination */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    מיועד לבית החם
+                    <span className="text-red-500 mr-1">*</span>
+                  </label>
+                  <div className="relative">
+                    <select
+                      {...register('warm_home_destination')}
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                    >
+                      <option value="">בחר בית חם</option>
+                      <option value="בן יהודה">בן יהודה</option>
+                      <option value="כפר שלם">כפר שלם</option>
+                      <option value="נוה שרת">נוה שרת</option>
+                      <option value="בית פרידמן - ר״ג">בית פרידמן - ר״ג</option>
+                      <option value="בית פרידמן - רעננה">בית פרידמן - רעננה</option>
+                    </select>
+                    <School className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                  </div>
+                  {errors.warm_home_destination && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                      <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                      {errors.warm_home_destination.message}
                     </p>
                   )}
                 </div>

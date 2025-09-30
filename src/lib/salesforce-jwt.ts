@@ -214,6 +214,7 @@ class SalesforceJWTService {
         Counselor_Name__c: data.counselorName,
         Counselor_Email__c: data.counselorEmail,
         School_Name__c: data.schoolName,
+        Warm_Home_Destination__c: data.warmHomeDestination || '',
         Parent_Email__c: data.parentEmail || '',
         Parent1_Phone__c: data.parentPhone,
         Submission_Date__c: new Date().toISOString(),
@@ -361,6 +362,7 @@ class SalesforceJWTService {
         School_Counselor_Phone__c: data.schoolCounselorPhone || '',
         Failing_Grades_Count__c: data.failingGradesCount || 0,
         Failing_Subjects__c: data.failingSubjects || '',
+        Failing_Subjects_Details__c: data.failingSubjectsDetails || '',
         
         // Welfare & Social Services
         Known_to_Welfare__c: data.knownToWelfare || false,
@@ -386,6 +388,7 @@ class SalesforceJWTService {
         
         // Learning & Health
         Learning_Disability__c: data.learningDisability || false,
+        Learning_Disability_Explanation__c: data.learningDisabilityExplanation || '',
         Requires_Remedial_Teaching__c: data.requiresRemedialTeaching || false,
         ADHD__c: data.adhd || false,
         ADHD_Treatment__c: data.adhdTreatment || '',

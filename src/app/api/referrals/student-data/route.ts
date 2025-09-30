@@ -94,7 +94,8 @@ export async function POST(request: NextRequest) {
       schoolCounselorName: studentData.counselor_name,
       schoolCounselorPhone: studentData.counselor_phone,
       failingGradesCount: studentData.failing_grades_count || 0,
-      failingSubjects: studentData.failing_subjects,
+      failingSubjects: '', // Legacy field, keeping for backward compatibility
+      failingSubjectsDetails: studentData.failing_subjects ? JSON.stringify(studentData.failing_subjects) : '',
       
       // Welfare & Social Services (from form)
       knownToWelfare: studentData.known_to_welfare || false,
@@ -117,6 +118,7 @@ export async function POST(request: NextRequest) {
       
       // Learning & Health (from form)
       learningDisability: studentData.learning_disability || false,
+      learningDisabilityExplanation: studentData.learning_disability_explanation,
       requiresRemedialTeaching: studentData.requires_remedial_teaching,
       adhd: studentData.adhd || false,
       adhdTreatment: studentData.adhd_treatment,
