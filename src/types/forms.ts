@@ -91,7 +91,7 @@ export interface StudentDataForm {
   adhd: boolean
   adhd_treatment?: string
   assessment_done: boolean
-  assessment_file?: any
+  assessment_file?: File | null
   assessment_needed: boolean
   assessment_details?: string
   
@@ -120,5 +120,5 @@ export interface StudentDataForm {
     grade: string
     reason: string
   }>
-  grade_sheet?: any
+  grade_sheet?: File | null
 }
