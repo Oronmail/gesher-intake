@@ -113,7 +113,8 @@ const formSchema = z.object({
   apartment: z.string().optional(),
   phone: z.string().min(9, 'נא להזין טלפון'),
   student_mobile: z.string().optional(),
-  school_system_password: z.string().optional(),
+  school_info_username: z.string().optional(),
+  school_info_password: z.string().optional(),
   
   // מצב רווחה
   known_to_welfare: z.boolean(),
@@ -153,7 +154,9 @@ const formSchema = z.object({
   
   // נתוני קליטה
   behavioral_issues: z.boolean(),
+  behavioral_issues_details: z.string().optional(),
   has_potential: z.boolean(),
+  potential_explanation: z.string().optional(),
   motivation_level: z.enum(['low', 'medium', 'high']),
   motivation_type: z.enum(['internal', 'external']),
   external_motivators: z.string().optional(),
@@ -205,7 +208,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
   const [loading, setLoading] = useState(true)
   const [isIntentionalSubmit, setIsIntentionalSubmit] = useState(false)
 
-  const totalSteps = 7
+  const totalSteps = 6
 
   const {
     register,
@@ -306,11 +309,10 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
     switch(step) {
       case 1: return ['student_first_name', 'student_last_name', 'student_id', 'date_of_birth', 'country_of_birth', 'gender', 'address', 'phone']
       case 2: return ['father_name', 'father_mobile', 'father_occupation', 'father_profession', 'mother_name', 'mother_mobile', 'mother_occupation', 'mother_profession']
-      case 3: return ['school_name', 'grade', 'homeroom_teacher', 'teacher_phone', 'counselor_name', 'counselor_phone']
-      case 4: return ['behavioral_issues', 'has_potential', 'motivation_level', 'motivation_type']
-      case 5: return ['learning_disability', 'adhd', 'assessment_done', 'assessment_needed']
-      case 6: return ['criminal_record', 'drug_use', 'smoking', 'psychological_treatment', 'psychiatric_treatment', 'takes_medication']
-      case 7: return ['military_service_potential', 'can_handle_program', 'risk_level', 'failing_grades_count']
+      case 3: return ['school_name', 'grade', 'homeroom_teacher', 'teacher_phone', 'counselor_name', 'counselor_phone', 'school_info_username', 'school_info_password']
+      case 4: return ['behavioral_issues', 'has_potential', 'motivation_level', 'motivation_type', 'learning_disability', 'adhd', 'assessment_done', 'assessment_needed'] // Merged stages 4 & 5
+      case 5: return ['criminal_record', 'drug_use', 'smoking', 'psychological_treatment', 'psychiatric_treatment', 'takes_medication'] // Was step 6
+      case 6: return ['military_service_potential', 'can_handle_program', 'risk_level', 'failing_grades_count'] // Was step 7
       default: return []
     }
   }
@@ -431,12 +433,11 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
   const getStepIcon = (stepNumber: number) => {
     const icons = [
       User,          // Step 1: Personal Information
-      Users,         // Step 2: Family Information  
+      Users,         // Step 2: Family Information
       School,        // Step 3: School Information
-      GraduationCap, // Step 4: Intake Assessment
-      Brain,         // Step 5: Learning Assessment
-      AlertTriangle, // Step 6: Risk Assessment
-      FileText       // Step 7: Final Opinion
+      Brain,         // Step 4: Intake & Learning Assessment (merged)
+      AlertTriangle, // Step 5: Risk Assessment
+      FileText       // Step 6: Final Opinion
     ]
     return icons[stepNumber - 1]
   }
@@ -444,10 +445,9 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
   const getStepTitle = (stepNumber: number) => {
     const titles = [
       'פרטים אישיים',
-      'מידע משפחתי', 
+      'מידע משפחתי',
       'פרטי בית ספר',
-      'נתוני קליטה',
-      'אבחונים',
+      'נתוני קליטה',      // Merged stages 4 & 5
       'הערכת סיכון',
       'חוות דעת אישית'
     ]
@@ -678,7 +678,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          מין
+                          מגדר
                           <span className="text-red-500 mr-1">*</span>
                         </label>
                         <div className="relative">
@@ -686,7 +686,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                             {...register('gender')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
                           >
-                            <option value="">בחר מין</option>
+                            <option value="">בחר מגדר</option>
                             <option value="male">זכר</option>
                             <option value="female">נקבה</option>
                           </select>
@@ -695,7 +695,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                         {errors.gender && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                            נא לבחור מין
+                            נא לבחור מגדר
                           </p>
                         )}
                       </div>
@@ -1174,13 +1174,6 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
                           >
                             <option value="">בחר כיתה</option>
-                            <option value="א">א</option>
-                            <option value="ב">ב</option>
-                            <option value="ג">ג</option>
-                            <option value="ד">ד</option>
-                            <option value="ה">ה</option>
-                            <option value="ו">ו</option>
-                            <option value="ז">ז</option>
                             <option value="ח">ח</option>
                             <option value="ט">ט</option>
                             <option value="י">י</option>
@@ -1284,16 +1277,38 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                       </div>
 
                       <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          ססמא למערכת מידע בית ספרית
-                        </label>
-                        <div className="relative">
-                          <input
-                            {...register('school_system_password')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="ססמא למערכת המידע"
-                          />
-                          <Shield className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        <h3 className="text-lg font-medium text-gray-800 mb-4">
+                          גישה למערכת מידע בית ספרית
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              שם משתמש
+                            </label>
+                            <div className="relative">
+                              <input
+                                {...register('school_info_username')}
+                                type="text"
+                                className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                                placeholder="הזן שם משתמש"
+                              />
+                              <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              סיסמה
+                            </label>
+                            <div className="relative">
+                              <input
+                                {...register('school_info_password')}
+                                type="text"
+                                className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                                placeholder="הזן סיסמה"
+                              />
+                              <Shield className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1441,6 +1456,37 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                     </div>
                   </div>
 
+                  {/* Conditional Detail Fields */}
+                  {watch('behavioral_issues') && (
+                    <div className="bg-white rounded-xl p-6 border border-gray-200 animate-fadeIn">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        פרט בעיות התנהגות
+                        <span className="text-red-500 mr-1">*</span>
+                      </label>
+                      <textarea
+                        {...register('behavioral_issues_details')}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                        rows={3}
+                        placeholder="תאר את בעיות ההתנהגות..."
+                      />
+                    </div>
+                  )}
+
+                  {watch('has_potential') && (
+                    <div className="bg-white rounded-xl p-6 border border-gray-200 animate-fadeIn">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        הסבר על הפוטנציאל
+                        <span className="text-red-500 mr-1">*</span>
+                      </label>
+                      <textarea
+                        {...register('potential_explanation')}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                        rows={3}
+                        placeholder="פרט על הפוטנציאל של התלמיד..."
+                      />
+                    </div>
+                  )}
+
                   {/* Motivation Section */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -1523,13 +1569,8 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                   </div>
                 </div>
               </div>
-            </div>
-          )}
 
-          {/* Step 5: Learning Assessment */}
-          {currentStep === 5 && (
-            <div className="space-y-6 animate-fadeIn">
-              {/* Learning Disabilities Section */}
+              {/* Learning Disabilities Section (merged from old Step 5) */}
               <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-2xl p-6 border border-green-200 shadow-sm">
                 <div className="flex items-center mb-6">
                   <div className="bg-green-100 p-3 rounded-xl ml-3">
@@ -1550,7 +1591,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                         לקוי למידה
                       </span>
                     </label>
-                    
+
                     {watch('learning_disability') && (
                       <div className="mt-4 animate-fadeIn">
                         <div className="bg-green-50 rounded-xl p-4 border border-green-100">
@@ -1580,7 +1621,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                         הפרעת קשב וריכוז (ADHD)
                       </span>
                     </label>
-                    
+
                     {watch('adhd') && (
                       <div className="mt-4 animate-fadeIn">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1601,7 +1642,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                 </div>
               </div>
 
-              {/* Assessment Section */}
+              {/* Assessment Section (merged from old Step 5) */}
               <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-2xl p-6 border border-teal-200 shadow-sm">
                 <div className="flex items-center mb-6">
                   <div className="bg-teal-100 p-3 rounded-xl ml-3">
@@ -1660,8 +1701,8 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
             </div>
           )}
 
-          {/* Step 6: Risk Assessment */}
-          {currentStep === 6 && (
+          {/* Step 5: Risk Assessment (was Step 6) */}
+          {currentStep === 5 && (
             <div className="space-y-6 animate-fadeIn">
               {/* Risk Factors Section */}
               <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl p-6 border border-red-200 shadow-sm">
@@ -1830,8 +1871,8 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
             </div>
           )}
 
-          {/* Step 7: Final Assessment */}
-          {currentStep === 7 && (
+          {/* Step 6: Final Assessment (was Step 7) */}
+          {currentStep === 6 && (
             <div className="space-y-6 animate-fadeIn">
               {/* Assessment Results Section */}
               <div className="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-2xl p-6 border border-amber-200 shadow-sm">

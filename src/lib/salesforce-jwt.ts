@@ -328,7 +328,8 @@ class SalesforceJWTService {
         Student_Apartment__c: data.studentApartment || '',
         Student_Phone__c: data.studentPhone,
         Student_Mobile__c: data.studentMobile || '',
-        School_System_Password__c: data.schoolSystemPassword || '',
+        School_Info_Username__c: data.schoolInfoUsername || '',
+        School_Info_Password__c: data.schoolInfoPassword || '',
         
         // Family Information
         Siblings_Count__c: data.siblingsCount || 0,
@@ -371,7 +372,9 @@ class SalesforceJWTService {
         
         // Assessment
         Behavioral_Issues__c: data.behavioralIssues || false,
+        Behavioral_Issues_Details__c: data.behavioralIssuesDetails || '',
         Has_Potential__c: data.hasPotential || false,
+        Potential_Explanation__c: data.potentialExplanation || '',
         Motivation_Level__c: data.motivationLevel ? 
           (data.motivationLevel === 'low' ? 'Low' : 
            data.motivationLevel === 'medium' ? 'Medium' : 'High') : '',

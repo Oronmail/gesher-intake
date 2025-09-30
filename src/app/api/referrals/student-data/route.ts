@@ -53,7 +53,8 @@ export async function POST(request: NextRequest) {
       studentApartment: studentData.apartment,
       studentPhone: studentData.phone,
       studentMobile: studentData.student_mobile,
-      schoolSystemPassword: studentData.school_system_password,
+      schoolInfoUsername: studentData.school_info_username,
+      schoolInfoPassword: studentData.school_info_password,
       
       // Parent/Guardian Information (from Supabase consent)
       parent1Name: referral.parent_names?.split(',')[0]?.trim() || '',
@@ -105,7 +106,9 @@ export async function POST(request: NextRequest) {
       
       // Assessment (from form)
       behavioralIssues: studentData.behavioral_issues || false,
+      behavioralIssuesDetails: studentData.behavioral_issues_details,
       hasPotential: studentData.has_potential || false,
+      potentialExplanation: studentData.potential_explanation,
       motivationLevel: studentData.motivation_level,
       motivationType: studentData.motivation_type,
       externalMotivators: studentData.external_motivators,

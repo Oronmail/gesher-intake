@@ -33,7 +33,8 @@ export interface StudentDataForm {
   apartment?: string
   phone: string
   student_mobile?: string
-  school_system_password?: string
+  school_info_username?: string
+  school_info_password?: string
   
   // Welfare Status
   known_to_welfare: boolean
@@ -73,7 +74,9 @@ export interface StudentDataForm {
   
   // Intake Assessment
   behavioral_issues: boolean
+  behavioral_issues_details?: string
   has_potential: boolean
+  potential_explanation?: string
   motivation_level: 'low' | 'medium' | 'high'
   motivation_type: 'internal' | 'external'
   external_motivators?: string
