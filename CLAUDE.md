@@ -626,12 +626,31 @@ NODE_ENV=production
   - [x] Image compression to avoid payload size limits
   - [x] CSP headers updated for Google Fonts and Vercel scripts
   - [x] Test files created for verification (test-consent-image.html, test-workflow.js)
+- [x] **FILE UPLOAD SYSTEM - December 2025**
+  - [x] Student form file uploads for assessment files (קובץ אבחון) and grade sheets (גליון ציונים)
+  - [x] FormData handling for multipart/form-data requests when files present
+  - [x] File validation: 10MB size limit, PDF/JPG/PNG types only
+  - [x] Generic uploadFile method in Salesforce integration
+  - [x] Files attached to Registration_Request__c records via ContentVersion API
+  - [x] Files appear in Notes & Attachments section in Salesforce
+  - [x] Client-side validation with Hebrew error messages
+  - [x] Automatic file type detection and proper MIME type handling
+- [x] **GENDER-INCLUSIVE LANGUAGE - December 2025**
+  - [x] Updated consent form text from "אני מאפשר" to "אני מאפשר/ת"
+  - [x] Applied to all consent form locations (ParentConsentForm, consent-image-generator, backup files)
+- [x] **FIELD-LEVEL SECURITY UPDATE - December 2025**
+  - [x] All Registration_Request__c fields made visible to all profiles
+  - [x] 3,361 field permissions successfully updated
+  - [x] Custom Apex script for bulk field permission updates
 
 ### 🚧 Pending Features
 - [ ] Authentication for counselors
 - [ ] Admin dashboard
 - [ ] Data export functionality
 - [ ] Domain verification for custom email sender
+- [ ] Bulk upload for multiple files
+- [ ] File preview before upload
+- [ ] Progress indicator for file uploads
 
 ---
 
@@ -660,6 +679,21 @@ NODE_ENV=production
 - Signature pad touch-compatible
 - Responsive grid layouts
 - Optimized for field use by House Managers
+
+### File Upload System
+- **Supported Files**: Assessment documents (קובץ אבחון) and grade sheets (גליון ציונים)
+- **File Types**: PDF, JPG, PNG
+- **Size Limit**: 10MB per file
+- **Implementation**:
+  - Client detects files and switches from JSON to FormData submission
+  - API endpoint handles both content types seamlessly
+  - Files uploaded to Salesforce using ContentVersion API
+  - Attached to Registration_Request__c record via FirstPublishLocationId
+- **Validation**:
+  - Client-side file size and type checking
+  - Hebrew error messages for validation failures
+  - Prevents submission if files don't meet requirements
+- **Storage**: Files stored in Salesforce as ContentDocuments, visible in Notes & Attachments
 
 ---
 
@@ -1140,13 +1174,13 @@ This is a pro bono project developed for Gesher Al HaNoar. For technical questio
 
 ---
 
-*Last Updated: November 2025 (Image-Based Consent System Implemented)*
-*Project Status: ✅ Fully Operational in Production with Image Generation*
+*Last Updated: December 2025 (File Upload System & Field Security Updates)*
+*Project Status: ✅ Fully Operational in Production with File Uploads*
 *Live URL: https://gesher-intake.vercel.app*
 *Repository: https://github.com/Oronmail/gesher-intake (Private)*
 *Email Service: Gmail SMTP (gesheryouth@gmail.com)*
 *SMS Service: Inwise (Configured)*
 *Database: Supabase (Secured with RLS)*
-*Salesforce: ✅ Successfully integrated with image attachments*
-*Security Status: ✅ All vulnerabilities patched, CSP configured*
-*Consent Storage: ✅ PNG images with timestamp + HTML backup + structured fields*
+*Salesforce: ✅ Successfully integrated with file attachments (consent images + student documents)*
+*Security Status: ✅ All vulnerabilities patched, field-level security configured*
+*File Uploads: ✅ Assessment files and grade sheets upload to Salesforce Notes & Attachments*
