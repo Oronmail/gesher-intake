@@ -596,6 +596,79 @@ class SalesforceJWTService {
   }
 
   /**
+   * Generic file upload method for any file type
+   */
+  async uploadFile(
+    parentRecordId: string,
+    fileBuffer: Buffer,
+    filename: string,
+    mimeType: string,
+    description?: string
+  ): Promise<{ success: boolean; error?: string; contentDocumentId?: string }> {
+    try {
+      if (!fileBuffer || !filename) {
+        return {
+          success: false,
+          error: 'Missing file data or filename'
+        };
+      }
+
+      // Convert buffer to base64
+      const fileBase64 = fileBuffer.toString('base64');
+
+      console.log(`Uploading file ${filename} to Salesforce (${fileBuffer.length} bytes)`);
+
+      // Create ContentVersion for the file
+      const contentVersionResult = await this.executeWithRetry(async (conn) => {
+        return await conn.sobject('ContentVersion').create({
+          Title: filename.replace(/\.[^/.]+$/, ''), // Remove file extension
+          PathOnClient: filename,
+          VersionData: fileBase64,
+          FirstPublishLocationId: parentRecordId, // This links it to the parent record
+          Description: description || `File upload: ${filename}`
+        });
+      });
+
+      if (!contentVersionResult.success) {
+        console.error('Failed to create ContentVersion:', contentVersionResult);
+        return {
+          success: false,
+          error: 'Failed to upload file to Salesforce'
+        };
+      }
+
+      console.log('ContentVersion created successfully:', contentVersionResult.id);
+
+      // Query to get the ContentDocumentId
+      const contentVersionQuery = await this.executeWithRetry(async (conn) => {
+        return await conn.query(
+          `SELECT ContentDocumentId FROM ContentVersion WHERE Id = '${contentVersionResult.id}'`
+        );
+      });
+
+      if (contentVersionQuery.records && contentVersionQuery.records.length > 0) {
+        const contentDocumentId = (contentVersionQuery.records[0] as { ContentDocumentId: string }).ContentDocumentId;
+        console.log('File uploaded successfully. ContentDocumentId:', contentDocumentId);
+
+        return {
+          success: true,
+          contentDocumentId
+        };
+      }
+
+      return {
+        success: true
+      };
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  /**
    * Test connection and authentication
    */
   async testConnection(): Promise<{

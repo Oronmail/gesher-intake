@@ -327,19 +327,105 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
   const onSubmit = async (data: FormData) => {
     // Prevent accidental double submission
     if (isSubmitting) return
-    
+
     setIsSubmitting(true)
     setSubmitResult(null)
 
     try {
-      const response = await fetch('/api/referrals/student-data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...data,
-          referral_number: referralNumber,
-        }),
-      })
+      // Check if we have files to upload
+      const hasFiles = data.assessment_file?.length > 0 || data.grade_sheet?.length > 0
+
+      // Validate file sizes (10MB limit)
+      const maxFileSize = 10 * 1024 * 1024 // 10MB in bytes
+
+      if (hasFiles) {
+        if (data.assessment_file?.length > 0) {
+          const file = data.assessment_file[0]
+          if (file.size > maxFileSize) {
+            setSubmitResult({
+              success: false,
+              message: `קובץ האבחון גדול מדי (${Math.round(file.size / 1024 / 1024)}MB). הגודל המקסימלי הוא 10MB`
+            })
+            setIsSubmitting(false)
+            return
+          }
+          // Validate file type
+          const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png']
+          if (!allowedTypes.includes(file.type)) {
+            setSubmitResult({
+              success: false,
+              message: 'קובץ האבחון חייב להיות PDF, JPG או PNG'
+            })
+            setIsSubmitting(false)
+            return
+          }
+        }
+
+        if (data.grade_sheet?.length > 0) {
+          const file = data.grade_sheet[0]
+          if (file.size > maxFileSize) {
+            setSubmitResult({
+              success: false,
+              message: `גליון הציונים גדול מדי (${Math.round(file.size / 1024 / 1024)}MB). הגודל המקסימלי הוא 10MB`
+            })
+            setIsSubmitting(false)
+            return
+          }
+          // Validate file type
+          const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png']
+          if (!allowedTypes.includes(file.type)) {
+            setSubmitResult({
+              success: false,
+              message: 'גליון הציונים חייב להיות PDF, JPG או PNG'
+            })
+            setIsSubmitting(false)
+            return
+          }
+        }
+      }
+
+      let response: Response
+
+      if (hasFiles) {
+        // Use FormData for file uploads
+        const formData = new window.FormData()
+
+        // Add all regular fields
+        Object.keys(data).forEach(key => {
+          if (key !== 'assessment_file' && key !== 'grade_sheet') {
+            const value = (data as Record<string, unknown>)[key]
+            if (value !== undefined && value !== null) {
+              formData.append(key, typeof value === 'object' ? JSON.stringify(value) : String(value))
+            }
+          }
+        })
+
+        // Add referral number
+        formData.append('referral_number', referralNumber)
+
+        // Add files if present
+        if (data.assessment_file?.length > 0) {
+          formData.append('assessment_file', data.assessment_file[0])
+        }
+        if (data.grade_sheet?.length > 0) {
+          formData.append('grade_sheet', data.grade_sheet[0])
+        }
+
+        response = await fetch('/api/referrals/student-data', {
+          method: 'POST',
+          body: formData, // No Content-Type header needed, browser will set it with boundary
+        })
+      } else {
+        // Use JSON for regular data without files
+        response = await fetch('/api/referrals/student-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...data,
+            referral_number: referralNumber,
+          }),
+        })
+      }
 
       const result = await response.json()
 

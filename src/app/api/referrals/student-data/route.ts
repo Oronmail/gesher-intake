@@ -4,8 +4,51 @@ import salesforceJWT from '@/lib/salesforce-jwt'
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const { referral_number, ...studentData } = body
+    let referral_number: string
+    let studentData: Record<string, unknown>
+    const files: { assessment_file?: File; grade_sheet?: File } = {}
+
+    // Check if request is FormData (contains files) or JSON
+    const contentType = request.headers.get('content-type') || ''
+
+    if (contentType.includes('multipart/form-data')) {
+      // Handle FormData with files
+      const formData = await request.formData()
+
+      // Extract referral number
+      referral_number = formData.get('referral_number') as string
+
+      // Extract files
+      const assessmentFile = formData.get('assessment_file') as File
+      const gradeSheetFile = formData.get('grade_sheet') as File
+
+      if (assessmentFile && assessmentFile.size > 0) {
+        files.assessment_file = assessmentFile
+      }
+      if (gradeSheetFile && gradeSheetFile.size > 0) {
+        files.grade_sheet = gradeSheetFile
+      }
+
+      // Extract other form data
+      studentData = {}
+      for (const [key, value] of formData.entries()) {
+        if (key !== 'referral_number' && key !== 'assessment_file' && key !== 'grade_sheet') {
+          // Try to parse JSON for complex objects
+          try {
+            studentData[key] = JSON.parse(value as string)
+          } catch {
+            // If not JSON, use as is
+            studentData[key] = value
+          }
+        }
+      }
+    } else {
+      // Handle regular JSON
+      const body = await request.json()
+      referral_number = body.referral_number
+      studentData = { ...body }
+      delete studentData.referral_number
+    }
 
     // Get the referral from Supabase to validate consent and get parent/counselor data
     const { data: referral, error: referralError } = await supabase
@@ -167,6 +210,63 @@ export async function POST(request: NextRequest) {
 
     console.log('Registration Request updated in Salesforce')
 
+    // Upload files to Salesforce if present
+    const uploadedFiles: string[] = []
+
+    if (files.assessment_file) {
+      try {
+        console.log(`Uploading assessment file: ${files.assessment_file.name}`)
+        const arrayBuffer = await files.assessment_file.arrayBuffer()
+        const buffer = Buffer.from(arrayBuffer)
+
+        const uploadResult = await salesforceJWT.uploadFile(
+          referral.salesforce_contact_id,
+          buffer,
+          files.assessment_file.name,
+          files.assessment_file.type,
+          'קובץ אבחון - Assessment File'
+        )
+
+        if (uploadResult.success) {
+          console.log(`Assessment file uploaded successfully: ${uploadResult.contentDocumentId}`)
+          uploadedFiles.push('assessment_file')
+        } else {
+          console.error(`Failed to upload assessment file: ${uploadResult.error}`)
+        }
+      } catch (error) {
+        console.error('Error uploading assessment file:', error)
+      }
+    }
+
+    if (files.grade_sheet) {
+      try {
+        console.log(`Uploading grade sheet: ${files.grade_sheet.name}`)
+        const arrayBuffer = await files.grade_sheet.arrayBuffer()
+        const buffer = Buffer.from(arrayBuffer)
+
+        const uploadResult = await salesforceJWT.uploadFile(
+          referral.salesforce_contact_id,
+          buffer,
+          files.grade_sheet.name,
+          files.grade_sheet.type,
+          'גליון ציונים - Grade Sheet'
+        )
+
+        if (uploadResult.success) {
+          console.log(`Grade sheet uploaded successfully: ${uploadResult.contentDocumentId}`)
+          uploadedFiles.push('grade_sheet')
+        } else {
+          console.error(`Failed to upload grade sheet: ${uploadResult.error}`)
+        }
+      } catch (error) {
+        console.error('Error uploading grade sheet:', error)
+      }
+    }
+
+    if (uploadedFiles.length > 0) {
+      console.log(`Successfully uploaded ${uploadedFiles.length} file(s) to Salesforce`)
+    }
+
     // Privacy-focused cleanup: Remove all personal data from Supabase after successful Salesforce submission
     // Keep only minimal record (referral_number, status, timestamps) to prevent link reuse
     const { error: updateError } = await supabase
@@ -199,7 +299,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'Student data submitted successfully to Salesforce',
-      salesforceId: referral.salesforce_contact_id
+      salesforceId: referral.salesforce_contact_id,
+      uploadedFiles: uploadedFiles.length > 0 ? uploadedFiles : undefined
     })
   } catch (error) {
     console.error('API error:', error)

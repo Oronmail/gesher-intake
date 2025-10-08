@@ -203,7 +203,7 @@ export default function ParentConsentForm({ referralNumber }: ParentConsentFormP
             <div className="flex items-start">
               <FileSignature className="h-6 w-6 text-blue-600 mt-1 ml-3 flex-shrink-0" />
               <p className="text-gray-700 leading-relaxed">
-                אני מאפשר להנהלת &quot;גשר אל הנוער&quot; לקבל מביה&quot;ס/ רווחה/ גורם מטפל אחר כל מידע
+                אני מאפשר/ת להנהלת &quot;גשר אל הנוער&quot; לקבל מביה&quot;ס/ רווחה/ גורם מטפל אחר כל מידע
                 לימודי/פסיכולוגי/רפואי על בני/ביתי. אנו מוותרים בזאת על סודיות לגבי המידע הרלוונטי.
               </p>
             </div>
