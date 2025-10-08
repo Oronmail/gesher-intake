@@ -213,16 +213,23 @@ export async function POST(request: NextRequest) {
     // Upload files to Salesforce if present
     const uploadedFiles: string[] = []
 
+    // Get student full name for file naming
+    const studentFullName = `${studentData.student_first_name || ''} ${studentData.student_last_name || ''}`.trim() || 'Student'
+
     if (files.assessment_file) {
       try {
-        console.log(`Uploading assessment file: ${files.assessment_file.name}`)
+        // Create new file name with student name
+        const fileExtension = files.assessment_file.name.split('.').pop() || 'pdf'
+        const newFileName = `${studentFullName} - אבחון.${fileExtension}`
+
+        console.log(`Uploading assessment file as: ${newFileName}`)
         const arrayBuffer = await files.assessment_file.arrayBuffer()
         const buffer = Buffer.from(arrayBuffer)
 
         const uploadResult = await salesforceJWT.uploadFile(
           referral.salesforce_contact_id,
           buffer,
-          files.assessment_file.name,
+          newFileName,
           files.assessment_file.type,
           'קובץ אבחון - Assessment File'
         )
@@ -240,14 +247,18 @@ export async function POST(request: NextRequest) {
 
     if (files.grade_sheet) {
       try {
-        console.log(`Uploading grade sheet: ${files.grade_sheet.name}`)
+        // Create new file name with student name
+        const fileExtension = files.grade_sheet.name.split('.').pop() || 'pdf'
+        const newFileName = `${studentFullName} - גליון ציונים.${fileExtension}`
+
+        console.log(`Uploading grade sheet as: ${newFileName}`)
         const arrayBuffer = await files.grade_sheet.arrayBuffer()
         const buffer = Buffer.from(arrayBuffer)
 
         const uploadResult = await salesforceJWT.uploadFile(
           referral.salesforce_contact_id,
           buffer,
-          files.grade_sheet.name,
+          newFileName,
           files.grade_sheet.type,
           'גליון ציונים - Grade Sheet'
         )
