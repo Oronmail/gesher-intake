@@ -29,6 +29,7 @@ import {
   Shield
 } from 'lucide-react'
 import Logo from './Logo'
+import { getBrandingFromDestination } from '@/lib/branding'
 import { supabase } from '@/lib/supabase'
 
 // Add CSS for animations
@@ -206,9 +207,10 @@ type FormData = z.infer<typeof formSchema>
 
 interface StudentDataFormProps {
   referralNumber: string
+  warmHomeDestination?: string | null
 }
 
-export default function StudentDataForm({ referralNumber }: StudentDataFormProps) {
+export default function StudentDataForm({ referralNumber, warmHomeDestination }: StudentDataFormProps) {
   const [currentStep, setCurrentStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string } | null>(null)
@@ -216,6 +218,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
   const [isIntentionalSubmit, setIsIntentionalSubmit] = useState(false)
 
   const totalSteps = 6
+  const branding = getBrandingFromDestination(warmHomeDestination || null)
 
   const {
     register,
@@ -501,7 +504,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
                     <div className="bg-green-100 p-2 rounded-lg ml-3">
                       <GraduationCap className="w-6 h-6 text-green-600" />
                     </div>
-                    <h3 className="text-lg font-semibold text-green-800">מערכת גשר אל הנוער</h3>
+                    <h3 className="text-lg font-semibold text-green-800">מערכת {branding.organizationName}</h3>
                   </div>
                   <p className="text-green-800 text-lg">
                     פרטי התלמיד/ה נקלטו במערכת ויועברו לצוות המקצועי לבחינה ואישור
@@ -553,7 +556,7 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
       <div className="max-w-5xl mx-auto">
         {/* Logo above the form */}
         <div className="flex justify-center mb-6">
-          <Logo className="h-20 w-20" />
+          <Logo className="h-20 w-20" warmHomeDestination={warmHomeDestination} />
         </div>
         
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">

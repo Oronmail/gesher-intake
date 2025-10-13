@@ -10,6 +10,7 @@ interface ConsentInfo {
   status: string
   consent_timestamp: string
   parent_names: string
+  warm_home_destination?: string
 }
 
 export default function ConsentPage({ 
@@ -21,6 +22,7 @@ export default function ConsentPage({
   const [loading, setLoading] = useState(true)
   const [alreadySigned, setAlreadySigned] = useState(false)
   const [consentInfo, setConsentInfo] = useState<ConsentInfo | null>(null)
+  const [warmHomeDestination, setWarmHomeDestination] = useState<string | null>(null)
 
   useEffect(() => {
     checkConsentStatus()
@@ -31,13 +33,14 @@ export default function ConsentPage({
     try {
       const { data, error } = await supabase
         .from('referrals')
-        .select('status, consent_timestamp, parent_names')
+        .select('status, consent_timestamp, parent_names, warm_home_destination')
         .eq('referral_number', resolvedParams.referralNumber)
         .single()
 
       if (error) {
         console.error('Error checking consent status:', error)
       } else if (data) {
+        setWarmHomeDestination(data.warm_home_destination || null)
         if (data.status === 'consent_signed' || data.status === 'completed') {
           setAlreadySigned(true)
           setConsentInfo(data)
@@ -72,7 +75,7 @@ export default function ConsentPage({
           <div className="max-w-2xl mx-auto p-6">
             <div className="bg-white rounded-lg shadow-lg p-8">
               <div className="flex flex-col items-center text-center space-y-6">
-                <Logo />
+                <Logo warmHomeDestination={consentInfo.warm_home_destination || null} />
                 <CheckCircle className="h-16 w-16 text-green-500" />
                 <h1 className="text-2xl font-bold text-gray-800">
                   טופס ההסכמה כבר נחתם
@@ -107,7 +110,7 @@ export default function ConsentPage({
 
   return (
     <>
-      <ParentConsentForm referralNumber={resolvedParams.referralNumber} />
+      <ParentConsentForm referralNumber={resolvedParams.referralNumber} warmHomeDestination={warmHomeDestination} />
     </>
   )
 }

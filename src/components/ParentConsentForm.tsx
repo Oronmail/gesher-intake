@@ -8,6 +8,7 @@ import { Loader2, CheckCircle, User, CreditCard, MapPin, Phone, PenTool, Shield,
 import dynamic from 'next/dynamic'
 import Logo from './Logo'
 import { generateConsentImage, generateConsentHTMLForStorage, getConsentImageFilename } from '@/lib/consent-image-generator'
+import { getBrandingFromDestination } from '@/contexts/BrandingContext'
 
 const SignaturePad = dynamic(() => import('./SignaturePad'), { ssr: false })
 
@@ -27,9 +28,11 @@ type FormData = z.infer<typeof formSchema>
 
 interface ParentConsentFormProps {
   referralNumber: string
+  warmHomeDestination?: string | null
 }
 
-export default function ParentConsentForm({ referralNumber }: ParentConsentFormProps) {
+export default function ParentConsentForm({ referralNumber, warmHomeDestination }: ParentConsentFormProps) {
+  const branding = getBrandingFromDestination(warmHomeDestination)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [signature1, setSignature1] = useState<string>('')
   const [signature2, setSignature2] = useState<string>('')
@@ -82,7 +85,8 @@ export default function ParentConsentForm({ referralNumber }: ParentConsentFormP
           parent2Address: data.parent2_address,
           parent2Phone: data.parent2_phone,
           parent2Signature: hasSecondParent ? signature2 : undefined,
-          consentDate: new Date()
+          consentDate: new Date(),
+          organizationName: branding.organizationName
         }
         
         // Generate image with timestamp
@@ -185,7 +189,7 @@ export default function ParentConsentForm({ referralNumber }: ParentConsentFormP
       <div className="max-w-4xl mx-auto">
         {/* Logo above the form */}
         <div className="flex justify-center mb-6">
-          <Logo className="h-20 w-20" />
+          <Logo className="h-20 w-20" warmHomeDestination={warmHomeDestination} />
         </div>
         
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
@@ -203,7 +207,7 @@ export default function ParentConsentForm({ referralNumber }: ParentConsentFormP
             <div className="flex items-start">
               <FileSignature className="h-6 w-6 text-blue-600 mt-1 ml-3 flex-shrink-0" />
               <p className="text-gray-700 leading-relaxed">
-                אני מאפשר/ת להנהלת &quot;גשר אל הנוער&quot; לקבל מביה&quot;ס/ רווחה/ גורם מטפל אחר כל מידע
+                אני מאפשר/ת להנהלת &quot;{branding.organizationName}&quot; לקבל מביה&quot;ס/ רווחה/ גורם מטפל אחר כל מידע
                 לימודי/פסיכולוגי/רפואי על בני/ביתי. אנו מוותרים בזאת על סודיות לגבי המידע הרלוונטי.
               </p>
             </div>

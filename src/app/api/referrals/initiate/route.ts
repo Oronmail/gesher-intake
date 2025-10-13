@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { sendConsentEmail } from '@/lib/email'
 import { sendConsentSMS } from '@/lib/sms'
+import { getBrandingFromDestination } from '@/lib/branding'
 import salesforceJWT from '@/lib/salesforce-jwt'
 import { 
   secureFormSchemas, 
@@ -102,7 +103,10 @@ export async function POST(request: NextRequest) {
       email: false,
       sms: false,
     }
-    
+
+    // Get branding based on warm home destination
+    const branding = getBrandingFromDestination(warm_home_destination)
+
     // Send email if parent email is provided
     if (parent_email) {
       const emailResult = await sendConsentEmail({
@@ -112,6 +116,7 @@ export async function POST(request: NextRequest) {
         schoolName: school_name,
         referralNumber: referral_number,
         consentUrl: consentUrl,
+        organizationName: branding.organizationName,
       })
       
       if (emailResult.success) {

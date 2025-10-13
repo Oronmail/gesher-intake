@@ -14,6 +14,7 @@ interface ConsentFormData {
   parent2Phone?: string
   parent2Signature?: string
   consentDate: Date
+  organizationName?: string
 }
 
 /**
@@ -39,6 +40,7 @@ const generateConsentHTML = (data: ConsentFormData): string => {
   const signedDate = new Date(data.consentDate)
   const dateStr = formatDate(signedDate)
   const timeStr = formatTime(signedDate)
+  const organizationName = data.organizationName || 'גשר אל הנוער'
   
   return `
     <div id="consent-form-capture" style="
@@ -88,7 +90,7 @@ const generateConsentHTML = (data: ConsentFormData): string => {
             margin: 0;
             font-size: 32px;
             font-weight: bold;
-          ">גשר אל הנוער</h1>
+          ">${organizationName}</h1>
           <div style="
             color: #6b7280;
             font-size: 18px;
@@ -255,7 +257,7 @@ const generateConsentHTML = (data: ConsentFormData): string => {
           margin: 0;
           font-size: 15px;
         ">
-          אני מאפשר/ת להנהלת "גשר אל הנוער" לקבל מביה"ס/ רווחה/ גורם מטפל אחר כל מידע
+          אני מאפשר/ת להנהלת "${organizationName}" לקבל מביה"ס/ רווחה/ גורם מטפל אחר כל מידע
           לימודי/פסיכולוגי/רפואי על בני/ביתי. אנו מוותרים בזאת על סודיות לגבי המידע הרלוונטי.
         </p>
       </div>
@@ -269,9 +271,9 @@ const generateConsentHTML = (data: ConsentFormData): string => {
         color: #6b7280;
         font-size: 12px;
       ">
-        <div>מסמך זה נוצר באופן דיגיטלי במערכת ההרשמה של עמותת גשר אל הנוער</div>
+        <div>מסמך זה נוצר באופן דיגיטלי במערכת ההרשמה של ${organizationName}</div>
         <div style="margin-top: 5px;">
-          © כל הזכויות שמורות לעמותת גשר אל הנוער
+          © כל הזכויות שמורות ל${organizationName}
         </div>
       </div>
     </div>

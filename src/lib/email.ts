@@ -23,6 +23,7 @@ interface SendConsentEmailParams {
   schoolName: string;
   referralNumber: string;
   consentUrl: string;
+  organizationName?: string;
 }
 
 interface SendCounselorNotificationParams {
@@ -32,6 +33,7 @@ interface SendCounselorNotificationParams {
   studentName: string;
   studentFormUrl: string;
   referralNumber: string;
+  organizationName?: string;
 }
 
 export async function sendConsentEmail({
@@ -40,6 +42,7 @@ export async function sendConsentEmail({
   schoolName,
   referralNumber, // eslint-disable-line @typescript-eslint/no-unused-vars
   consentUrl,
+  organizationName = 'גשר אל הנוער',
 }: SendConsentEmailParams) {
   console.log(`[EMAIL] Attempting to send consent email to: ${parentEmail}`);
   
@@ -55,12 +58,12 @@ export async function sendConsentEmail({
   
   // Plain text version for better deliverability
   const textContent = `
-    גשר אל הנוער - טופס ויתור סודיות
-    
+    ${organizationName} - טופס ויתור סודיות
+
     שלום,
-    
-    יועץ משפחה מבית ספר ${schoolName} הפנה את ילדכם לתוכנית "גשר אל הנוער".
-    
+
+    יועץ משפחה מבית ספר ${schoolName} הפנה את ילדכם לתוכנית "${organizationName}".
+
     לצורך המשך הטיפול בבקשה, אנו זקוקים להסכמתכם לויתור סודיות לימודית/פסיכולוגית/רפואית.
     
     לחצו על הקישור למילוי טופס ויתור הסודיות:
@@ -72,11 +75,11 @@ export async function sendConsentEmail({
 
   try {
     const result = await transporter.sendMail({
-      from: `גשר אל הנוער <${process.env.GMAIL_USER}>`, // Include Hebrew name to match Gmail settings
+      from: `${organizationName} <${process.env.GMAIL_USER}>`, // Include Hebrew name to match Gmail settings
       to: parentEmail,
-      subject: `טופס ויתור סודיות - גשר אל הנוער`,
+      subject: `טופס ויתור סודיות - ${organizationName}`,
       text: textContent, // Plain text version
-      replyTo: `גשר אל הנוער <${process.env.GMAIL_USER}>`,
+      replyTo: `${organizationName} <${process.env.GMAIL_USER}>`,
       messageId: messageId,
       headers: {
         'X-Priority': '3',
@@ -88,13 +91,13 @@ export async function sendConsentEmail({
       html: `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="text-align: center; margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px;">
-            <h1 style="color: white; margin: 0; font-size: 24px;">גשר אל הנוער</h1>
+            <h1 style="color: white; margin: 0; font-size: 24px;">${organizationName}</h1>
           </div>
-          <h2 style="color: #2563eb;">מועמדות במסגרת עמותת ״גשר אל הנוער״</h2>
-          
+          <h2 style="color: #2563eb;">מועמדות במסגרת עמותת ״${organizationName}״</h2>
+
           <p>שלום,</p>
-          
-          <p>יועץ משפחה מבית ספר ${schoolName} הפנה את ילדכם לתוכנית "גשר אל הנוער".</p>
+
+          <p>יועץ משפחה מבית ספר ${schoolName} הפנה את ילדכם לתוכנית "${organizationName}".</p>
           
           <p>לצורך המשך הטיפול בבקשה, אנו זקוקים להסכמתכם לויתור סודיות לימודית/פסיכולוגית/רפואית.</p>
           
@@ -137,6 +140,7 @@ export async function sendCounselorNotification({
   studentName,
   studentFormUrl,
   referralNumber, // eslint-disable-line @typescript-eslint/no-unused-vars
+  organizationName = 'גשר אל הנוער',
 }: SendCounselorNotificationParams) {
   console.log(`[EMAIL] Attempting to send counselor notification to: ${counselorEmail}`);
   
@@ -168,11 +172,11 @@ export async function sendCounselorNotification({
 
   try {
     const result = await transporter.sendMail({
-      from: `גשר אל הנוער <${process.env.GMAIL_USER}>`, // Include Hebrew name to match Gmail settings
+      from: `${organizationName} <${process.env.GMAIL_USER}>`, // Include Hebrew name to match Gmail settings
       to: counselorEmail,
       subject: `הסכמת הורים התקבלה - ${studentName}`,
       text: textContent, // Plain text version
-      replyTo: `גשר אל הנוער <${process.env.GMAIL_USER}>`,
+      replyTo: `${organizationName} <${process.env.GMAIL_USER}>`,
       messageId: messageId,
       headers: {
         'X-Priority': '3',
@@ -184,7 +188,7 @@ export async function sendCounselorNotification({
       html: `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="text-align: center; margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px;">
-            <h1 style="color: white; margin: 0; font-size: 24px;">גשר אל הנוער</h1>
+            <h1 style="color: white; margin: 0; font-size: 24px;">${organizationName}</h1>
           </div>
           <h2 style="color: #10b981;">✅ הסכמת הורים התקבלה בהצלחה</h2>
           

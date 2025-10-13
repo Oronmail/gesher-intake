@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { sendCounselorNotification } from '@/lib/email'
+import { getBrandingFromDestination } from '@/lib/branding'
 import salesforceJWT from '@/lib/salesforce-jwt'
 
 export async function POST(request: NextRequest) {
@@ -104,7 +105,10 @@ export async function POST(request: NextRequest) {
 
     // Send notification to counselor that consent is signed
     const studentFormUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/student-form/${referral_number}`
-    
+
+    // Get branding based on warm home destination
+    const branding = getBrandingFromDestination(data.warm_home_destination)
+
     // Send email to counselor
     if (data.counselor_email) {
       const emailResult = await sendCounselorNotification({
@@ -114,6 +118,7 @@ export async function POST(request: NextRequest) {
         studentName: student_name,
         studentFormUrl: studentFormUrl,
         referralNumber: referral_number,
+        organizationName: branding.organizationName,
       })
       
       if (emailResult.success) {
