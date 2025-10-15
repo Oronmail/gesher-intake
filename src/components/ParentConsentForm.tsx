@@ -189,7 +189,7 @@ export default function ParentConsentForm({ referralNumber, warmHomeDestination 
       <div className="max-w-4xl mx-auto">
         {/* Logo above the form */}
         <div className="flex justify-center mb-6">
-          <Logo className="h-20 w-20" warmHomeDestination={warmHomeDestination} />
+          <Logo className="h-32 w-32" warmHomeDestination={warmHomeDestination} />
         </div>
         
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
