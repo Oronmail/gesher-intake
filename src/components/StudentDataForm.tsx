@@ -1776,24 +1776,24 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   {/* Motivation Section */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         רמת מוטיבציה
                         <span className="text-red-500 mr-1">*</span>
                       </label>
-                        <FieldWrapper fieldName="motivation_level" completedFields={completedFields}>
-                          <div className="relative">
-                            <select
-                          {...register('motivation_level')}
-                          className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
-                        >
-                          <option value="">בחר רמת מוטיבציה</option>
-                          <option value="low">נמוך</option>
-                          <option value="medium">בינוני</option>
-                          <option value="high">גבוה</option>
-                        </select>
-                            <Zap className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                      </div>
+                      <FieldWrapper fieldName="motivation_level" completedFields={completedFields}>
+                        <div className="relative">
+                          <select
+                            {...register('motivation_level')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                          >
+                            <option value="">בחר רמת מוטיבציה</option>
+                            <option value="low">נמוך</option>
+                            <option value="medium">בינוני</option>
+                            <option value="high">גבוה</option>
+                          </select>
+                          <Zap className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </FieldWrapper>
                       {errors.motivation_level && (
                         <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                           <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -1803,23 +1803,23 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     </div>
 
                     <div>
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         סוג מוטיבציה
                         <span className="text-red-500 mr-1">*</span>
                       </label>
-                        <FieldWrapper fieldName="motivation_type" completedFields={completedFields}>
-                          <div className="relative">
-                            <select
-                          {...register('motivation_type')}
-                          className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
-                        >
-                          <option value="">בחר סוג מוטיבציה</option>
-                          <option value="internal">פנימית</option>
-                          <option value="external">חיצונית</option>
-                        </select>
-                            <Heart className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                      </div>
+                      <FieldWrapper fieldName="motivation_type" completedFields={completedFields}>
+                        <div className="relative">
+                          <select
+                            {...register('motivation_type')}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                          >
+                            <option value="">בחר סוג מוטיבציה</option>
+                            <option value="internal">פנימית</option>
+                            <option value="external">חיצונית</option>
+                          </select>
+                          <Heart className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </FieldWrapper>
                       {errors.motivation_type && (
                         <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                           <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -1827,9 +1827,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         </p>
                       )}
                     </div>
-                          </div>
-                        </FieldWrapper>
-                        </FieldWrapper>
+                  </div>
 
                   {watch('motivation_type') === 'external' && (
                     <div className="animate-fadeIn">
@@ -1848,21 +1846,21 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   )}
 
                   <div>
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       מצב חברתי
                       <span className="text-red-500 mr-1">*</span>
                     </label>
-                        <FieldWrapper fieldName="social_status" completedFields={completedFields}>
-                          <div className="relative">
-                            <textarea
-                        {...register('social_status')}
-                        rows={3}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
-                        placeholder="תאר את המצב החברתי..."
-                      />
-                            <Users className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                    </div>
+                    <FieldWrapper fieldName="social_status" completedFields={completedFields}>
+                      <div className="relative">
+                        <textarea
+                          {...register('social_status')}
+                          rows={3}
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                          placeholder="תאר את המצב החברתי..."
+                        />
+                        <Users className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                      </div>
+                    </FieldWrapper>
                     {errors.social_status && (
                       <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                         <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -1872,24 +1870,22 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   </div>
 
                   <div>
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       פעילויות בשעות אחה&quot;צ
                       <span className="text-gray-500 text-xs mr-2">(חוגים, תנועות נוער, אימוני כושר, עבודה)</span>
                     </label>
-                        <FieldWrapper fieldName="afternoon_activities" completedFields={completedFields}>
-                          <div className="relative">
-                            <textarea
-                        {...register('afternoon_activities')}
-                        rows={3}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
-                        placeholder="פרט את הפעילויות..."
-                      />
-                            <Activity className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                    </div>
-                          </div>
-                        </FieldWrapper>
-                        </FieldWrapper>
+                    <FieldWrapper fieldName="afternoon_activities" completedFields={completedFields}>
+                      <div className="relative">
+                        <textarea
+                          {...register('afternoon_activities')}
+                          rows={3}
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                          placeholder="פרט את הפעילויות..."
+                        />
+                        <Activity className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                      </div>
+                    </FieldWrapper>
+                  </div>
                 </div>
               </div>
 
@@ -1904,87 +1900,86 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                 <div className="space-y-6">
                   <FieldWrapper fieldName="learning_disability" completedFields={completedFields}>
-                        <div className="bg-white rounded-xl p-4 border border-gray-200">
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
-                    <label className="flex items-center cursor-pointer group">
-                      <input
-                        {...register('learning_disability')}
-                        type="checkbox"
-                        className="ml-3 w-5 h-5 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
-                      />
-                      <span className="text-gray-700 font-medium group-hover:text-green-600 transition-colors">
-                        לקוי למידה
-                      </span>
-                    </label>
+                    <div className="bg-white rounded-xl p-4 border border-gray-200">
+                      <label className="flex items-center cursor-pointer group">
+                        <input
+                          {...register('learning_disability')}
+                          type="checkbox"
+                          className="ml-3 w-5 h-5 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+                        />
+                        <span className="text-gray-700 font-medium group-hover:text-green-600 transition-colors">
+                          לקוי למידה
+                        </span>
+                      </label>
 
-                    {watch('learning_disability') && (
-                      <div className="mt-4 animate-fadeIn space-y-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            פרט על לקות הלמידה
-                            <span className="text-red-500 mr-1">*</span>
-                          </label>
-                          <FieldWrapper fieldName="learning_disability_explanation" completedFields={completedFields}>
-                            <textarea
-                              {...register('learning_disability_explanation')}
-                              rows={3}
-                              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 resize-none"
-                              placeholder="תאר את סוג הלקות ואופן ההתמודדות..."
-                            />
+                      {watch('learning_disability') && (
+                        <div className="mt-4 animate-fadeIn space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              פרט על לקות הלמידה
+                              <span className="text-red-500 mr-1">*</span>
+                            </label>
+                            <FieldWrapper fieldName="learning_disability_explanation" completedFields={completedFields}>
+                              <textarea
+                                {...register('learning_disability_explanation')}
+                                rows={3}
+                                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 resize-none"
+                                placeholder="תאר את סוג הלקות ואופן ההתמודדות..."
+                              />
+                            </FieldWrapper>
+                          </div>
+                          <FieldWrapper fieldName="requires_remedial_teaching" completedFields={completedFields}>
+                            <div className="bg-green-50 rounded-xl p-4 border border-green-100">
+                              <label className="flex items-center cursor-pointer group">
+                                <input
+                                  {...register('requires_remedial_teaching')}
+                                  type="checkbox"
+                                  className="ml-3 w-5 h-5 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+                                />
+                                <span className="text-gray-700 font-medium group-hover:text-green-600 transition-colors">
+                                  מחייב הוראה מתקנת
+                                </span>
+                              </label>
+                            </div>
                           </FieldWrapper>
                         </div>
-                        <div className="bg-green-50 rounded-xl p-4 border border-green-100">
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
-                          <label className="flex items-center cursor-pointer group">
-                            <input
-                              {...register('requires_remedial_teaching')}
-                              type="checkbox"
-                              className="ml-3 w-5 h-5 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
-                            />
-                            <span className="text-gray-700 font-medium group-hover:text-green-600 transition-colors">
-                              מחייב הוראה מתקנת
-                            </span>
-                          </label>
-                        </div>
-                      </FieldWrapper>
-                      </div>
-                    )}
-                  </div>
+                      )}
+                    </div>
+                  </FieldWrapper>
 
                   <FieldWrapper fieldName="adhd" completedFields={completedFields}>
-                        <div className="bg-white rounded-xl p-4 border border-gray-200">
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
-                    <label className="flex items-center cursor-pointer group">
-                      <input
-                        {...register('adhd')}
-                        type="checkbox"
-                        className="ml-3 w-5 h-5 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
-                      />
-                      <span className="text-gray-700 font-medium group-hover:text-green-600 transition-colors">
-                        הפרעת קשב וריכוז (ADHD)
-                      </span>
-                    </label>
+                    <div className="bg-white rounded-xl p-4 border border-gray-200">
+                      <label className="flex items-center cursor-pointer group">
+                        <input
+                          {...register('adhd')}
+                          type="checkbox"
+                          className="ml-3 w-5 h-5 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+                        />
+                        <span className="text-gray-700 font-medium group-hover:text-green-600 transition-colors">
+                          הפרעת קשב וריכוז (ADHD)
+                        </span>
+                      </label>
 
-                    {watch('adhd') && (
-                      <div className="mt-4 animate-fadeIn">
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          האם הפרעת הקשב מטופלת? כיצד?
-                        </label>
-                        <FieldWrapper fieldName="adhd_treatment" completedFields={completedFields}>
-                          <div className="relative">
-                            <textarea
-                            {...register('adhd_treatment')}
-                            rows={3}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
-                            placeholder="תאר את הטיפול הנוכחי..."
-                          />
-                            <Brain className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                      {watch('adhd') && (
+                        <div className="mt-4 animate-fadeIn">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            האם הפרעת הקשב מטופלת? כיצד?
+                          </label>
+                          <FieldWrapper fieldName="adhd_treatment" completedFields={completedFields}>
+                            <div className="relative">
+                              <textarea
+                                {...register('adhd_treatment')}
+                                rows={3}
+                                className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
+                                placeholder="תאר את הטיפול הנוכחי..."
+                              />
+                              <Brain className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            </div>
+                          </FieldWrapper>
                         </div>
-                          </div>
-                        </FieldWrapper>
-                    )}
-                  </div>
+                      )}
+                    </div>
+                  </FieldWrapper>
                 </div>
               </div>
 
@@ -2000,37 +1995,34 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FieldWrapper fieldName="assessment_done" completedFields={completedFields}>
-                        <div className="bg-white rounded-xl p-4 border border-gray-200">
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
-                      <label className="flex items-center cursor-pointer group">
-                        <input
-                          {...register('assessment_done')}
-                          type="checkbox"
-                          className="ml-3 w-5 h-5 text-teal-600 border-2 border-gray-300 rounded focus:ring-teal-500 focus:ring-2"
-                        />
-                        <span className="text-gray-700 font-medium group-hover:text-teal-600 transition-colors">
-                          נעשה אבחון
-                        </span>
-                      </label>
-                    </div>
-                      </FieldWrapper>
-                      </FieldWrapper>
+                      <div className="bg-white rounded-xl p-4 border border-gray-200">
+                        <label className="flex items-center cursor-pointer group">
+                          <input
+                            {...register('assessment_done')}
+                            type="checkbox"
+                            className="ml-3 w-5 h-5 text-teal-600 border-2 border-gray-300 rounded focus:ring-teal-500 focus:ring-2"
+                          />
+                          <span className="text-gray-700 font-medium group-hover:text-teal-600 transition-colors">
+                            נעשה אבחון
+                          </span>
+                        </label>
+                      </div>
+                    </FieldWrapper>
 
                     <FieldWrapper fieldName="assessment_needed" completedFields={completedFields}>
-                        <div className="bg-white rounded-xl p-4 border border-gray-200">
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
-                      <label className="flex items-center cursor-pointer group">
-                        <input
-                          {...register('assessment_needed')}
-                          type="checkbox"
-                          className="ml-3 w-5 h-5 text-teal-600 border-2 border-gray-300 rounded focus:ring-teal-500 focus:ring-2"
-                        />
-                        <span className="text-gray-700 font-medium group-hover:text-teal-600 transition-colors">
-                          יש צורך באבחון
-                        </span>
-                      </label>
-                    </div>
-                      </FieldWrapper>
+                      <div className="bg-white rounded-xl p-4 border border-gray-200">
+                        <label className="flex items-center cursor-pointer group">
+                          <input
+                            {...register('assessment_needed')}
+                            type="checkbox"
+                            className="ml-3 w-5 h-5 text-teal-600 border-2 border-gray-300 rounded focus:ring-teal-500 focus:ring-2"
+                          />
+                          <span className="text-gray-700 font-medium group-hover:text-teal-600 transition-colors">
+                            יש צורך באבחון
+                          </span>
+                        </label>
+                      </div>
+                    </FieldWrapper>
                   </div>
 
                   {watch('assessment_done') && (
@@ -2053,40 +2045,39 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         </p>
                       </div>
                       <div>
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           פרטים נוספים על האבחון
                         </label>
                         <FieldWrapper fieldName="assessment_details" completedFields={completedFields}>
                           <div className="relative">
                             <textarea
-                            {...register('assessment_details')}
-                            rows={4}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
-                            placeholder="פרט על האבחון שנעשה..."
-                          />
+                              {...register('assessment_details')}
+                              rows={4}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
+                              placeholder="פרט על האבחון שנעשה..."
+                            />
                             <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
                           </div>
                         </FieldWrapper>
-                    </div>
-                  )}
+                      </div>
+                    )}
 
                   {watch('assessment_needed') && !watch('assessment_done') && (
                     <div className="animate-fadeIn">
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         פרטים על האבחון הנדרש
                       </label>
-                      <div className="relative">
-                        <textarea
-                          {...register('assessment_details')}
-                          rows={4}
-                          className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
-                          placeholder="פרט על האבחון הנדרש..."
-                        />
-                        <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                      </div>
+                      <FieldWrapper fieldName="assessment_details" completedFields={completedFields}>
+                        <div className="relative">
+                          <textarea
+                            {...register('assessment_details')}
+                            rows={4}
+                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
+                            placeholder="פרט על האבחון הנדרש..."
+                          />
+                          <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        </div>
+                      </FieldWrapper>
                     </div>
                   )}
                 </div>
@@ -2167,37 +2158,35 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             קצין ביקור סדיר
                           </label>
-                        <FieldWrapper fieldName="probation_officer" completedFields={completedFields}>
-                          <div className="relative">
-                            <input
-                              {...register('probation_officer')}
-                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                              placeholder="שם הקצין"
-                            />
-                            <Shield className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                          </div>
-                          </div>
-                        </FieldWrapper>
+                          <FieldWrapper fieldName="probation_officer" completedFields={completedFields}>
+                            <div className="relative">
+                              <input
+                                {...register('probation_officer')}
+                                className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                                placeholder="שם הקצין"
+                              />
+                              <Shield className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            </div>
+                          </FieldWrapper>
+                        </div>
                         <div>
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             ק. שירות מבחן לנוער
                           </label>
-                        <FieldWrapper fieldName="youth_probation_officer" completedFields={completedFields}>
-                          <div className="relative">
-                            <input
-                              {...register('youth_probation_officer')}
-                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                              placeholder="שם הקצין"
-                            />
-                            <Shield className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                          </div>
-                          </div>
-                        </FieldWrapper>
+                          <FieldWrapper fieldName="youth_probation_officer" completedFields={completedFields}>
+                            <div className="relative">
+                              <input
+                                {...register('youth_probation_officer')}
+                                className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                                placeholder="שם הקצין"
+                              />
+                              <Shield className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            </div>
+                          </FieldWrapper>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -2261,18 +2250,17 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     
                     {watch('takes_medication') && (
                       <div className="mt-4 animate-fadeIn">
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           תיאור התרופות והמינונים
                         </label>
                         <FieldWrapper fieldName="medication_description" completedFields={completedFields}>
                           <div className="relative">
                             <textarea
-                            {...register('medication_description')}
-                            rows={3}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
-                            placeholder="פרט את סוגי התרופות, מינונים ומטרת הטיפול..."
-                          />
+                              {...register('medication_description')}
+                              rows={3}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
+                              placeholder="פרט את סוגי התרופות, מינונים ומטרת הטיפול..."
+                            />
                             <Heart className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
                         </FieldWrapper>
@@ -2379,21 +2367,21 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   </div>
 
                   <div>
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       מה הגורמים לסיכון?
                       <span className="text-red-500 mr-1">*</span>
                     </label>
-                        <FieldWrapper fieldName="risk_factors" completedFields={completedFields}>
-                          <div className="relative">
-                            <textarea
-                        {...register('risk_factors')}
-                        rows={4}
-                        className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
-                        placeholder="פרט את הגורמים העיקריים לסיכון..."
-                      />
-                            <AlertTriangle className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                    </div>
+                    <FieldWrapper fieldName="risk_factors" completedFields={completedFields}>
+                      <div className="relative">
+                        <textarea
+                          {...register('risk_factors')}
+                          rows={4}
+                          className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
+                          placeholder="פרט את הגורמים העיקריים לסיכון..."
+                        />
+                        <AlertTriangle className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                      </div>
+                    </FieldWrapper>
                     {errors.risk_factors && (
                       <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                         <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -2401,8 +2389,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       </p>
                     )}
                   </div>
-                          </div>
-                        </FieldWrapper>
+                </div>
               </div>
 
               {/* Personal Opinion Section */}
@@ -2415,21 +2402,21 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 </div>
 
                 <div>
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     דעה אישית והמלצות
                     <span className="text-red-500 mr-1">*</span>
                   </label>
-                        <FieldWrapper fieldName="personal_opinion" completedFields={completedFields}>
-                          <div className="relative">
-                            <textarea
-                      {...register('personal_opinion')}
-                      rows={5}
-                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
-                      placeholder="שתף את דעתך המקצועית והמלצותיך לגבי קבלת המועמד/ת..."
-                    />
-                            <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                  </div>
+                  <FieldWrapper fieldName="personal_opinion" completedFields={completedFields}>
+                    <div className="relative">
+                      <textarea
+                        {...register('personal_opinion')}
+                        rows={5}
+                        className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
+                        placeholder="שתף את דעתך המקצועית והמלצותיך לגבי קבלת המועמד/ת..."
+                      />
+                      <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                    </div>
+                  </FieldWrapper>
                   {errors.personal_opinion && (
                     <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                       <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -2437,8 +2424,6 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     </p>
                   )}
                 </div>
-                          </div>
-                        </FieldWrapper>
 
               {/* Academic Performance Section */}
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200 shadow-sm">
@@ -2510,7 +2495,6 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <div key={index} className="bg-gray-50 p-4 rounded-xl border border-gray-200">
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                               <label className="block text-xs font-medium text-gray-600 mb-1">
                                 מקצוע {index + 1}
                               </label>
@@ -2522,7 +2506,6 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                               />
                             </div>
                             <div>
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                               <label className="block text-xs font-medium text-gray-600 mb-1">
                                 ציון
                               </label>
@@ -2534,7 +2517,6 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                               />
                             </div>
                             <div>
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                               <label className="block text-xs font-medium text-gray-600 mb-1">
                                 סיבה לציון השלילי
                               </label>
