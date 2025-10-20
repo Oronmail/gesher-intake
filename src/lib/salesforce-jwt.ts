@@ -211,9 +211,8 @@ class SalesforceJWTService {
       const initialRequest = {
         Name: data.referralNumber,  // Using standard Name field
         Status__c: 'Pending Consent',
-        Counselor_Name__c: data.counselorName,
-        Counselor_Email__c: data.counselorEmail,
-        Counselor_Mobile__c: data.counselorMobile,
+        School_Counselor_Name__c: data.counselorName,
+        School_Counselor_Phone__c: data.counselorMobile,
         School_Name__c: data.schoolName,
         Warm_Home_Destination__c: data.warmHomeDestination || '',
         Parent_Email__c: data.parentEmail || '',
@@ -734,6 +733,7 @@ class SalesforceJWTService {
            Mother_Occupation__c, Mother_Profession__c, Mother_Income__c, Debts_Loans__c,
            Parent_Involvement__c, Economic_Status__c, Economic_Details__c, Family_Background__c,
            School_Name__c, Grade__c, Homeroom_Teacher__c, Teacher_Phone__c,
+           School_Counselor_Name__c, School_Counselor_Phone__c,
            Behavioral_Issues__c, Behavioral_Issues_Details__c, Has_Potential__c,
            Potential_Explanation__c, Motivation_Level__c, Motivation_Type__c,
            External_Motivators__c, Social_Status__c, Afternoon_Activities__c,
@@ -840,6 +840,8 @@ class SalesforceJWTService {
       if (data.grade !== undefined) updateData.Grade__c = data.grade;
       if (data.homeroomTeacher !== undefined) updateData.Homeroom_Teacher__c = data.homeroomTeacher;
       if (data.teacherPhone !== undefined) updateData.Teacher_Phone__c = data.teacherPhone;
+      if (data.schoolCounselorName !== undefined) updateData.School_Counselor_Name__c = data.schoolCounselorName;
+      if (data.schoolCounselorPhone !== undefined) updateData.School_Counselor_Phone__c = data.schoolCounselorPhone;
 
       // Intake assessment
       if (data.behavioralIssues !== undefined) updateData.Behavioral_Issues__c = data.behavioralIssues;

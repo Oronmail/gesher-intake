@@ -75,6 +75,8 @@ export async function GET(
       grade: sfData.Grade__c || '',
       homeroom_teacher: sfData.Homeroom_Teacher__c || '',
       teacher_phone: sfData.Teacher_Phone__c || '',
+      counselor_name: sfData.School_Counselor_Name__c || '',
+      counselor_phone: sfData.School_Counselor_Phone__c || '',
 
       // Intake Assessment
       behavioral_issues: sfData.Behavioral_Issues__c || false,
