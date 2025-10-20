@@ -138,98 +138,104 @@ export default function CounselorInitialForm() {
                 פרטי היועץ/ת
               </h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="counselor_name" className="block text-sm font-medium text-gray-700 mb-2">
-                    שם מלא
-                    <span className="text-red-500 mr-1">*</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      {...register('counselor_name')}
-                      type="text"
-                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
-                      placeholder="הזן שם מלא"
-                    />
-                    <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+              <div className="space-y-6">
+                {/* Row 1: Name (right) and School (left) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="school_name" className="block text-sm font-medium text-gray-700 mb-2">
+                      שם בית הספר
+                      <span className="text-red-500 mr-1">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        {...register('school_name')}
+                        type="text"
+                        className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                        placeholder="הזן שם בית ספר"
+                      />
+                      <School className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                    </div>
+                    {errors.school_name && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        {errors.school_name.message}
+                      </p>
+                    )}
                   </div>
-                  {errors.counselor_name && (
-                    <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
-                      <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                      {errors.counselor_name.message}
-                    </p>
-                  )}
+
+                  <div>
+                    <label htmlFor="counselor_name" className="block text-sm font-medium text-gray-700 mb-2">
+                      שם מלא
+                      <span className="text-red-500 mr-1">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        {...register('counselor_name')}
+                        type="text"
+                        className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                        placeholder="הזן שם מלא"
+                      />
+                      <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                    </div>
+                    {errors.counselor_name && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        {errors.counselor_name.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                <div>
-                  <label htmlFor="counselor_email" className="block text-sm font-medium text-gray-700 mb-2">
-                    כתובת אימייל
-                    <span className="text-red-500 mr-1">*</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      {...register('counselor_email')}
-                      type="email"
-                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
-                      placeholder="example@school.edu"
-                      dir="ltr"
-                    />
-                    <Mail className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                {/* Row 2: Email (left) and Mobile (right) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="counselor_email" className="block text-sm font-medium text-gray-700 mb-2">
+                      כתובת אימייל
+                      <span className="text-red-500 mr-1">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        {...register('counselor_email')}
+                        type="email"
+                        className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                        placeholder="example@school.edu"
+                        dir="ltr"
+                      />
+                      <Mail className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                    </div>
+                    {errors.counselor_email && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        {errors.counselor_email.message}
+                      </p>
+                    )}
                   </div>
-                  {errors.counselor_email && (
-                    <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
-                      <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                      {errors.counselor_email.message}
-                    </p>
-                  )}
+
+                  <div>
+                    <label htmlFor="counselor_mobile" className="block text-sm font-medium text-gray-700 mb-2">
+                      טלפון נייד
+                      <span className="text-red-500 mr-1">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        {...register('counselor_mobile')}
+                        type="tel"
+                        className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                        placeholder="050-1234567"
+                        dir="ltr"
+                      />
+                      <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                    </div>
+                    {errors.counselor_mobile && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        {errors.counselor_mobile.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                <div>
-                  <label htmlFor="counselor_mobile" className="block text-sm font-medium text-gray-700 mb-2">
-                    טלפון נייד
-                    <span className="text-red-500 mr-1">*</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      {...register('counselor_mobile')}
-                      type="tel"
-                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
-                      placeholder="050-1234567"
-                      dir="ltr"
-                    />
-                    <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                  </div>
-                  {errors.counselor_mobile && (
-                    <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
-                      <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                      {errors.counselor_mobile.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="md:col-span-2">
-                  <label htmlFor="school_name" className="block text-sm font-medium text-gray-700 mb-2">
-                    שם בית הספר
-                    <span className="text-red-500 mr-1">*</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      {...register('school_name')}
-                      type="text"
-                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
-                      placeholder="הזן שם בית ספר"
-                    />
-                    <School className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                  </div>
-                  {errors.school_name && (
-                    <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
-                      <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                      {errors.school_name.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Warm Home Destination */}
+                {/* Row 3: Warm Home Destination */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     מיועד לבית החם
