@@ -795,35 +795,35 @@ class SalesforceJWTService {
         Status__c: 'In Progress', // Mark as in progress, not fully submitted
       };
 
-      // Map form fields to Salesforce fields (only if provided)
-      if (data.studentFirstName !== undefined) updateData.Student_First_Name__c = data.studentFirstName;
-      if (data.studentLastName !== undefined) updateData.Student_Last_Name__c = data.studentLastName;
-      if (data.studentId !== undefined) updateData.Student_ID__c = data.studentId;
-      if (data.dateOfBirth !== undefined) updateData.Date_of_Birth__c = data.dateOfBirth;
-      if (data.gender !== undefined) updateData.Gender__c = data.gender === 'male' ? 'Male' : 'Female';
-      if (data.countryOfBirth !== undefined) updateData.Country_of_Birth__c = data.countryOfBirth;
-      if (data.immigrationYear !== undefined) updateData.Immigration_Year__c = data.immigrationYear || '';
-      if (data.studentAddress !== undefined) updateData.Student_Address__c = data.studentAddress;
-      if (data.studentFloor !== undefined) updateData.Student_Floor__c = data.studentFloor || '';
-      if (data.studentApartment !== undefined) updateData.Student_Apartment__c = data.studentApartment || '';
-      if (data.studentPhone !== undefined) updateData.Student_Phone__c = data.studentPhone;
-      if (data.studentMobile !== undefined) updateData.Student_Mobile__c = data.studentMobile || '';
-      if (data.schoolInfoUsername !== undefined) updateData.School_Info_Username__c = data.schoolInfoUsername || '';
-      if (data.schoolInfoPassword !== undefined) updateData.School_Info_Password__c = data.schoolInfoPassword || '';
+      // Map form fields to Salesforce fields (only if provided AND not empty)
+      if (data.studentFirstName && data.studentFirstName.trim()) updateData.Student_First_Name__c = data.studentFirstName;
+      if (data.studentLastName && data.studentLastName.trim()) updateData.Student_Last_Name__c = data.studentLastName;
+      if (data.studentId && data.studentId.trim()) updateData.Student_ID__c = data.studentId;
+      if (data.dateOfBirth && data.dateOfBirth.trim()) updateData.Date_of_Birth__c = data.dateOfBirth;
+      if (data.gender) updateData.Gender__c = data.gender === 'male' ? 'Male' : 'Female';
+      if (data.countryOfBirth && data.countryOfBirth.trim()) updateData.Country_of_Birth__c = data.countryOfBirth;
+      if (data.immigrationYear && data.immigrationYear.trim()) updateData.Immigration_Year__c = data.immigrationYear;
+      if (data.studentAddress && data.studentAddress.trim()) updateData.Student_Address__c = data.studentAddress;
+      if (data.studentFloor && data.studentFloor.trim()) updateData.Student_Floor__c = data.studentFloor;
+      if (data.studentApartment && data.studentApartment.trim()) updateData.Student_Apartment__c = data.studentApartment;
+      if (data.studentPhone && data.studentPhone.trim()) updateData.Student_Phone__c = data.studentPhone;
+      if (data.studentMobile && data.studentMobile.trim()) updateData.Student_Mobile__c = data.studentMobile;
+      if (data.schoolInfoUsername && data.schoolInfoUsername.trim()) updateData.School_Info_Username__c = data.schoolInfoUsername;
+      if (data.schoolInfoPassword && data.schoolInfoPassword.trim()) updateData.School_Info_Password__c = data.schoolInfoPassword;
 
-      // Family fields
-      if (data.siblingsCount !== undefined) updateData.Siblings_Count__c = data.siblingsCount || 0;
-      if (data.fatherName !== undefined) updateData.Father_Name__c = data.fatherName || '';
-      if (data.fatherMobile !== undefined) updateData.Father_Mobile__c = data.fatherMobile || '';
-      if (data.fatherOccupation !== undefined) updateData.Father_Occupation__c = data.fatherOccupation || '';
-      if (data.fatherProfession !== undefined) updateData.Father_Profession__c = data.fatherProfession || '';
-      if (data.fatherIncome !== undefined) updateData.Father_Income__c = data.fatherIncome || '';
-      if (data.motherName !== undefined) updateData.Mother_Name__c = data.motherName || '';
-      if (data.motherMobile !== undefined) updateData.Mother_Mobile__c = data.motherMobile || '';
-      if (data.motherOccupation !== undefined) updateData.Mother_Occupation__c = data.motherOccupation || '';
-      if (data.motherProfession !== undefined) updateData.Mother_Profession__c = data.motherProfession || '';
-      if (data.motherIncome !== undefined) updateData.Mother_Income__c = data.motherIncome || '';
-      if (data.debtsLoans !== undefined) updateData.Debts_Loans__c = data.debtsLoans || '';
+      // Family fields - only update if has value
+      if (data.siblingsCount !== undefined && data.siblingsCount !== null) updateData.Siblings_Count__c = data.siblingsCount;
+      if (data.fatherName && data.fatherName.trim()) updateData.Father_Name__c = data.fatherName;
+      if (data.fatherMobile && data.fatherMobile.trim()) updateData.Father_Mobile__c = data.fatherMobile;
+      if (data.fatherOccupation && data.fatherOccupation.trim()) updateData.Father_Occupation__c = data.fatherOccupation;
+      if (data.fatherProfession && data.fatherProfession.trim()) updateData.Father_Profession__c = data.fatherProfession;
+      if (data.fatherIncome && data.fatherIncome.trim()) updateData.Father_Income__c = data.fatherIncome;
+      if (data.motherName && data.motherName.trim()) updateData.Mother_Name__c = data.motherName;
+      if (data.motherMobile && data.motherMobile.trim()) updateData.Mother_Mobile__c = data.motherMobile;
+      if (data.motherOccupation && data.motherOccupation.trim()) updateData.Mother_Occupation__c = data.motherOccupation;
+      if (data.motherProfession && data.motherProfession.trim()) updateData.Mother_Profession__c = data.motherProfession;
+      if (data.motherIncome && data.motherIncome.trim()) updateData.Mother_Income__c = data.motherIncome;
+      if (data.debtsLoans && data.debtsLoans.trim()) updateData.Debts_Loans__c = data.debtsLoans;
       if (data.parentInvolvement !== undefined) updateData.Parent_Involvement__c =
         data.parentInvolvement === 'inhibiting' ? 'Inhibiting' :
         data.parentInvolvement === 'promoting' ? 'Promoting' : 'No Involvement';
@@ -832,58 +832,58 @@ class SalesforceJWTService {
       if (data.economicStatus !== undefined) updateData.Economic_Status__c =
         data.economicStatus === 'low' ? 'Low' :
         data.economicStatus === 'medium' ? 'Medium' : 'High';
-      if (data.economicDetails !== undefined) updateData.Economic_Details__c = data.economicDetails || '';
-      if (data.familyBackground !== undefined) updateData.Family_Background__c = data.familyBackground || '';
+      if (data.economicDetails && data.economicDetails.trim()) updateData.Economic_Details__c = data.economicDetails;
+      if (data.familyBackground && data.familyBackground.trim()) updateData.Family_Background__c = data.familyBackground;
 
       // School
-      if (data.schoolName !== undefined) updateData.School_Name__c = data.schoolName;
-      if (data.grade !== undefined) updateData.Grade__c = data.grade;
-      if (data.homeroomTeacher !== undefined) updateData.Homeroom_Teacher__c = data.homeroomTeacher;
-      if (data.teacherPhone !== undefined) updateData.Teacher_Phone__c = data.teacherPhone;
-      if (data.schoolCounselorName !== undefined) updateData.School_Counselor_Name__c = data.schoolCounselorName;
-      if (data.schoolCounselorPhone !== undefined) updateData.School_Counselor_Phone__c = data.schoolCounselorPhone;
+      if (data.schoolName && typeof data.schoolName === 'string' && data.schoolName.trim()) updateData.School_Name__c = data.schoolName;
+      if (data.grade && typeof data.grade === 'string' && data.grade.trim()) updateData.Grade__c = data.grade;
+      if (data.homeroomTeacher && typeof data.homeroomTeacher === 'string' && data.homeroomTeacher.trim()) updateData.Homeroom_Teacher__c = data.homeroomTeacher;
+      if (data.teacherPhone && typeof data.teacherPhone === 'string' && data.teacherPhone.trim()) updateData.Teacher_Phone__c = data.teacherPhone;
+      if (data.schoolCounselorName && typeof data.schoolCounselorName === 'string' && data.schoolCounselorName.trim()) updateData.School_Counselor_Name__c = data.schoolCounselorName;
+      if (data.schoolCounselorPhone && typeof data.schoolCounselorPhone === 'string' && data.schoolCounselorPhone.trim()) updateData.School_Counselor_Phone__c = data.schoolCounselorPhone;
 
       // Intake assessment
-      if (data.behavioralIssues !== undefined) updateData.Behavioral_Issues__c = data.behavioralIssues;
-      if (data.behavioralIssuesDetails !== undefined) updateData.Behavioral_Issues_Details__c = data.behavioralIssuesDetails || '';
-      if (data.hasPotential !== undefined) updateData.Has_Potential__c = data.hasPotential;
-      if (data.potentialExplanation !== undefined) updateData.Potential_Explanation__c = data.potentialExplanation || '';
+      if (data.behavioralIssues && typeof data.behavioralIssues === 'string' && data.behavioralIssues.trim()) updateData.Behavioral_Issues__c = data.behavioralIssues;
+      if (data.behavioralIssuesDetails && data.behavioralIssuesDetails.trim()) updateData.Behavioral_Issues_Details__c = data.behavioralIssuesDetails;
+      if (data.hasPotential && typeof data.hasPotential === 'string' && data.hasPotential.trim()) updateData.Has_Potential__c = data.hasPotential;
+      if (data.potentialExplanation && data.potentialExplanation.trim()) updateData.Potential_Explanation__c = data.potentialExplanation;
       if (data.motivationLevel !== undefined) updateData.Motivation_Level__c =
         data.motivationLevel === 'low' ? 'Low' :
         data.motivationLevel === 'medium' ? 'Medium' : 'High';
       if (data.motivationType !== undefined) updateData.Motivation_Type__c =
         data.motivationType === 'internal' ? 'Internal' : 'External';
-      if (data.externalMotivators !== undefined) updateData.External_Motivators__c = data.externalMotivators || '';
-      if (data.socialStatus !== undefined) updateData.Social_Status__c = data.socialStatus || '';
-      if (data.afternoonActivities !== undefined) updateData.Afternoon_Activities__c = data.afternoonActivities || '';
+      if (data.externalMotivators && data.externalMotivators.trim()) updateData.External_Motivators__c = data.externalMotivators;
+      if (data.socialStatus && data.socialStatus.trim()) updateData.Social_Status__c = data.socialStatus;
+      if (data.afternoonActivities && data.afternoonActivities.trim()) updateData.Afternoon_Activities__c = data.afternoonActivities;
 
       // Learning assessment
-      if (data.learningDisability !== undefined) updateData.Learning_Disability__c = data.learningDisability;
-      if (data.learningDisabilityExplanation !== undefined) updateData.Learning_Disability_Explanation__c = data.learningDisabilityExplanation || '';
-      if (data.requiresRemedialTeaching !== undefined) updateData.Requires_Remedial_Teaching__c = data.requiresRemedialTeaching;
-      if (data.adhd !== undefined) updateData.ADHD__c = data.adhd;
-      if (data.adhdTreatment !== undefined) updateData.ADHD_Treatment__c = data.adhdTreatment || '';
-      if (data.assessmentDone !== undefined) updateData.Assessment_Done__c = data.assessmentDone;
-      if (data.assessmentNeeded !== undefined) updateData.Assessment_Needed__c = data.assessmentNeeded;
-      if (data.assessmentDetails !== undefined) updateData.Assessment_Details__c = data.assessmentDetails || '';
+      if (data.learningDisability && typeof data.learningDisability === 'string' && data.learningDisability.trim()) updateData.Learning_Disability__c = data.learningDisability;
+      if (data.learningDisabilityExplanation && data.learningDisabilityExplanation.trim()) updateData.Learning_Disability_Explanation__c = data.learningDisabilityExplanation;
+      if (data.requiresRemedialTeaching && typeof data.requiresRemedialTeaching === 'string' && data.requiresRemedialTeaching.trim()) updateData.Requires_Remedial_Teaching__c = data.requiresRemedialTeaching;
+      if (data.adhd && typeof data.adhd === 'string' && data.adhd.trim()) updateData.ADHD__c = data.adhd;
+      if (data.adhdTreatment && data.adhdTreatment.trim()) updateData.ADHD_Treatment__c = data.adhdTreatment;
+      if (data.assessmentDone && typeof data.assessmentDone === 'string' && data.assessmentDone.trim()) updateData.Assessment_Done__c = data.assessmentDone;
+      if (data.assessmentNeeded && typeof data.assessmentNeeded === 'string' && data.assessmentNeeded.trim()) updateData.Assessment_Needed__c = data.assessmentNeeded;
+      if (data.assessmentDetails && data.assessmentDetails.trim()) updateData.Assessment_Details__c = data.assessmentDetails;
 
       // Risk assessment
-      if (data.criminalRecord !== undefined) updateData.Criminal_Record__c = data.criminalRecord;
-      if (data.drugUse !== undefined) updateData.Drug_Use__c = data.drugUse;
-      if (data.smoking !== undefined) updateData.Smoking__c = data.smoking;
-      if (data.probationOfficer !== undefined) updateData.Probation_Officer__c = data.probationOfficer || '';
-      if (data.youthProbationOfficer !== undefined) updateData.Youth_Probation_Officer__c = data.youthProbationOfficer || '';
-      if (data.psychologicalTreatment !== undefined) updateData.Psychological_Treatment__c = data.psychologicalTreatment;
-      if (data.psychiatricTreatment !== undefined) updateData.Psychiatric_Treatment__c = data.psychiatricTreatment;
-      if (data.takesMedication !== undefined) updateData.Takes_Medication__c = data.takesMedication;
-      if (data.medicationDescription !== undefined) updateData.Medication_Description__c = data.medicationDescription || '';
+      if (data.criminalRecord && typeof data.criminalRecord === 'string' && data.criminalRecord.trim()) updateData.Criminal_Record__c = data.criminalRecord;
+      if (data.drugUse && typeof data.drugUse === 'string' && data.drugUse.trim()) updateData.Drug_Use__c = data.drugUse;
+      if (data.smoking && typeof data.smoking === 'string' && data.smoking.trim()) updateData.Smoking__c = data.smoking;
+      if (data.probationOfficer && data.probationOfficer.trim()) updateData.Probation_Officer__c = data.probationOfficer;
+      if (data.youthProbationOfficer && data.youthProbationOfficer.trim()) updateData.Youth_Probation_Officer__c = data.youthProbationOfficer;
+      if (data.psychologicalTreatment && typeof data.psychologicalTreatment === 'string' && data.psychologicalTreatment.trim()) updateData.Psychological_Treatment__c = data.psychologicalTreatment;
+      if (data.psychiatricTreatment && typeof data.psychiatricTreatment === 'string' && data.psychiatricTreatment.trim()) updateData.Psychiatric_Treatment__c = data.psychiatricTreatment;
+      if (data.takesMedication && typeof data.takesMedication === 'string' && data.takesMedication.trim()) updateData.Takes_Medication__c = data.takesMedication;
+      if (data.medicationDescription && data.medicationDescription.trim()) updateData.Medication_Description__c = data.medicationDescription;
 
       // Final assessment
-      if (data.militaryServicePotential !== undefined) updateData.Military_Service_Potential__c = data.militaryServicePotential;
-      if (data.canHandleProgram !== undefined) updateData.Can_Handle_Program__c = data.canHandleProgram;
-      if (data.riskLevel !== undefined) updateData.Risk_Level__c = data.riskLevel;
-      if (data.riskFactors !== undefined) updateData.Risk_Factors__c = data.riskFactors || '';
-      if (data.personalOpinion !== undefined) updateData.Personal_Opinion__c = data.personalOpinion || '';
+      if (data.militaryServicePotential && typeof data.militaryServicePotential === 'string' && data.militaryServicePotential.trim()) updateData.Military_Service_Potential__c = data.militaryServicePotential;
+      if (data.canHandleProgram && typeof data.canHandleProgram === 'string' && data.canHandleProgram.trim()) updateData.Can_Handle_Program__c = data.canHandleProgram;
+      if (data.riskLevel && typeof data.riskLevel === 'string' && data.riskLevel.trim()) updateData.Risk_Level__c = data.riskLevel;
+      if (data.riskFactors && data.riskFactors.trim()) updateData.Risk_Factors__c = data.riskFactors;
+      if (data.personalOpinion && data.personalOpinion.trim()) updateData.Personal_Opinion__c = data.personalOpinion;
       if (data.failingGradesCount !== undefined) updateData.Failing_Grades_Count__c = data.failingGradesCount || 0;
 
       console.log('Updating Registration Request with partial student data...');
