@@ -920,12 +920,13 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="address" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('address')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="רחוב, מספר בית, עיר"
-                          />
+                              {...register('address')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="רחוב, מספר בית, עיר"
+                            />
                             <Home className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
+                          </div>
+                        </FieldWrapper>
                         {errors.address && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -941,16 +942,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="floor" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('floor')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="5"
-                          />
+                              {...register('floor')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="5"
+                            />
                             <Home className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
                           </div>
                         </FieldWrapper>
-                        </FieldWrapper>
-                        </FieldWrapper>
+                      </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -959,14 +958,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="apartment" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('apartment')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="12"
-                          />
+                              {...register('apartment')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="12"
+                            />
                             <Home className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
                           </div>
                         </FieldWrapper>
+                      </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -976,13 +975,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="phone" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('phone')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="050-1234567"
-                            dir="ltr"
-                          />
+                              {...register('phone')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="050-1234567"
+                              dir="ltr"
+                            />
                             <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
+                          </div>
+                        </FieldWrapper>
                         {errors.phone && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
