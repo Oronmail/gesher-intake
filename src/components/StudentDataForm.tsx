@@ -1643,7 +1643,8 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                     {/* Youth Promotion */}
                     <div>
-                      <div className="bg-white rounded-xl p-4 border border-gray-200">
+                      <FieldWrapper fieldName="youth_promotion" completedFields={completedFields}>
+                        <div className="bg-white rounded-xl p-4 border border-gray-200">
                         <label className="flex items-center cursor-pointer group">
                           <input
                             {...register('youth_promotion')}
@@ -1655,6 +1656,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           </span>
                         </label>
                       </div>
+                      </FieldWrapper>
                       
                       {watch('youth_promotion') && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 animate-fadeIn">
@@ -1703,7 +1705,8 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 <div className="space-y-6">
                   {/* Checkboxes Section */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-white rounded-xl p-4 border border-gray-200">
+                    <FieldWrapper fieldName="behavioral_issues" completedFields={completedFields}>
+                        <div className="bg-white rounded-xl p-4 border border-gray-200">
                       <label className="flex items-center cursor-pointer group">
                         <input
                           {...register('behavioral_issues')}
@@ -1715,8 +1718,10 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         </span>
                       </label>
                     </div>
+                      </FieldWrapper>
 
-                    <div className="bg-white rounded-xl p-4 border border-gray-200">
+                    <FieldWrapper fieldName="has_potential" completedFields={completedFields}>
+                        <div className="bg-white rounded-xl p-4 border border-gray-200">
                       <label className="flex items-center cursor-pointer group">
                         <input
                           {...register('has_potential')}
@@ -1728,6 +1733,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         </span>
                       </label>
                     </div>
+                      </FieldWrapper>
                   </div>
 
                   {/* Conditional Detail Fields */}
@@ -1885,7 +1891,8 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 </div>
 
                 <div className="space-y-6">
-                  <div className="bg-white rounded-xl p-4 border border-gray-200">
+                  <FieldWrapper fieldName="learning_disability" completedFields={completedFields}>
+                        <div className="bg-white rounded-xl p-4 border border-gray-200">
                     <label className="flex items-center cursor-pointer group">
                       <input
                         {...register('learning_disability')}
@@ -1923,11 +1930,13 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             </span>
                           </label>
                         </div>
+                      </FieldWrapper>
                       </div>
                     )}
                   </div>
 
-                  <div className="bg-white rounded-xl p-4 border border-gray-200">
+                  <FieldWrapper fieldName="adhd" completedFields={completedFields}>
+                        <div className="bg-white rounded-xl p-4 border border-gray-200">
                     <label className="flex items-center cursor-pointer group">
                       <input
                         {...register('adhd')}
@@ -1972,7 +1981,8 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-white rounded-xl p-4 border border-gray-200">
+                    <FieldWrapper fieldName="assessment_done" completedFields={completedFields}>
+                        <div className="bg-white rounded-xl p-4 border border-gray-200">
                       <label className="flex items-center cursor-pointer group">
                         <input
                           {...register('assessment_done')}
@@ -1984,8 +1994,11 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         </span>
                       </label>
                     </div>
+                      </FieldWrapper>
+                      </FieldWrapper>
 
-                    <div className="bg-white rounded-xl p-4 border border-gray-200">
+                    <FieldWrapper fieldName="assessment_needed" completedFields={completedFields}>
+                        <div className="bg-white rounded-xl p-4 border border-gray-200">
                       <label className="flex items-center cursor-pointer group">
                         <input
                           {...register('assessment_needed')}
@@ -1997,6 +2010,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         </span>
                       </label>
                     </div>
+                      </FieldWrapper>
                   </div>
 
                   {watch('assessment_done') && (
