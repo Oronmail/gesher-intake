@@ -221,6 +221,22 @@ function CompletionMarker() {
   )
 }
 
+// Helper component to show completion marker on any field
+interface FieldWrapperProps {
+  fieldName: string
+  completedFields: Set<string>
+  children: React.ReactNode
+}
+
+function FieldWrapper({ fieldName, completedFields, children }: FieldWrapperProps) {
+  return (
+    <div className="relative">
+      {children}
+      {completedFields.has(fieldName) && <CompletionMarker />}
+    </div>
+  )
+}
+
 export default function StudentDataForm({ referralNumber, warmHomeDestination }: StudentDataFormProps) {
   const [currentStep, setCurrentStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -734,20 +750,21 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 <div className="space-y-6 animate-fadeIn">
                   <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-200 shadow-sm">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="relative">
+                      <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           שם פרטי
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <div className="relative">
-                          <input
-                            {...register('student_first_name')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="שם פרטי"
-                          />
-                          <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                          {completedFields.has('student_first_name') && <CompletionMarker />}
-                        </div>
+                        <FieldWrapper fieldName="student_first_name" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
+                              {...register('student_first_name')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="שם פרטי"
+                            />
+                            <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                          </div>
+                        </FieldWrapper>
                         {errors.student_first_name && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -756,19 +773,21 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         )}
                       </div>
 
-                      <div className="relative">
+                      <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           שם משפחה
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <div className="relative">
-                          <input
-                            {...register('student_last_name')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="שם משפחה"
-                          />
-                          <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
+                        <FieldWrapper fieldName="student_last_name" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
+                              {...register('student_last_name')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="שם משפחה"
+                            />
+                            <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                          </div>
+                        </FieldWrapper>
                         {errors.student_last_name && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
