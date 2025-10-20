@@ -1022,16 +1022,18 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           מספר אחים
                         </label>
-                        <div className="relative">
-                          <input
-                            {...register('siblings_count', { valueAsNumber: true })}
-                            type="number"
-                            min="0"
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="0"
-                          />
-                          <Users className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
+                        <FieldWrapper fieldName="siblings_count" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
+                              {...register('siblings_count', { valueAsNumber: true })}
+                              type="number"
+                              min="0"
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="0"
+                            />
+                            <Users className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                          </div>
+                        </FieldWrapper>
                       </div>
 
                     </div>
@@ -1743,12 +1745,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         פרט בעיות התנהגות
                         <span className="text-red-500 mr-1">*</span>
                       </label>
-                      <textarea
-                        {...register('behavioral_issues_details')}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
-                        rows={3}
-                        placeholder="תאר את בעיות ההתנהגות..."
-                      />
+                      <FieldWrapper fieldName="behavioral_issues_details" completedFields={completedFields}>
+                        <textarea
+                          {...register('behavioral_issues_details')}
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                          rows={3}
+                          placeholder="תאר את בעיות ההתנהגות..."
+                        />
+                      </FieldWrapper>
                     </div>
                   )}
 
@@ -1770,6 +1774,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   {/* Motivation Section */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         רמת מוטיבציה
                         <span className="text-red-500 mr-1">*</span>
@@ -1796,6 +1801,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     </div>
 
                     <div>
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         סוג מוטיבציה
                         <span className="text-red-500 mr-1">*</span>
@@ -1825,6 +1831,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                   {watch('motivation_type') === 'external' && (
                     <div className="animate-fadeIn">
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         גורמים חיצוניים
                       </label>
@@ -1838,6 +1845,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   )}
 
                   <div>
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       מצב חברתי
                       <span className="text-red-500 mr-1">*</span>
@@ -1861,6 +1869,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   </div>
 
                   <div>
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       פעילויות בשעות אחה&quot;צ
                       <span className="text-gray-500 text-xs mr-2">(חוגים, תנועות נוער, אימוני כושר, עבודה)</span>
@@ -1893,6 +1902,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 <div className="space-y-6">
                   <FieldWrapper fieldName="learning_disability" completedFields={completedFields}>
                         <div className="bg-white rounded-xl p-4 border border-gray-200">
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                     <label className="flex items-center cursor-pointer group">
                       <input
                         {...register('learning_disability')}
@@ -1907,6 +1917,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     {watch('learning_disability') && (
                       <div className="mt-4 animate-fadeIn space-y-4">
                         <div>
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             פרט על לקות הלמידה
                             <span className="text-red-500 mr-1">*</span>
@@ -1919,6 +1930,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           />
                         </div>
                         <div className="bg-green-50 rounded-xl p-4 border border-green-100">
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                           <label className="flex items-center cursor-pointer group">
                             <input
                               {...register('requires_remedial_teaching')}
@@ -1937,6 +1949,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                   <FieldWrapper fieldName="adhd" completedFields={completedFields}>
                         <div className="bg-white rounded-xl p-4 border border-gray-200">
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                     <label className="flex items-center cursor-pointer group">
                       <input
                         {...register('adhd')}
@@ -1950,6 +1963,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                     {watch('adhd') && (
                       <div className="mt-4 animate-fadeIn">
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           האם הפרעת הקשב מטופלת? כיצד?
                         </label>
@@ -1983,6 +1997,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FieldWrapper fieldName="assessment_done" completedFields={completedFields}>
                         <div className="bg-white rounded-xl p-4 border border-gray-200">
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                       <label className="flex items-center cursor-pointer group">
                         <input
                           {...register('assessment_done')}
@@ -1999,6 +2014,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                     <FieldWrapper fieldName="assessment_needed" completedFields={completedFields}>
                         <div className="bg-white rounded-xl p-4 border border-gray-200">
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                       <label className="flex items-center cursor-pointer group">
                         <input
                           {...register('assessment_needed')}
@@ -2016,6 +2032,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   {watch('assessment_done') && (
                     <div className="animate-fadeIn space-y-4">
                       <div>
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           העלאת קובץ אבחון
                           <span className="text-red-500 mr-1">*</span>
@@ -2031,6 +2048,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         </p>
                       </div>
                       <div>
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           פרטים נוספים על האבחון
                         </label>
@@ -2051,6 +2069,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                   {watch('assessment_needed') && !watch('assessment_done') && (
                     <div className="animate-fadeIn">
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         פרטים על האבחון הנדרש
                       </label>
@@ -2089,6 +2108,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-red-200 transition-all duration-200">
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                     <label className="flex items-center cursor-pointer group">
                       <input
                         {...register('criminal_record')}
@@ -2102,6 +2122,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   </div>
 
                   <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-red-200 transition-all duration-200">
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                     <label className="flex items-center cursor-pointer group">
                       <input
                         {...register('drug_use')}
@@ -2115,6 +2136,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   </div>
 
                   <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-red-200 transition-all duration-200">
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                     <label className="flex items-center cursor-pointer group">
                       <input
                         {...register('smoking')}
@@ -2137,6 +2159,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             קצין ביקור סדיר
                           </label>
@@ -2152,6 +2175,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           </div>
                         </FieldWrapper>
                         <div>
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             ק. שירות מבחן לנוער
                           </label>
@@ -2184,6 +2208,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-orange-200 transition-all duration-200">
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                       <label className="flex items-center cursor-pointer group">
                         <input
                           {...register('psychological_treatment')}
@@ -2197,6 +2222,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     </div>
 
                     <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-orange-200 transition-all duration-200">
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                       <label className="flex items-center cursor-pointer group">
                         <input
                           {...register('psychiatric_treatment')}
@@ -2211,6 +2237,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   </div>
 
                   <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-orange-200 transition-all duration-200">
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                     <label className="flex items-center cursor-pointer group">
                       <input
                         {...register('takes_medication')}
@@ -2224,6 +2251,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     
                     {watch('takes_medication') && (
                       <div className="mt-4 animate-fadeIn">
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           תיאור התרופות והמינונים
                         </label>
@@ -2260,6 +2288,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-amber-200 transition-all duration-200">
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                     <label className="flex items-center cursor-pointer group">
                       <input
                         {...register('military_service_potential')}
@@ -2273,6 +2302,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   </div>
 
                   <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-amber-200 transition-all duration-200">
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                     <label className="flex items-center cursor-pointer group">
                       <input
                         {...register('can_handle_program')}
@@ -2298,6 +2328,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       רמת הסיכון של הנער/ה
                       <span className="text-red-500 mr-1">*</span>
@@ -2334,6 +2365,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   </div>
 
                   <div>
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       מה הגורמים לסיכון?
                       <span className="text-red-500 mr-1">*</span>
@@ -2369,6 +2401,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 </div>
 
                 <div>
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     דעה אישית והמלצות
                     <span className="text-red-500 mr-1">*</span>
@@ -2404,6 +2437,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                 <div className="space-y-6">
                   <div>
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       גליון ציונים
                       <span className="text-red-500 mr-1">*</span>
@@ -2421,6 +2455,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   </div>
 
                   <div>
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       מספר ציונים שליליים
                     </label>
@@ -2459,6 +2494,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <div key={index} className="bg-gray-50 p-4 rounded-xl border border-gray-200">
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                               <label className="block text-xs font-medium text-gray-600 mb-1">
                                 מקצוע {index + 1}
                               </label>
@@ -2470,6 +2506,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                               />
                             </div>
                             <div>
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                               <label className="block text-xs font-medium text-gray-600 mb-1">
                                 ציון
                               </label>
@@ -2481,6 +2518,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                               />
                             </div>
                             <div>
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
                               <label className="block text-xs font-medium text-gray-600 mb-1">
                                 סיבה לציון השלילי
                               </label>
