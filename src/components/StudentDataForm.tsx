@@ -304,7 +304,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
           }
         }
 
-        // Fetch existing progress from Salesforce
+        // Fetch existing progress from Salesforce (only to show completion markers)
         try {
           const progressResponse = await fetch(`/api/referrals/get-progress/${referralNumber}`)
           if (progressResponse.ok) {
@@ -313,16 +313,16 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
               const sfData = progressData.data
               const completedSet = new Set<string>()
 
-              // Populate form with existing data and track completed fields
+              // Track completed fields WITHOUT populating values (for privacy)
               Object.entries(sfData).forEach(([key, value]) => {
                 if (value !== null && value !== '' && value !== 0 && value !== false) {
-                  setValue(key as keyof FormData, value as string & number & boolean)
+                  // Only add to completed set, do NOT setValue to maintain privacy
                   completedSet.add(key)
                 }
               })
 
               setCompletedFields(completedSet)
-              console.log('Loaded existing progress from Salesforce')
+              console.log('Loaded completion markers from Salesforce (values hidden for privacy)')
             }
           }
         } catch (progressError) {
