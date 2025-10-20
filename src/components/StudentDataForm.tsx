@@ -361,6 +361,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       // Get all current form values
       const currentValues = watch()
 
+      console.log('Saving progress for referral:', referralNumber)
+      console.log('Current form values:', currentValues)
+
       const response = await fetch('/api/referrals/save-progress', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -369,6 +372,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
           ...currentValues
         }),
       })
+
+      const result = await response.json()
+      console.log('Save progress response:', result)
 
       if (response.ok) {
         setSaveSuccess(true)
@@ -381,13 +387,15 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
         })
         setCompletedFields(newCompleted)
 
-        // Hide success message after 3 seconds
-        setTimeout(() => setSaveSuccess(false), 3000)
+        // Hide success message after 5 seconds
+        setTimeout(() => setSaveSuccess(false), 5000)
       } else {
-        console.error('Failed to save progress')
+        console.error('Failed to save progress:', result.error)
+        alert('שגיאה בשמירת התקדמות: ' + (result.error || 'Unknown error'))
       }
     } catch (error) {
       console.error('Error saving progress:', error)
+      alert('שגיאה בשמירת התקדמות. אנא נסה שנית.')
     } finally {
       setIsSaving(false)
     }
@@ -2392,68 +2400,69 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     <div></div>
                   )}
 
-                  {currentStep < totalSteps ? (
+                  <div className="flex items-center gap-3">
+                    {/* Save Progress Button */}
                     <button
                       type="button"
-                      onClick={nextStep}
-                      className="group px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl hover:from-blue-600 hover:to-purple-700 flex items-center transition-all duration-200 hover:shadow-lg hover:scale-105 transform font-medium"
+                      onClick={saveProgress}
+                      disabled={isSaving}
+                      className="group px-6 py-3 bg-white border-2 border-amber-300 text-amber-700 rounded-xl hover:bg-amber-50 hover:border-amber-400 disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-all duration-200 font-medium shadow-sm hover:shadow-md"
                     >
-                      הבא
-                      <ChevronLeft className="mr-3 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
-                    </button>
-                  ) : (
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      onClick={() => setIsIntentionalSubmit(true)}
-                      className="group px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl hover:from-green-600 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center transition-all duration-200 hover:shadow-lg hover:scale-105 transform font-medium text-lg"
-                    >
-                      {isSubmitting ? (
+                      {isSaving ? (
                         <>
-                          <Loader2 className="animate-spin ml-3 h-6 w-6" />
-                          שולח טופס...
+                          <Loader2 className="animate-spin ml-2 h-4 w-4" />
+                          שומר...
                         </>
                       ) : (
                         <>
-                          <CheckCircle className="ml-3 h-6 w-6 group-hover:rotate-12 transition-transform duration-200" />
-                          שליחת טופס
+                          <Save className="ml-2 h-4 w-4" />
+                          שמור התקדמות
                         </>
                       )}
                     </button>
-                  )}
+
+                    {/* Next/Submit Button */}
+                    {currentStep < totalSteps ? (
+                      <button
+                        type="button"
+                        onClick={nextStep}
+                        className="group px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl hover:from-blue-600 hover:to-purple-700 flex items-center transition-all duration-200 hover:shadow-lg hover:scale-105 transform font-medium"
+                      >
+                        הבא
+                        <ChevronLeft className="mr-3 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
+                      </button>
+                    ) : (
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        onClick={() => setIsIntentionalSubmit(true)}
+                        className="group px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl hover:from-green-600 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center transition-all duration-200 hover:shadow-lg hover:scale-105 transform font-medium text-lg"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="animate-spin ml-3 h-6 w-6" />
+                            שולח טופס...
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle className="ml-3 h-6 w-6 group-hover:rotate-12 transition-transform duration-200" />
+                            שליחת טופס
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </div>
                 </div>
 
-                {/* Save Progress Button */}
-                <div className="flex items-center justify-center gap-3">
-                  <button
-                    type="button"
-                    onClick={saveProgress}
-                    disabled={isSaving}
-                    className="group px-6 py-3 bg-white border-2 border-amber-300 text-amber-700 rounded-xl hover:bg-amber-50 hover:border-amber-400 disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-all duration-200 font-medium shadow-sm hover:shadow-md"
-                  >
-                    {isSaving ? (
-                      <>
-                        <Loader2 className="animate-spin ml-2 h-4 w-4" />
-                        שומר...
-                      </>
-                    ) : saveSuccess ? (
-                      <>
-                        <Check className="ml-2 h-4 w-4 text-green-600" />
-                        נשמר בהצלחה!
-                      </>
-                    ) : (
-                      <>
-                        <Save className="ml-2 h-4 w-4" />
-                        שמור התקדמות
-                      </>
-                    )}
-                  </button>
-                  {saveSuccess && (
-                    <span className="text-sm text-green-600 animate-fadeIn">
-                      ✓ ההתקדמות שלך נשמרה
-                    </span>
-                  )}
-                </div>
+                {/* Success Toast Notification */}
+                {saveSuccess && (
+                  <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 animate-fadeIn">
+                    <div className="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3">
+                      <Check className="h-5 w-5" />
+                      <span className="font-medium">הטופס נשמר בהצלחה!</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </form>
           </div>
