@@ -8,6 +8,8 @@ export async function GET(
   try {
     const { referralNumber } = await params
 
+    console.log('Getting progress for referral:', referralNumber)
+
     if (!referralNumber) {
       return NextResponse.json(
         { error: 'Referral number is required' },
@@ -18,9 +20,12 @@ export async function GET(
     // Fetch data from Salesforce
     const sfResult = await salesforceJWT.getRegistrationByReferralNumber(referralNumber)
 
+    console.log('Salesforce result:', sfResult)
+
     if (!sfResult.success || !sfResult.data) {
+      console.error('Registration not found in Salesforce:', sfResult.error)
       return NextResponse.json(
-        { error: 'Registration not found' },
+        { error: 'Registration not found', details: sfResult.error },
         { status: 404 }
       )
     }

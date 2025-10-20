@@ -724,9 +724,7 @@ class SalesforceJWTService {
     try {
       console.log(`Fetching Registration Request by referral number: ${referralNumber}`);
 
-      const result = await this.executeWithRetry(async (conn) => {
-        return await conn.query(
-          `SELECT Id, Name, Status__c,
+      const query = `SELECT Id, Name, Status__c,
            Student_First_Name__c, Student_Last_Name__c, Student_ID__c, Date_of_Birth__c,
            Gender__c, Country_of_Birth__c, Immigration_Year__c, Student_Address__c,
            Student_Floor__c, Student_Apartment__c, Student_Phone__c, Student_Mobile__c,
@@ -750,20 +748,27 @@ class SalesforceJWTService {
            Risk_Factors__c, Personal_Opinion__c, Failing_Grades_Count__c
            FROM Registration_Request__c
            WHERE Name = '${referralNumber}'
-           LIMIT 1`
-        );
+           LIMIT 1`;
+
+      console.log('Executing SOQL query:', query);
+
+      const result = await this.executeWithRetry(async (conn) => {
+        return await conn.query(query);
       });
 
+      console.log('Query result:', JSON.stringify(result, null, 2));
+
       if (result.records && result.records.length > 0) {
-        console.log('Registration Request found');
+        console.log('Registration Request found:', result.records[0]);
         return {
           success: true,
           data: result.records[0] as Record<string, unknown>
         };
       } else {
+        console.log('No records found for referral:', referralNumber);
         return {
           success: false,
-          error: 'Registration Request not found'
+          error: `Registration Request not found for referral number: ${referralNumber}`
         };
       }
     } catch (error) {
