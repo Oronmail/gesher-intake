@@ -889,7 +889,10 @@ class SalesforceJWTService {
         return await conn.sobject('Registration_Request__c').update(updateData as any);
       });
 
-      if (result.success) {
+      // Handle both single result and array of results
+      const singleResult = Array.isArray(result) ? result[0] : result;
+
+      if (singleResult.success) {
         console.log('Registration Request updated with partial data');
         return { success: true };
       } else {
