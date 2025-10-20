@@ -734,7 +734,6 @@ class SalesforceJWTService {
            Mother_Occupation__c, Mother_Profession__c, Mother_Income__c, Debts_Loans__c,
            Parent_Involvement__c, Economic_Status__c, Economic_Details__c, Family_Background__c,
            School_Name__c, Grade__c, Homeroom_Teacher__c, Teacher_Phone__c,
-           Counselor_Name__c, Counselor_Phone__c,
            Behavioral_Issues__c, Behavioral_Issues_Details__c, Has_Potential__c,
            Potential_Explanation__c, Motivation_Level__c, Motivation_Type__c,
            External_Motivators__c, Social_Status__c, Afternoon_Activities__c,
@@ -841,8 +840,6 @@ class SalesforceJWTService {
       if (data.grade !== undefined) updateData.Grade__c = data.grade;
       if (data.homeroomTeacher !== undefined) updateData.Homeroom_Teacher__c = data.homeroomTeacher;
       if (data.teacherPhone !== undefined) updateData.Teacher_Phone__c = data.teacherPhone;
-      if (data.counselorName !== undefined) updateData.Counselor_Name__c = data.counselorName;
-      if (data.counselorPhone !== undefined) updateData.Counselor_Phone__c = data.counselorPhone;
 
       // Intake assessment
       if (data.behavioralIssues !== undefined) updateData.Behavioral_Issues__c = data.behavioralIssues;

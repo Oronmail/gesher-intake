@@ -78,8 +78,6 @@ export async function POST(request: NextRequest) {
       grade: studentData.grade,
       homeroomTeacher: studentData.homeroom_teacher,
       teacherPhone: studentData.teacher_phone,
-      counselorName: studentData.counselor_name,
-      counselorPhone: studentData.counselor_phone,
 
       // Intake Assessment
       behavioralIssues: studentData.behavioral_issues,
