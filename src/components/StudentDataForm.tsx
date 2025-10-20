@@ -801,14 +801,15 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           מספר תעודת זהות
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="student_id" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('student_id')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="000000000"
                             dir="ltr"
                           />
-                          <CreditCard className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <CreditCard className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.student_id && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -823,13 +824,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           תאריך לידה
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="date_of_birth" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('date_of_birth')}
                             type="date"
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                           />
-                          <Calendar className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Calendar className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.date_of_birth && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -844,13 +846,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           ארץ לידה
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="country_of_birth" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('country_of_birth')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="ישראל"
                           />
-                          <MapPin className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <MapPin className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.country_of_birth && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -864,8 +867,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           שנת עלייה
                         </label>
-                        <div className="relative">
-                          <select
+                        <FieldWrapper fieldName="immigration_year" completedFields={completedFields}>
+                          <div className="relative">
+                            <select
                             {...register('immigration_year')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
                           >
@@ -874,17 +878,22 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                               <option key={year} value={year}>{year}</option>
                             ))}
                           </select>
-                          <Calendar className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Calendar className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
-                      </div>
+                          </div>
+                        </FieldWrapper>
+                        </FieldWrapper>
+                        </FieldWrapper>
+                        </FieldWrapper>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           מגדר
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <div className="relative">
-                          <select
+                        <FieldWrapper fieldName="gender" completedFields={completedFields}>
+                          <div className="relative">
+                            <select
                             {...register('gender')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
                           >
@@ -892,7 +901,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <option value="male">זכר</option>
                             <option value="female">נקבה</option>
                           </select>
-                          <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.gender && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -907,13 +916,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           כתובת
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="address" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('address')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="רחוב, מספר בית, עיר"
                           />
-                          <Home className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Home className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.address && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -927,43 +937,50 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           קומה
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="floor" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('floor')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="5"
                           />
-                          <Home className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Home className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
-                      </div>
+                          </div>
+                        </FieldWrapper>
+                        </FieldWrapper>
+                        </FieldWrapper>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           דירה
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="apartment" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('apartment')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="12"
                           />
-                          <Home className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Home className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
-                      </div>
+                          </div>
+                        </FieldWrapper>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           טלפון
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="phone" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('phone')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="050-1234567"
                             dir="ltr"
                           />
-                          <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.phone && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -977,16 +994,19 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           נייד של התלמיד/ה
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="student_mobile" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('student_mobile')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="050-1234567"
                             dir="ltr"
                           />
-                          <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
-                      </div>
+                          </div>
+                        </FieldWrapper>
+                        </FieldWrapper>
                     </div>
                   </div>
                 </div>
@@ -1032,13 +1052,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           שם האב
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="father_name" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('father_name')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="שם מלא של האב"
                           />
-                          <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.father_name && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -1053,14 +1074,15 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           נייד האב
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="father_mobile" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('father_mobile')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="050-1234567"
                             dir="ltr"
                           />
-                          <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.father_mobile && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -1075,13 +1097,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           עיסוק
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="father_occupation" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('father_occupation')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="עבודה, לא עובד, גמלאי"
                           />
-                          <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.father_occupation && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -1096,13 +1119,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           מקצוע
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="father_profession" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('father_profession')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="מה המקצוע הספציפי"
                           />
-                          <Trophy className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Trophy className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.father_profession && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -1116,15 +1140,21 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           הכנסה חודשית
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="father_income" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('father_income')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="10,000 ₪"
                           />
-                          <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
-                      </div>
+                          </div>
+                        </FieldWrapper>
+                        </FieldWrapper>
+                        </FieldWrapper>
+                        </FieldWrapper>
+                        </FieldWrapper>
                     </div>
                   </div>
 
@@ -1142,13 +1172,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           שם הורה 2
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="mother_name" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('mother_name')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="שם מלא (אופציונלי)"
                           />
-                          <Heart className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Heart className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.mother_name && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -1162,14 +1193,15 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           נייד הורה 2
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="mother_mobile" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('mother_mobile')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="050-1234567 (אופציונלי)"
                             dir="ltr"
                           />
-                          <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.mother_mobile && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -1183,13 +1215,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           עיסוק
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="mother_occupation" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('mother_occupation')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="עבודה, לא עובדת, גמלאית (אופציונלי)"
                           />
-                          <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.mother_occupation && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -1203,13 +1236,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           מקצוע
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="mother_profession" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('mother_profession')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="מה המקצוע הספציפי (אופציונלי)"
                           />
-                          <Trophy className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Trophy className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.mother_profession && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -1223,15 +1257,21 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           הכנסה חודשית
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="mother_income" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('mother_income')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="8,000 ₪"
                           />
-                          <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
-                      </div>
+                          </div>
+                        </FieldWrapper>
+                        </FieldWrapper>
+                        </FieldWrapper>
+                        </FieldWrapper>
+                        </FieldWrapper>
                     </div>
                   </div>
 
@@ -1249,22 +1289,25 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           חובות/הלוואות/משכנתא
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="debts_loans" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('debts_loans')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="פרטי חובות והלוואות"
                           />
-                          <CreditCard className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <CreditCard className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
-                      </div>
+                          </div>
+                        </FieldWrapper>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           רמת מעורבות ההורים
                         </label>
-                        <div className="relative">
-                          <select
+                        <FieldWrapper fieldName="parent_involvement" completedFields={completedFields}>
+                          <div className="relative">
+                            <select
                             {...register('parent_involvement')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
                           >
@@ -1272,16 +1315,18 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <option value="no_involvement">ללא מעורבות</option>
                             <option value="inhibiting">מעכבת</option>
                           </select>
-                          <Users className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Users className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
-                      </div>
+                          </div>
+                        </FieldWrapper>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           מצב כלכלי
                         </label>
-                        <div className="relative">
-                          <select
+                        <FieldWrapper fieldName="economic_status" completedFields={completedFields}>
+                          <div className="relative">
+                            <select
                             {...register('economic_status')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
                           >
@@ -1289,39 +1334,44 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <option value="medium">בינוני</option>
                             <option value="high">גבוה</option>
                           </select>
-                          <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
-                      </div>
+                          </div>
+                        </FieldWrapper>
 
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           פירוט מצב כלכלי
                         </label>
-                        <div className="relative">
-                          <textarea
+                        <FieldWrapper fieldName="economic_details" completedFields={completedFields}>
+                          <div className="relative">
+                            <textarea
                             {...register('economic_details')}
                             rows={2}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
                             placeholder="פרט את המצב הכלכלי של המשפחה..."
                           />
-                          <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
-                      </div>
+                          </div>
+                        </FieldWrapper>
 
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           רקע משפחתי
                         </label>
-                        <div className="relative">
-                          <textarea
+                        <FieldWrapper fieldName="family_background" completedFields={completedFields}>
+                          <div className="relative">
+                            <textarea
                             {...register('family_background')}
                             rows={3}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
                             placeholder="רקע כללי על המשפחה והמצב..."
                           />
-                          <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
-                      </div>
+                          </div>
+                        </FieldWrapper>
                     </div>
                   </div>
                 </div>
@@ -1345,13 +1395,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           שם בית הספר
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="school_name" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('school_name')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="שם בית הספר המלא"
                           />
-                          <School className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <School className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.school_name && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -1366,8 +1417,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           כיתה
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <div className="relative">
-                          <select
+                        <FieldWrapper fieldName="grade" completedFields={completedFields}>
+                          <div className="relative">
+                            <select
                             {...register('grade')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
                           >
@@ -1378,7 +1430,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <option value="יא">יא</option>
                             <option value="יב">יב</option>
                           </select>
-                          <GraduationCap className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <GraduationCap className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.grade && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -1393,13 +1445,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           מחנכ/ת
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="homeroom_teacher" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('homeroom_teacher')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="שם מלא של המחנכ/ת"
                           />
-                          <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.homeroom_teacher && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -1414,14 +1467,15 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           טלפון מחנכ/ת
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="teacher_phone" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('teacher_phone')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="050-1234567"
                             dir="ltr"
                           />
-                          <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.teacher_phone && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -1436,13 +1490,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           יועץ/ת
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="counselor_name" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('counselor_name')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="שם מלא של היועץ/ת"
                           />
-                          <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.counselor_name && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -1457,14 +1512,15 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           טלפון יועץ/ת
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <div className="relative">
-                          <input
+                        <FieldWrapper fieldName="counselor_phone" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                             {...register('counselor_phone')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                             placeholder="050-1234567"
                             dir="ltr"
                           />
-                          <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
                         {errors.counselor_phone && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -1483,30 +1539,40 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                               שם משתמש
                             </label>
-                            <div className="relative">
-                              <input
+                        <FieldWrapper fieldName="school_info_username" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                                 {...register('school_info_username')}
                                 type="text"
                                 className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                                 placeholder="הזן שם משתמש"
                               />
-                              <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                             </div>
                           </div>
+                        </FieldWrapper>
+                        </FieldWrapper>
+                        </FieldWrapper>
+                        </FieldWrapper>
+                        </FieldWrapper>
+                        </FieldWrapper>
+                        </FieldWrapper>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                               סיסמה
                             </label>
-                            <div className="relative">
-                              <input
+                        <FieldWrapper fieldName="school_info_password" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                                 {...register('school_info_password')}
                                 type="text"
                                 className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                                 placeholder="הזן סיסמה"
                               />
-                              <Shield className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Shield className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                             </div>
                           </div>
+                        </FieldWrapper>
                         </div>
                       </div>
                     </div>
@@ -1523,18 +1589,20 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     
                     {/* Known to Welfare */}
                     <div className="mb-6">
-                      <div className="bg-white rounded-xl p-4 border border-gray-200">
-                        <label className="flex items-center cursor-pointer group">
-                          <input
-                            {...register('known_to_welfare')}
-                            type="checkbox"
-                            className="ml-3 w-5 h-5 text-orange-600 border-2 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
-                          />
-                          <span className="text-gray-700 font-medium group-hover:text-orange-600 transition-colors">
-                            מוכרים ברווחה
-                          </span>
-                        </label>
-                      </div>
+                      <FieldWrapper fieldName="known_to_welfare" completedFields={completedFields}>
+                        <div className="bg-white rounded-xl p-4 border border-gray-200">
+                          <label className="flex items-center cursor-pointer group">
+                            <input
+                              {...register('known_to_welfare')}
+                              type="checkbox"
+                              className="ml-3 w-5 h-5 text-orange-600 border-2 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
+                            />
+                            <span className="text-gray-700 font-medium group-hover:text-orange-600 transition-colors">
+                              מוכרים ברווחה
+                            </span>
+                          </label>
+                        </div>
+                      </FieldWrapper>
                       
                       {watch('known_to_welfare') && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 animate-fadeIn">
@@ -1542,29 +1610,33 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                               שם עו&quot;ס מטפל
                             </label>
-                            <div className="relative">
-                              <input
+                        <FieldWrapper fieldName="social_worker_name" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                                 {...register('social_worker_name')}
                                 className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
                                 placeholder="שם מלא של העו&quot;ס"
                               />
-                              <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                             </div>
                           </div>
+                        </FieldWrapper>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                               טלפון עו&quot;ס
                             </label>
-                            <div className="relative">
-                              <input
+                        <FieldWrapper fieldName="social_worker_phone" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                                 {...register('social_worker_phone')}
                                 className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
                                 placeholder="050-1234567"
                                 dir="ltr"
                               />
-                              <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                             </div>
                           </div>
+                        </FieldWrapper>
                         </div>
                       )}
                     </div>
@@ -1590,29 +1662,33 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                               שם עובד קידום נוער
                             </label>
-                            <div className="relative">
-                              <input
+                        <FieldWrapper fieldName="youth_worker_name" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                                 {...register('youth_worker_name')}
                                 className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
                                 placeholder="שם מלא של העובד"
                               />
-                              <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                             </div>
                           </div>
+                        </FieldWrapper>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                               טלפון עובד קידום נוער
                             </label>
-                            <div className="relative">
-                              <input
+                        <FieldWrapper fieldName="youth_worker_phone" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
                                 {...register('youth_worker_phone')}
                                 className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
                                 placeholder="050-1234567"
                                 dir="ltr"
                               />
-                              <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                             </div>
                           </div>
+                        </FieldWrapper>
                         </div>
                       )}
                     </div>
@@ -1692,8 +1768,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         רמת מוטיבציה
                         <span className="text-red-500 mr-1">*</span>
                       </label>
-                      <div className="relative">
-                        <select
+                        <FieldWrapper fieldName="motivation_level" completedFields={completedFields}>
+                          <div className="relative">
+                            <select
                           {...register('motivation_level')}
                           className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                         >
@@ -1702,7 +1779,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           <option value="medium">בינוני</option>
                           <option value="high">גבוה</option>
                         </select>
-                        <Zap className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Zap className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                       </div>
                       {errors.motivation_level && (
                         <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -1717,8 +1794,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         סוג מוטיבציה
                         <span className="text-red-500 mr-1">*</span>
                       </label>
-                      <div className="relative">
-                        <select
+                        <FieldWrapper fieldName="motivation_type" completedFields={completedFields}>
+                          <div className="relative">
+                            <select
                           {...register('motivation_type')}
                           className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                         >
@@ -1726,7 +1804,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           <option value="internal">פנימית</option>
                           <option value="external">חיצונית</option>
                         </select>
-                        <Heart className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Heart className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                       </div>
                       {errors.motivation_type && (
                         <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -1735,7 +1813,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         </p>
                       )}
                     </div>
-                  </div>
+                          </div>
+                        </FieldWrapper>
+                        </FieldWrapper>
 
                   {watch('motivation_type') === 'external' && (
                     <div className="animate-fadeIn">
@@ -1756,14 +1836,15 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       מצב חברתי
                       <span className="text-red-500 mr-1">*</span>
                     </label>
-                    <div className="relative">
-                      <textarea
+                        <FieldWrapper fieldName="social_status" completedFields={completedFields}>
+                          <div className="relative">
+                            <textarea
                         {...register('social_status')}
                         rows={3}
                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
                         placeholder="תאר את המצב החברתי..."
                       />
-                      <Users className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                            <Users className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                     </div>
                     {errors.social_status && (
                       <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -1778,16 +1859,19 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       פעילויות בשעות אחה&quot;צ
                       <span className="text-gray-500 text-xs mr-2">(חוגים, תנועות נוער, אימוני כושר, עבודה)</span>
                     </label>
-                    <div className="relative">
-                      <textarea
+                        <FieldWrapper fieldName="afternoon_activities" completedFields={completedFields}>
+                          <div className="relative">
+                            <textarea
                         {...register('afternoon_activities')}
                         rows={3}
                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
                         placeholder="פרט את הפעילויות..."
                       />
-                      <Activity className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                            <Activity className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                     </div>
-                  </div>
+                          </div>
+                        </FieldWrapper>
+                        </FieldWrapper>
                 </div>
               </div>
 
@@ -1860,16 +1944,18 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           האם הפרעת הקשב מטופלת? כיצד?
                         </label>
-                        <div className="relative">
-                          <textarea
+                        <FieldWrapper fieldName="adhd_treatment" completedFields={completedFields}>
+                          <div className="relative">
+                            <textarea
                             {...register('adhd_treatment')}
                             rows={3}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
                             placeholder="תאר את הטיפול הנוכחי..."
                           />
-                          <Brain className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Brain className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
-                      </div>
+                          </div>
+                        </FieldWrapper>
                     )}
                   </div>
                 </div>
@@ -1934,16 +2020,18 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           פרטים נוספים על האבחון
                         </label>
-                        <div className="relative">
-                          <textarea
+                        <FieldWrapper fieldName="assessment_details" completedFields={completedFields}>
+                          <div className="relative">
+                            <textarea
                             {...register('assessment_details')}
                             rows={4}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
                             placeholder="פרט על האבחון שנעשה..."
                           />
-                          <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
-                      </div>
+                          </div>
+                        </FieldWrapper>
                     </div>
                   )}
 
@@ -2038,6 +2126,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             קצין ביקור סדיר
                           </label>
+                        <FieldWrapper fieldName="probation_officer" completedFields={completedFields}>
                           <div className="relative">
                             <input
                               {...register('probation_officer')}
@@ -2046,11 +2135,13 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             />
                             <Shield className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
-                        </div>
+                          </div>
+                        </FieldWrapper>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             ק. שירות מבחן לנוער
                           </label>
+                        <FieldWrapper fieldName="youth_probation_officer" completedFields={completedFields}>
                           <div className="relative">
                             <input
                               {...register('youth_probation_officer')}
@@ -2059,7 +2150,8 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             />
                             <Shield className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
-                        </div>
+                          </div>
+                        </FieldWrapper>
                       </div>
                     </div>
                   </div>
@@ -2121,16 +2213,18 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           תיאור התרופות והמינונים
                         </label>
-                        <div className="relative">
-                          <textarea
+                        <FieldWrapper fieldName="medication_description" completedFields={completedFields}>
+                          <div className="relative">
+                            <textarea
                             {...register('medication_description')}
                             rows={3}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
                             placeholder="פרט את סוגי התרופות, מינונים ומטרת הטיפול..."
                           />
-                          <Heart className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <Heart className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
-                      </div>
+                          </div>
+                        </FieldWrapper>
                     )}
                   </div>
                 </div>
@@ -2230,14 +2324,15 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       מה הגורמים לסיכון?
                       <span className="text-red-500 mr-1">*</span>
                     </label>
-                    <div className="relative">
-                      <textarea
+                        <FieldWrapper fieldName="risk_factors" completedFields={completedFields}>
+                          <div className="relative">
+                            <textarea
                         {...register('risk_factors')}
                         rows={4}
                         className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
                         placeholder="פרט את הגורמים העיקריים לסיכון..."
                       />
-                      <AlertTriangle className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <AlertTriangle className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                     </div>
                     {errors.risk_factors && (
                       <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -2246,7 +2341,8 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       </p>
                     )}
                   </div>
-                </div>
+                          </div>
+                        </FieldWrapper>
               </div>
 
               {/* Personal Opinion Section */}
@@ -2263,14 +2359,15 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     דעה אישית והמלצות
                     <span className="text-red-500 mr-1">*</span>
                   </label>
-                  <div className="relative">
-                    <textarea
+                        <FieldWrapper fieldName="personal_opinion" completedFields={completedFields}>
+                          <div className="relative">
+                            <textarea
                       {...register('personal_opinion')}
                       rows={5}
                       className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
                       placeholder="שתף את דעתך המקצועית והמלצותיך לגבי קבלת המועמד/ת..."
                     />
-                    <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                   </div>
                   {errors.personal_opinion && (
                     <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -2279,7 +2376,8 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     </p>
                   )}
                 </div>
-              </div>
+                          </div>
+                        </FieldWrapper>
 
               {/* Academic Performance Section */}
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200 shadow-sm">
