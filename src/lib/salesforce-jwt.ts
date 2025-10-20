@@ -715,9 +715,9 @@ class SalesforceJWTService {
   /**
    * Get Registration Request by referral number
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getRegistrationByReferralNumber(referralNumber: string): Promise<{
     success: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data?: Record<string, any>;
     error?: string;
   }> {
