@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
     const {
       counselor_name,
       counselor_email,
+      counselor_mobile,
       school_name,
       warm_home_destination,
       parent_email,
@@ -50,6 +51,7 @@ export async function POST(request: NextRequest) {
       referralNumber: referral_number,
       counselorName: counselor_name,
       counselorEmail: counselor_email,
+      counselorMobile: counselor_mobile,
       schoolName: school_name,
       warmHomeDestination: warm_home_destination,
       parentEmail: parent_email,
@@ -77,6 +79,7 @@ export async function POST(request: NextRequest) {
         warm_home_destination,
         counselor_name,
         counselor_email,
+        counselor_mobile,
         parent_email: parent_email || null,
         parent_phone,
         status: 'pending_consent',

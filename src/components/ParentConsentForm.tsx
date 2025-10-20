@@ -194,9 +194,9 @@ export default function ParentConsentForm({ referralNumber, warmHomeDestination 
         
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 md:p-8 text-white">
             <div className="text-center">
-              <h1 className="text-3xl font-bold">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold leading-tight">
                 ויתור סודיות לימודית/פסיכולוגית/רפואית
               </h1>
             </div>

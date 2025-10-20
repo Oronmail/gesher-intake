@@ -10,6 +10,7 @@ import Logo from './Logo'
 const formSchema = z.object({
   counselor_name: z.string().min(2, 'נא להזין שם מלא'),
   counselor_email: z.string().email('כתובת אימייל לא תקינה'),
+  counselor_mobile: z.string().min(9, 'נא להזין טלפון נייד').regex(/^[\d\-\+\(\)\s]*$/, 'מספר טלפון לא תקין'),
   school_name: z.string().min(2, 'נא להזין שם בית ספר'),
   warm_home_destination: z.string().min(1, 'נא לבחור בית חם'),
   parent_email: z.string().email('כתובת אימייל לא תקינה').optional().or(z.literal('')),
@@ -179,6 +180,29 @@ export default function CounselorInitialForm() {
                     <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                       <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
                       {errors.counselor_email.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="counselor_mobile" className="block text-sm font-medium text-gray-700 mb-2">
+                    טלפון נייד
+                    <span className="text-red-500 mr-1">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      {...register('counselor_mobile')}
+                      type="tel"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                      placeholder="050-1234567"
+                      dir="ltr"
+                    />
+                    <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                  </div>
+                  {errors.counselor_mobile && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                      <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                      {errors.counselor_mobile.message}
                     </p>
                   )}
                 </div>

@@ -213,6 +213,7 @@ class SalesforceJWTService {
         Status__c: 'Pending Consent',
         Counselor_Name__c: data.counselorName,
         Counselor_Email__c: data.counselorEmail,
+        Counselor_Mobile__c: data.counselorMobile,
         School_Name__c: data.schoolName,
         Warm_Home_Destination__c: data.warmHomeDestination || '',
         Parent_Email__c: data.parentEmail || '',
@@ -709,6 +710,200 @@ class SalesforceJWTService {
    */
   isJWTConfigured(): boolean {
     return !!(this.privateKey && SF_CLIENT_ID && SF_USERNAME);
+  }
+
+  /**
+   * Get Registration Request by referral number
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async getRegistrationByReferralNumber(referralNumber: string): Promise<{
+    success: boolean;
+    data?: Record<string, any>;
+    error?: string;
+  }> {
+    try {
+      console.log(`Fetching Registration Request by referral number: ${referralNumber}`);
+
+      const result = await this.executeWithRetry(async (conn) => {
+        return await conn.query(
+          `SELECT Id, Name, Status__c,
+           Student_First_Name__c, Student_Last_Name__c, Student_ID__c, Date_of_Birth__c,
+           Gender__c, Country_of_Birth__c, Immigration_Year__c, Student_Address__c,
+           Student_Floor__c, Student_Apartment__c, Student_Phone__c, Student_Mobile__c,
+           School_Info_Username__c, School_Info_Password__c,
+           Siblings_Count__c, Father_Name__c, Father_Mobile__c, Father_Occupation__c,
+           Father_Profession__c, Father_Income__c, Mother_Name__c, Mother_Mobile__c,
+           Mother_Occupation__c, Mother_Profession__c, Mother_Income__c, Debts_Loans__c,
+           Parent_Involvement__c, Economic_Status__c, Economic_Details__c, Family_Background__c,
+           School_Name__c, Grade__c, Homeroom_Teacher__c, Teacher_Phone__c,
+           Counselor_Name__c, Counselor_Phone__c,
+           Behavioral_Issues__c, Behavioral_Issues_Details__c, Has_Potential__c,
+           Potential_Explanation__c, Motivation_Level__c, Motivation_Type__c,
+           External_Motivators__c, Social_Status__c, Afternoon_Activities__c,
+           Learning_Disability__c, Learning_Disability_Explanation__c,
+           Requires_Remedial_Teaching__c, ADHD__c, ADHD_Treatment__c,
+           Assessment_Done__c, Assessment_Needed__c, Assessment_Details__c,
+           Criminal_Record__c, Drug_Use__c, Smoking__c, Probation_Officer__c,
+           Youth_Probation_Officer__c, Psychological_Treatment__c,
+           Psychiatric_Treatment__c, Takes_Medication__c, Medication_Description__c,
+           Military_Service_Potential__c, Can_Handle_Program__c, Risk_Level__c,
+           Risk_Factors__c, Personal_Opinion__c, Failing_Grades_Count__c
+           FROM Registration_Request__c
+           WHERE Name = '${referralNumber}'
+           LIMIT 1`
+        );
+      });
+
+      if (result.records && result.records.length > 0) {
+        console.log('Registration Request found');
+        return {
+          success: true,
+          data: result.records[0] as Record<string, unknown>
+        };
+      } else {
+        return {
+          success: false,
+          error: 'Registration Request not found'
+        };
+      }
+    } catch (error) {
+      console.error('Error fetching Registration Request:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  /**
+   * Update Registration Request with partial student data (for progress saving)
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async updatePartialStudentData(recordId: string, data: Record<string, any>): Promise<{
+    success: boolean;
+    error?: string;
+  }> {
+    try {
+      // Build update object with only provided fields
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const updateData: Record<string, any> = {
+        Id: recordId,
+        Status__c: 'In Progress', // Mark as in progress, not fully submitted
+      };
+
+      // Map form fields to Salesforce fields (only if provided)
+      if (data.studentFirstName !== undefined) updateData.Student_First_Name__c = data.studentFirstName;
+      if (data.studentLastName !== undefined) updateData.Student_Last_Name__c = data.studentLastName;
+      if (data.studentId !== undefined) updateData.Student_ID__c = data.studentId;
+      if (data.dateOfBirth !== undefined) updateData.Date_of_Birth__c = data.dateOfBirth;
+      if (data.gender !== undefined) updateData.Gender__c = data.gender === 'male' ? 'Male' : 'Female';
+      if (data.countryOfBirth !== undefined) updateData.Country_of_Birth__c = data.countryOfBirth;
+      if (data.immigrationYear !== undefined) updateData.Immigration_Year__c = data.immigrationYear || '';
+      if (data.studentAddress !== undefined) updateData.Student_Address__c = data.studentAddress;
+      if (data.studentFloor !== undefined) updateData.Student_Floor__c = data.studentFloor || '';
+      if (data.studentApartment !== undefined) updateData.Student_Apartment__c = data.studentApartment || '';
+      if (data.studentPhone !== undefined) updateData.Student_Phone__c = data.studentPhone;
+      if (data.studentMobile !== undefined) updateData.Student_Mobile__c = data.studentMobile || '';
+      if (data.schoolInfoUsername !== undefined) updateData.School_Info_Username__c = data.schoolInfoUsername || '';
+      if (data.schoolInfoPassword !== undefined) updateData.School_Info_Password__c = data.schoolInfoPassword || '';
+
+      // Family fields
+      if (data.siblingsCount !== undefined) updateData.Siblings_Count__c = data.siblingsCount || 0;
+      if (data.fatherName !== undefined) updateData.Father_Name__c = data.fatherName || '';
+      if (data.fatherMobile !== undefined) updateData.Father_Mobile__c = data.fatherMobile || '';
+      if (data.fatherOccupation !== undefined) updateData.Father_Occupation__c = data.fatherOccupation || '';
+      if (data.fatherProfession !== undefined) updateData.Father_Profession__c = data.fatherProfession || '';
+      if (data.fatherIncome !== undefined) updateData.Father_Income__c = data.fatherIncome || '';
+      if (data.motherName !== undefined) updateData.Mother_Name__c = data.motherName || '';
+      if (data.motherMobile !== undefined) updateData.Mother_Mobile__c = data.motherMobile || '';
+      if (data.motherOccupation !== undefined) updateData.Mother_Occupation__c = data.motherOccupation || '';
+      if (data.motherProfession !== undefined) updateData.Mother_Profession__c = data.motherProfession || '';
+      if (data.motherIncome !== undefined) updateData.Mother_Income__c = data.motherIncome || '';
+      if (data.debtsLoans !== undefined) updateData.Debts_Loans__c = data.debtsLoans || '';
+      if (data.parentInvolvement !== undefined) updateData.Parent_Involvement__c =
+        data.parentInvolvement === 'inhibiting' ? 'Inhibiting' :
+        data.parentInvolvement === 'promoting' ? 'Promoting' : 'No Involvement';
+
+      // Background
+      if (data.economicStatus !== undefined) updateData.Economic_Status__c =
+        data.economicStatus === 'low' ? 'Low' :
+        data.economicStatus === 'medium' ? 'Medium' : 'High';
+      if (data.economicDetails !== undefined) updateData.Economic_Details__c = data.economicDetails || '';
+      if (data.familyBackground !== undefined) updateData.Family_Background__c = data.familyBackground || '';
+
+      // School
+      if (data.schoolName !== undefined) updateData.School_Name__c = data.schoolName;
+      if (data.grade !== undefined) updateData.Grade__c = data.grade;
+      if (data.homeroomTeacher !== undefined) updateData.Homeroom_Teacher__c = data.homeroomTeacher;
+      if (data.teacherPhone !== undefined) updateData.Teacher_Phone__c = data.teacherPhone;
+      if (data.counselorName !== undefined) updateData.Counselor_Name__c = data.counselorName;
+      if (data.counselorPhone !== undefined) updateData.Counselor_Phone__c = data.counselorPhone;
+
+      // Intake assessment
+      if (data.behavioralIssues !== undefined) updateData.Behavioral_Issues__c = data.behavioralIssues;
+      if (data.behavioralIssuesDetails !== undefined) updateData.Behavioral_Issues_Details__c = data.behavioralIssuesDetails || '';
+      if (data.hasPotential !== undefined) updateData.Has_Potential__c = data.hasPotential;
+      if (data.potentialExplanation !== undefined) updateData.Potential_Explanation__c = data.potentialExplanation || '';
+      if (data.motivationLevel !== undefined) updateData.Motivation_Level__c =
+        data.motivationLevel === 'low' ? 'Low' :
+        data.motivationLevel === 'medium' ? 'Medium' : 'High';
+      if (data.motivationType !== undefined) updateData.Motivation_Type__c =
+        data.motivationType === 'internal' ? 'Internal' : 'External';
+      if (data.externalMotivators !== undefined) updateData.External_Motivators__c = data.externalMotivators || '';
+      if (data.socialStatus !== undefined) updateData.Social_Status__c = data.socialStatus || '';
+      if (data.afternoonActivities !== undefined) updateData.Afternoon_Activities__c = data.afternoonActivities || '';
+
+      // Learning assessment
+      if (data.learningDisability !== undefined) updateData.Learning_Disability__c = data.learningDisability;
+      if (data.learningDisabilityExplanation !== undefined) updateData.Learning_Disability_Explanation__c = data.learningDisabilityExplanation || '';
+      if (data.requiresRemedialTeaching !== undefined) updateData.Requires_Remedial_Teaching__c = data.requiresRemedialTeaching;
+      if (data.adhd !== undefined) updateData.ADHD__c = data.adhd;
+      if (data.adhdTreatment !== undefined) updateData.ADHD_Treatment__c = data.adhdTreatment || '';
+      if (data.assessmentDone !== undefined) updateData.Assessment_Done__c = data.assessmentDone;
+      if (data.assessmentNeeded !== undefined) updateData.Assessment_Needed__c = data.assessmentNeeded;
+      if (data.assessmentDetails !== undefined) updateData.Assessment_Details__c = data.assessmentDetails || '';
+
+      // Risk assessment
+      if (data.criminalRecord !== undefined) updateData.Criminal_Record__c = data.criminalRecord;
+      if (data.drugUse !== undefined) updateData.Drug_Use__c = data.drugUse;
+      if (data.smoking !== undefined) updateData.Smoking__c = data.smoking;
+      if (data.probationOfficer !== undefined) updateData.Probation_Officer__c = data.probationOfficer || '';
+      if (data.youthProbationOfficer !== undefined) updateData.Youth_Probation_Officer__c = data.youthProbationOfficer || '';
+      if (data.psychologicalTreatment !== undefined) updateData.Psychological_Treatment__c = data.psychologicalTreatment;
+      if (data.psychiatricTreatment !== undefined) updateData.Psychiatric_Treatment__c = data.psychiatricTreatment;
+      if (data.takesMedication !== undefined) updateData.Takes_Medication__c = data.takesMedication;
+      if (data.medicationDescription !== undefined) updateData.Medication_Description__c = data.medicationDescription || '';
+
+      // Final assessment
+      if (data.militaryServicePotential !== undefined) updateData.Military_Service_Potential__c = data.militaryServicePotential;
+      if (data.canHandleProgram !== undefined) updateData.Can_Handle_Program__c = data.canHandleProgram;
+      if (data.riskLevel !== undefined) updateData.Risk_Level__c = data.riskLevel;
+      if (data.riskFactors !== undefined) updateData.Risk_Factors__c = data.riskFactors || '';
+      if (data.personalOpinion !== undefined) updateData.Personal_Opinion__c = data.personalOpinion || '';
+      if (data.failingGradesCount !== undefined) updateData.Failing_Grades_Count__c = data.failingGradesCount || 0;
+
+      console.log('Updating Registration Request with partial student data...');
+
+      const result = await this.executeWithRetry(async (conn) => {
+        return await conn.sobject('Registration_Request__c').update(updateData);
+      });
+
+      if (result.success) {
+        console.log('Registration Request updated with partial data');
+        return { success: true };
+      } else {
+        return {
+          success: false,
+          error: 'Failed to update with partial data'
+        };
+      }
+    } catch (error) {
+      console.error('Error updating with partial data:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
   }
 }
 

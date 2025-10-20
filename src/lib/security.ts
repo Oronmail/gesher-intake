@@ -185,6 +185,7 @@ export const secureFormSchemas = {
   counselorInitial: z.object({
     counselor_name: z.string().min(2).max(100).transform(sanitizeInput),
     counselor_email: z.string().email(),  // Just use Zod's built-in email validation
+    counselor_mobile: z.string().min(9).max(20),  // Phone validation
     school_name: z.string().min(2).max(200).transform(sanitizeInput),
     warm_home_destination: z.string().min(1).max(100).transform(sanitizeInput),
     parent_email: z.string().email().optional(),  // Just use Zod's built-in email validation

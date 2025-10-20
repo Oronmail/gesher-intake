@@ -28,6 +28,7 @@ export interface Referral {
   school_id: string
   counselor_name: string
   counselor_email: string
+  counselor_mobile?: string
   parent_email: string
   parent_phone: string
   status: ReferralStatus

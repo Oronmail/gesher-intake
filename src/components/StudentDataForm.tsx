@@ -4,17 +4,17 @@ import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { 
-  Loader2, 
-  ChevronRight, 
-  ChevronLeft, 
-  User, 
-  Users, 
-  School, 
-  GraduationCap, 
-  Brain, 
-  AlertTriangle, 
-  FileText, 
+import {
+  Loader2,
+  ChevronRight,
+  ChevronLeft,
+  User,
+  Users,
+  School,
+  GraduationCap,
+  Brain,
+  AlertTriangle,
+  FileText,
   CheckCircle,
   Calendar,
   MapPin,
@@ -26,7 +26,9 @@ import {
   Trophy,
   Zap,
   Activity,
-  Shield
+  Shield,
+  Save,
+  Check
 } from 'lucide-react'
 import Logo from './Logo'
 import { getBrandingFromDestination } from '@/lib/branding'
@@ -127,15 +129,15 @@ const formSchema = z.object({
   
   // מידע משפחתי
   siblings_count: z.number().min(0),
-  father_name: z.string().min(2, 'נא להזין שם אב'),
-  father_mobile: z.string().min(9, 'נא להזין טלפון אב'),
+  father_name: z.string().min(2, 'נא להזין שם הורה 1'),
+  father_mobile: z.string().min(9, 'נא להזין טלפון הורה 1'),
   father_occupation: z.string().min(2, 'נא להזין עיסוק'),
   father_profession: z.string().min(2, 'נא להזין מקצוע'),
   father_income: z.string().optional(),
-  mother_name: z.string().min(2, 'נא להזין שם אם'),
-  mother_mobile: z.string().min(9, 'נא להזין טלפון אם'),
-  mother_occupation: z.string().min(2, 'נא להזין עיסוק'),
-  mother_profession: z.string().min(2, 'נא להזין מקצוע'),
+  mother_name: z.string().optional(),
+  mother_mobile: z.string().optional(),
+  mother_occupation: z.string().optional(),
+  mother_profession: z.string().optional(),
   mother_income: z.string().optional(),
   debts_loans: z.string().optional(),
   parent_involvement: z.enum(['inhibiting', 'promoting', 'no_involvement']),
@@ -158,10 +160,10 @@ const formSchema = z.object({
   behavioral_issues_details: z.string().optional(),
   has_potential: z.boolean(),
   potential_explanation: z.string().optional(),
-  motivation_level: z.enum(['low', 'medium', 'high']),
-  motivation_type: z.enum(['internal', 'external']),
+  motivation_level: z.enum(['low', 'medium', 'high'], { required_error: 'נא לבחור רמת מוטיבציה' }),
+  motivation_type: z.enum(['internal', 'external'], { required_error: 'נא לבחור סוג מוטיבציה' }),
   external_motivators: z.string().optional(),
-  social_status: z.string().optional(),
+  social_status: z.string().min(1, 'נא להזין מצב חברתי'),
   afternoon_activities: z.string().optional(),
   
   // הערכת למידה
@@ -175,7 +177,7 @@ const formSchema = z.object({
   assessment_needed: z.boolean(),
   assessment_details: z.string().optional(),
   
-  // הערכת סיכון
+  // הערכת סיכון - all mandatory
   criminal_record: z.boolean(),
   drug_use: z.boolean(),
   smoking: z.boolean(),
@@ -185,13 +187,13 @@ const formSchema = z.object({
   psychiatric_treatment: z.boolean(),
   takes_medication: z.boolean(),
   medication_description: z.string().optional(),
-  
-  // הערכה סופית
+
+  // הערכה סופית - all mandatory
   military_service_potential: z.boolean(),
   can_handle_program: z.boolean(),
-  risk_level: z.number().min(1).max(10),
-  risk_factors: z.string().optional(),
-  personal_opinion: z.string().optional(),
+  risk_level: z.number().min(1, 'נא לבחור רמת סיכון').max(10),
+  risk_factors: z.string().min(1, 'נא להזין גורמי סיכון'),
+  personal_opinion: z.string().min(1, 'נא להזין חוות דעת אישית'),
   
   // ביצועים אקדמיים
   failing_grades_count: z.number().min(0),
@@ -210,12 +212,24 @@ interface StudentDataFormProps {
   warmHomeDestination?: string | null
 }
 
+// Completion marker component
+function CompletionMarker() {
+  return (
+    <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-white shadow-lg z-10">
+      <Check className="h-3 w-3" />
+    </span>
+  )
+}
+
 export default function StudentDataForm({ referralNumber, warmHomeDestination }: StudentDataFormProps) {
   const [currentStep, setCurrentStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string } | null>(null)
   const [loading, setLoading] = useState(true)
   const [isIntentionalSubmit, setIsIntentionalSubmit] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveSuccess, setSaveSuccess] = useState(false)
+  const [completedFields, setCompletedFields] = useState<Set<string>>(new Set())
 
   const totalSteps = 6
   const branding = getBrandingFromDestination(warmHomeDestination || null)
@@ -233,7 +247,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       known_to_welfare: false,
       youth_promotion: false,
       behavioral_issues: false,
-      has_potential: true,
+      has_potential: false,
       learning_disability: false,
       adhd: false,
       assessment_done: false,
@@ -244,18 +258,19 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       psychological_treatment: false,
       psychiatric_treatment: false,
       takes_medication: false,
-      military_service_potential: true,
-      can_handle_program: true,
+      military_service_potential: false,
+      can_handle_program: false,
       siblings_count: 0,
       failing_grades_count: 0,
       risk_level: 1,
     }
   })
 
-  // Fetch referral data from Supabase and prepopulate fields
+  // Fetch referral data from Supabase and existing progress from Salesforce
   useEffect(() => {
     const fetchReferralData = async () => {
       try {
+        // First, get basic referral info from Supabase
         const { data, error } = await supabase
           .from('referrals')
           .select('*')
@@ -268,13 +283,13 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
           if (data.counselor_name) setValue('counselor_name', data.counselor_name)
           // Pre-populate counselor phone if it was provided in the initial form
           if (data.counselor_phone) setValue('counselor_phone', data.counselor_phone)
-          
+
           // Prepopulate parent contact info if available
           if (data.parent_phone) {
             setValue('father_mobile', data.parent_phone)
             setValue('mother_mobile', data.parent_phone)
           }
-          
+
           // If parent names are stored (from consent form)
           if (data.parent_names) {
             const parentNames = data.parent_names.split(', ')
@@ -287,9 +302,31 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
               setValue('mother_name', secondName)
             }
           }
+        }
 
-          // Prepopulate student name if available from consent form
-          // This would be in a separate field if stored
+        // Fetch existing progress from Salesforce
+        try {
+          const progressResponse = await fetch(`/api/referrals/get-progress/${referralNumber}`)
+          if (progressResponse.ok) {
+            const progressData = await progressResponse.json()
+            if (progressData.success && progressData.data) {
+              const sfData = progressData.data
+              const completedSet = new Set<string>()
+
+              // Populate form with existing data and track completed fields
+              Object.entries(sfData).forEach(([key, value]) => {
+                if (value !== null && value !== '' && value !== 0 && value !== false) {
+                  setValue(key as keyof FormData, value as string & number & boolean)
+                  completedSet.add(key)
+                }
+              })
+
+              setCompletedFields(completedSet)
+              console.log('Loaded existing progress from Salesforce')
+            }
+          }
+        } catch (progressError) {
+          console.log('No existing progress found, starting fresh:', progressError)
         }
       } catch (error) {
         console.error('Error fetching referral data:', error)
@@ -312,6 +349,47 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
   const prevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1)
+    }
+  }
+
+  // Save progress function
+  const saveProgress = async () => {
+    setIsSaving(true)
+    setSaveSuccess(false)
+
+    try {
+      // Get all current form values
+      const currentValues = watch()
+
+      const response = await fetch('/api/referrals/save-progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          referral_number: referralNumber,
+          ...currentValues
+        }),
+      })
+
+      if (response.ok) {
+        setSaveSuccess(true)
+        // Update completed fields
+        const newCompleted = new Set(completedFields)
+        Object.entries(currentValues).forEach(([key, value]) => {
+          if (value !== null && value !== '' && value !== undefined) {
+            newCompleted.add(key)
+          }
+        })
+        setCompletedFields(newCompleted)
+
+        // Hide success message after 3 seconds
+        setTimeout(() => setSaveSuccess(false), 3000)
+      } else {
+        console.error('Failed to save progress')
+      }
+    } catch (error) {
+      console.error('Error saving progress:', error)
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -648,7 +726,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 <div className="space-y-6 animate-fadeIn">
                   <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-200 shadow-sm">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
+                      <div className="relative">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           שם פרטי
                           <span className="text-red-500 mr-1">*</span>
@@ -660,6 +738,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             placeholder="שם פרטי"
                           />
                           <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                          {completedFields.has('student_first_name') && <CompletionMarker />}
                         </div>
                         {errors.student_first_name && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
@@ -669,7 +748,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         )}
                       </div>
 
-                      <div>
+                      <div className="relative">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           שם משפחה
                           <span className="text-red-500 mr-1">*</span>
@@ -911,13 +990,13 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     </div>
                   </div>
 
-                  {/* Father Information */}
+                  {/* Parent 1 Information */}
                   <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200 shadow-sm">
                     <div className="flex items-center mb-6">
                       <div className="bg-blue-100 p-3 rounded-xl ml-3">
                         <User className="w-6 h-6 text-blue-600" />
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-800">פרטי האב</h3>
+                      <h3 className="text-lg font-semibold text-gray-800">פרטי הורה 1</h3>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1022,26 +1101,25 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     </div>
                   </div>
 
-                  {/* Mother Information */}
+                  {/* Parent 2 Information */}
                   <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-2xl p-6 border border-pink-200 shadow-sm">
                     <div className="flex items-center mb-6">
                       <div className="bg-pink-100 p-3 rounded-xl ml-3">
                         <Heart className="w-6 h-6 text-pink-600" />
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-800">פרטי האם</h3>
+                      <h3 className="text-lg font-semibold text-gray-800">פרטי הורה 2</h3>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          שם האם
-                          <span className="text-red-500 mr-1">*</span>
+                          שם הורה 2
                         </label>
                         <div className="relative">
                           <input
                             {...register('mother_name')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="שם מלא של האם"
+                            placeholder="שם מלא (אופציונלי)"
                           />
                           <Heart className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
@@ -1055,14 +1133,13 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          נייד האם
-                          <span className="text-red-500 mr-1">*</span>
+                          נייד הורה 2
                         </label>
                         <div className="relative">
                           <input
                             {...register('mother_mobile')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="050-1234567"
+                            placeholder="050-1234567 (אופציונלי)"
                             dir="ltr"
                           />
                           <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
@@ -1078,13 +1155,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           עיסוק
-                          <span className="text-red-500 mr-1">*</span>
                         </label>
                         <div className="relative">
                           <input
                             {...register('mother_occupation')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="עבודה, לא עובדת, גמלאית"
+                            placeholder="עבודה, לא עובדת, גמלאית (אופציונלי)"
                           />
                           <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
@@ -1099,13 +1175,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           מקצוע
-                          <span className="text-red-500 mr-1">*</span>
                         </label>
                         <div className="relative">
                           <input
                             {...register('mother_profession')}
                             className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="מה המקצוע הספציפי"
+                            placeholder="מה המקצוע הספציפי (אופציונלי)"
                           />
                           <Trophy className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                         </div>
@@ -1588,34 +1663,50 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         רמת מוטיבציה
+                        <span className="text-red-500 mr-1">*</span>
                       </label>
                       <div className="relative">
                         <select
                           {...register('motivation_level')}
                           className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                         >
+                          <option value="">בחר רמת מוטיבציה</option>
                           <option value="low">נמוך</option>
                           <option value="medium">בינוני</option>
                           <option value="high">גבוה</option>
                         </select>
                         <Zap className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                       </div>
+                      {errors.motivation_level && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                          <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                          {errors.motivation_level.message}
+                        </p>
+                      )}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         סוג מוטיבציה
+                        <span className="text-red-500 mr-1">*</span>
                       </label>
                       <div className="relative">
                         <select
                           {...register('motivation_type')}
                           className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                         >
+                          <option value="">בחר סוג מוטיבציה</option>
                           <option value="internal">פנימית</option>
                           <option value="external">חיצונית</option>
                         </select>
                         <Heart className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                       </div>
+                      {errors.motivation_type && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                          <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                          {errors.motivation_type.message}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -1636,6 +1727,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       מצב חברתי
+                      <span className="text-red-500 mr-1">*</span>
                     </label>
                     <div className="relative">
                       <textarea
@@ -1646,6 +1738,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       />
                       <Users className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                     </div>
+                    {errors.social_status && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        {errors.social_status.message}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -2067,6 +2165,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       רמת הסיכון של הנער/ה
+                      <span className="text-red-500 mr-1">*</span>
                     </label>
                     <div className="space-y-2">
                       <input
@@ -2102,6 +2201,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       מה הגורמים לסיכון?
+                      <span className="text-red-500 mr-1">*</span>
                     </label>
                     <div className="relative">
                       <textarea
@@ -2112,6 +2212,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       />
                       <AlertTriangle className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                     </div>
+                    {errors.risk_factors && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        {errors.risk_factors.message}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -2128,6 +2234,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     דעה אישית והמלצות
+                    <span className="text-red-500 mr-1">*</span>
                   </label>
                   <div className="relative">
                     <textarea
@@ -2138,6 +2245,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     />
                     <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                   </div>
+                  {errors.personal_opinion && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                      <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                      {errors.personal_opinion.message}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -2264,49 +2377,83 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
               )}
 
               {/* Navigation Buttons */}
-              <div className="flex justify-between items-center pt-8 border-t border-gray-200">
-                {currentStep > 1 ? (
-                  <button
-                    type="button"
-                    onClick={prevStep}
-                    className="group px-8 py-4 bg-white border-2 border-gray-200 rounded-2xl text-gray-700 hover:border-gray-300 hover:bg-gray-50 flex items-center transition-all duration-200 hover:shadow-sm font-medium"
-                  >
-                    <ChevronRight className="ml-3 h-5 w-5 group-hover:-translate-x-1 transition-transform duration-200" />
-                    הקודם
-                  </button>
-                ) : (
-                  <div></div>
-                )}
+              <div className="space-y-4">
+                <div className="flex justify-between items-center pt-8 border-t border-gray-200">
+                  {currentStep > 1 ? (
+                    <button
+                      type="button"
+                      onClick={prevStep}
+                      className="group px-8 py-4 bg-white border-2 border-gray-200 rounded-2xl text-gray-700 hover:border-gray-300 hover:bg-gray-50 flex items-center transition-all duration-200 hover:shadow-sm font-medium"
+                    >
+                      <ChevronRight className="ml-3 h-5 w-5 group-hover:-translate-x-1 transition-transform duration-200" />
+                      הקודם
+                    </button>
+                  ) : (
+                    <div></div>
+                  )}
 
-                {currentStep < totalSteps ? (
+                  {currentStep < totalSteps ? (
+                    <button
+                      type="button"
+                      onClick={nextStep}
+                      className="group px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl hover:from-blue-600 hover:to-purple-700 flex items-center transition-all duration-200 hover:shadow-lg hover:scale-105 transform font-medium"
+                    >
+                      הבא
+                      <ChevronLeft className="mr-3 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      onClick={() => setIsIntentionalSubmit(true)}
+                      className="group px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl hover:from-green-600 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center transition-all duration-200 hover:shadow-lg hover:scale-105 transform font-medium text-lg"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="animate-spin ml-3 h-6 w-6" />
+                          שולח טופס...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="ml-3 h-6 w-6 group-hover:rotate-12 transition-transform duration-200" />
+                          שליחת טופס
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+
+                {/* Save Progress Button */}
+                <div className="flex items-center justify-center gap-3">
                   <button
                     type="button"
-                    onClick={nextStep}
-                    className="group px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl hover:from-blue-600 hover:to-purple-700 flex items-center transition-all duration-200 hover:shadow-lg hover:scale-105 transform font-medium"
+                    onClick={saveProgress}
+                    disabled={isSaving}
+                    className="group px-6 py-3 bg-white border-2 border-amber-300 text-amber-700 rounded-xl hover:bg-amber-50 hover:border-amber-400 disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-all duration-200 font-medium shadow-sm hover:shadow-md"
                   >
-                    הבא
-                    <ChevronLeft className="mr-3 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    onClick={() => setIsIntentionalSubmit(true)}
-                    className="group px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl hover:from-green-600 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center transition-all duration-200 hover:shadow-lg hover:scale-105 transform font-medium text-lg"
-                  >
-                    {isSubmitting ? (
+                    {isSaving ? (
                       <>
-                        <Loader2 className="animate-spin ml-3 h-6 w-6" />
-                        שולח טופס...
+                        <Loader2 className="animate-spin ml-2 h-4 w-4" />
+                        שומר...
+                      </>
+                    ) : saveSuccess ? (
+                      <>
+                        <Check className="ml-2 h-4 w-4 text-green-600" />
+                        נשמר בהצלחה!
                       </>
                     ) : (
                       <>
-                        <CheckCircle className="ml-3 h-6 w-6 group-hover:rotate-12 transition-transform duration-200" />
-                        שליחת טופס
+                        <Save className="ml-2 h-4 w-4" />
+                        שמור התקדמות
                       </>
                     )}
                   </button>
-                )}
+                  {saveSuccess && (
+                    <span className="text-sm text-green-600 animate-fadeIn">
+                      ✓ ההתקדמות שלך נשמרה
+                    </span>
+                  )}
+                </div>
               </div>
             </form>
           </div>

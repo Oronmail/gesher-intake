@@ -38,16 +38,16 @@ interface SendCounselorNotificationParams {
 
 export async function sendConsentEmail({
   parentEmail,
-  counselorName, // eslint-disable-line @typescript-eslint/no-unused-vars
+  counselorName,
   schoolName,
   referralNumber, // eslint-disable-line @typescript-eslint/no-unused-vars
   consentUrl,
   organizationName = 'גשר אל הנוער',
 }: SendConsentEmailParams) {
   console.log(`[EMAIL] Attempting to send consent email to: ${parentEmail}`);
-  
+
   const transporter = createGmailTransporter();
-  
+
   if (!transporter) {
     console.log('[EMAIL] Gmail credentials not configured, skipping email');
     return { success: false, error: 'Email service not configured' };
@@ -55,20 +55,20 @@ export async function sendConsentEmail({
 
   // Generate unique message ID using gmail domain to improve trust
   const messageId = `${Date.now()}.${Math.random().toString(36).substr(2, 9)}@gmail.com`;
-  
+
   // Plain text version for better deliverability
   const textContent = `
     ${organizationName} - טופס ויתור סודיות
 
     שלום,
 
-    יועץ משפחה מבית ספר ${schoolName} הפנה את ילדכם לתוכנית "${organizationName}".
+    ${counselorName} מבית ספר ${schoolName} הפנה/תה את ילדכם לתוכנית "${organizationName}".
 
     לצורך המשך הטיפול בבקשה, אנו זקוקים להסכמתכם לויתור סודיות לימודית/פסיכולוגית/רפואית.
-    
+
     לחצו על הקישור למילוי טופס ויתור הסודיות:
     ${consentUrl}
-    
+
     זהו מייל אוטומטי. אנא אל תשיבו למייל זה.
     לשאלות ובירורים, צרו קשר עם היועצ/ת החינוכי/ת.
   `.trim();
@@ -97,8 +97,8 @@ export async function sendConsentEmail({
 
           <p>שלום,</p>
 
-          <p>יועץ משפחה מבית ספר ${schoolName} הפנה את ילדכם לתוכנית "${organizationName}".</p>
-          
+          <p>${counselorName} מבית ספר ${schoolName} הפנה/תה את ילדכם לתוכנית "${organizationName}".</p>
+
           <p>לצורך המשך הטיפול בבקשה, אנו זקוקים להסכמתכם לויתור סודיות לימודית/פסיכולוגית/רפואית.</p>
           
           <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
