@@ -998,16 +998,15 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="student_mobile" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('student_mobile')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="050-1234567"
-                            dir="ltr"
-                          />
+                              {...register('student_mobile')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="050-1234567"
+                              dir="ltr"
+                            />
                             <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
                           </div>
                         </FieldWrapper>
-                        </FieldWrapper>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1058,12 +1057,13 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="father_name" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('father_name')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="שם מלא של האב"
-                          />
+                              {...register('father_name')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="שם מלא של האב"
+                            />
                             <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
+                          </div>
+                        </FieldWrapper>
                         {errors.father_name && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -1080,13 +1080,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="father_mobile" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('father_mobile')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="050-1234567"
-                            dir="ltr"
-                          />
+                              {...register('father_mobile')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="050-1234567"
+                              dir="ltr"
+                            />
                             <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
+                          </div>
+                        </FieldWrapper>
                         {errors.father_mobile && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -1103,12 +1104,13 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="father_occupation" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('father_occupation')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="עבודה, לא עובד, גמלאי"
-                          />
+                              {...register('father_occupation')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="עבודה, לא עובד, גמלאי"
+                            />
                             <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
+                          </div>
+                        </FieldWrapper>
                         {errors.father_occupation && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -1125,12 +1127,13 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="father_profession" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('father_profession')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="מה המקצוע הספציפי"
-                          />
+                              {...register('father_profession')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="מה המקצוע הספציפי"
+                            />
                             <Trophy className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
+                          </div>
+                        </FieldWrapper>
                         {errors.father_profession && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -1146,18 +1149,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="father_income" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('father_income')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="10,000 ₪"
-                          />
+                              {...register('father_income')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="10,000 ₪"
+                            />
                             <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
                           </div>
                         </FieldWrapper>
-                        </FieldWrapper>
-                        </FieldWrapper>
-                        </FieldWrapper>
-                        </FieldWrapper>
+                      </div>
                     </div>
                   </div>
 
@@ -1178,12 +1177,13 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="mother_name" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('mother_name')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="שם מלא (אופציונלי)"
-                          />
+                              {...register('mother_name')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="שם מלא (אופציונלי)"
+                            />
                             <Heart className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
+                          </div>
+                        </FieldWrapper>
                         {errors.mother_name && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -1199,13 +1199,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="mother_mobile" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('mother_mobile')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="050-1234567 (אופציונלי)"
-                            dir="ltr"
-                          />
+                              {...register('mother_mobile')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="050-1234567 (אופציונלי)"
+                              dir="ltr"
+                            />
                             <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
+                          </div>
+                        </FieldWrapper>
                         {errors.mother_mobile && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -1221,12 +1222,13 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="mother_occupation" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('mother_occupation')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="עבודה, לא עובדת, גמלאית (אופציונלי)"
-                          />
+                              {...register('mother_occupation')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="עבודה, לא עובדת, גמלאית (אופציונלי)"
+                            />
                             <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
+                          </div>
+                        </FieldWrapper>
                         {errors.mother_occupation && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -1242,12 +1244,13 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="mother_profession" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('mother_profession')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="מה המקצוע הספציפי (אופציונלי)"
-                          />
+                              {...register('mother_profession')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="מה המקצוע הספציפי (אופציונלי)"
+                            />
                             <Trophy className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
+                          </div>
+                        </FieldWrapper>
                         {errors.mother_profession && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -1263,18 +1266,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="mother_income" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('mother_income')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="8,000 ₪"
-                          />
+                              {...register('mother_income')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="8,000 ₪"
+                            />
                             <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
                           </div>
                         </FieldWrapper>
-                        </FieldWrapper>
-                        </FieldWrapper>
-                        </FieldWrapper>
-                        </FieldWrapper>
+                      </div>
                     </div>
                   </div>
 
@@ -1295,14 +1294,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="debts_loans" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('debts_loans')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="פרטי חובות והלוואות"
-                          />
+                              {...register('debts_loans')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="פרטי חובות והלוואות"
+                            />
                             <CreditCard className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
                           </div>
                         </FieldWrapper>
+                      </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1311,17 +1310,17 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="parent_involvement" completedFields={completedFields}>
                           <div className="relative">
                             <select
-                            {...register('parent_involvement')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
-                          >
-                            <option value="promoting">מקדמת</option>
-                            <option value="no_involvement">ללא מעורבות</option>
-                            <option value="inhibiting">מעכבת</option>
-                          </select>
+                              {...register('parent_involvement')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
+                            >
+                              <option value="promoting">מקדמת</option>
+                              <option value="no_involvement">ללא מעורבות</option>
+                              <option value="inhibiting">מעכבת</option>
+                            </select>
                             <Users className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
                           </div>
                         </FieldWrapper>
+                      </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1330,17 +1329,17 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="economic_status" completedFields={completedFields}>
                           <div className="relative">
                             <select
-                            {...register('economic_status')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
-                          >
-                            <option value="low">נמוך</option>
-                            <option value="medium">בינוני</option>
-                            <option value="high">גבוה</option>
-                          </select>
+                              {...register('economic_status')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
+                            >
+                              <option value="low">נמוך</option>
+                              <option value="medium">בינוני</option>
+                              <option value="high">גבוה</option>
+                            </select>
                             <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
                           </div>
                         </FieldWrapper>
+                      </div>
 
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1349,15 +1348,15 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="economic_details" completedFields={completedFields}>
                           <div className="relative">
                             <textarea
-                            {...register('economic_details')}
-                            rows={2}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
-                            placeholder="פרט את המצב הכלכלי של המשפחה..."
-                          />
+                              {...register('economic_details')}
+                              rows={2}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
+                              placeholder="פרט את המצב הכלכלי של המשפחה..."
+                            />
                             <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
                           </div>
                         </FieldWrapper>
+                      </div>
 
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1366,15 +1365,15 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="family_background" completedFields={completedFields}>
                           <div className="relative">
                             <textarea
-                            {...register('family_background')}
-                            rows={3}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
-                            placeholder="רקע כללי על המשפחה והמצב..."
-                          />
+                              {...register('family_background')}
+                              rows={3}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
+                              placeholder="רקע כללי על המשפחה והמצב..."
+                            />
                             <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
                           </div>
                         </FieldWrapper>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1401,12 +1400,13 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="school_name" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('school_name')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="שם בית הספר המלא"
-                          />
+                              {...register('school_name')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="שם בית הספר המלא"
+                            />
                             <School className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
+                          </div>
+                        </FieldWrapper>
                         {errors.school_name && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -1423,18 +1423,19 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="grade" completedFields={completedFields}>
                           <div className="relative">
                             <select
-                            {...register('grade')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
-                          >
-                            <option value="">בחר כיתה</option>
-                            <option value="ח">ח</option>
-                            <option value="ט">ט</option>
-                            <option value="י">י</option>
-                            <option value="יא">יא</option>
-                            <option value="יב">יב</option>
-                          </select>
+                              {...register('grade')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
+                            >
+                              <option value="">בחר כיתה</option>
+                              <option value="ח">ח</option>
+                              <option value="ט">ט</option>
+                              <option value="י">י</option>
+                              <option value="יא">יא</option>
+                              <option value="יב">יב</option>
+                            </select>
                             <GraduationCap className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
+                          </div>
+                        </FieldWrapper>
                         {errors.grade && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -1451,12 +1452,13 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="homeroom_teacher" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('homeroom_teacher')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="שם מלא של המחנכ/ת"
-                          />
+                              {...register('homeroom_teacher')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="שם מלא של המחנכ/ת"
+                            />
                             <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
+                          </div>
+                        </FieldWrapper>
                         {errors.homeroom_teacher && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -1473,13 +1475,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="teacher_phone" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('teacher_phone')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="050-1234567"
-                            dir="ltr"
-                          />
+                              {...register('teacher_phone')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="050-1234567"
+                              dir="ltr"
+                            />
                             <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
+                          </div>
+                        </FieldWrapper>
                         {errors.teacher_phone && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -1496,12 +1499,13 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="counselor_name" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('counselor_name')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="שם מלא של היועץ/ת"
-                          />
+                              {...register('counselor_name')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="שם מלא של היועץ/ת"
+                            />
                             <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
+                          </div>
+                        </FieldWrapper>
                         {errors.counselor_name && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -1518,13 +1522,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="counselor_phone" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                            {...register('counselor_phone')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                            placeholder="050-1234567"
-                            dir="ltr"
-                          />
+                              {...register('counselor_phone')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="050-1234567"
+                              dir="ltr"
+                            />
                             <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
+                          </div>
+                        </FieldWrapper>
                         {errors.counselor_phone && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
@@ -1545,21 +1550,15 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="school_info_username" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                                {...register('school_info_username')}
-                                type="text"
-                                className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                                placeholder="הזן שם משתמש"
-                              />
+                              {...register('school_info_username')}
+                              type="text"
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="הזן שם משתמש"
+                            />
                             <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                            </div>
                           </div>
                         </FieldWrapper>
-                        </FieldWrapper>
-                        </FieldWrapper>
-                        </FieldWrapper>
-                        </FieldWrapper>
-                        </FieldWrapper>
-                        </FieldWrapper>
+                          </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                               סיסמה
@@ -1567,18 +1566,18 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="school_info_password" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                                {...register('school_info_password')}
-                                type="text"
-                                className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                                placeholder="הזן סיסמה"
-                              />
+                              {...register('school_info_password')}
+                              type="text"
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="הזן סיסמה"
+                            />
                             <Shield className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                            </div>
                           </div>
                         </FieldWrapper>
                         </div>
                       </div>
                     </div>
+                  </div>
                   </div>
 
                   {/* Welfare Services Section */}
@@ -1616,14 +1615,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="social_worker_name" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                                {...register('social_worker_name')}
-                                className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
-                                placeholder="שם מלא של העו&quot;ס"
-                              />
+                              {...register('social_worker_name')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                              placeholder="שם מלא של העו&quot;ס"
+                            />
                             <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                            </div>
                           </div>
                         </FieldWrapper>
+                          </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                               טלפון עו&quot;ס
@@ -1631,15 +1630,15 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="social_worker_phone" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                                {...register('social_worker_phone')}
-                                className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
-                                placeholder="050-1234567"
-                                dir="ltr"
-                              />
+                              {...register('social_worker_phone')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                              placeholder="050-1234567"
+                              dir="ltr"
+                            />
                             <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                            </div>
                           </div>
                         </FieldWrapper>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -1670,14 +1669,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="youth_worker_name" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                                {...register('youth_worker_name')}
-                                className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
-                                placeholder="שם מלא של העובד"
-                              />
+                              {...register('youth_worker_name')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                              placeholder="שם מלא של העובד"
+                            />
                             <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                            </div>
                           </div>
                         </FieldWrapper>
+                          </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                               טלפון עובד קידום נוער
@@ -1685,21 +1684,21 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <FieldWrapper fieldName="youth_worker_phone" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                                {...register('youth_worker_phone')}
-                                className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
-                                placeholder="050-1234567"
-                                dir="ltr"
-                              />
+                              {...register('youth_worker_phone')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                              placeholder="050-1234567"
+                              dir="ltr"
+                            />
                             <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                            </div>
                           </div>
                         </FieldWrapper>
+                          </div>
                         </div>
                       )}
                     </div>
                   </div>
-            </div>
-          )}
+                </div>
+              )}
 
           {/* Step 4: Intake Assessment */}
           {currentStep === 4 && (
@@ -2061,6 +2060,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           </div>
                         </FieldWrapper>
                       </div>
+                    </div>
                     )}
 
                   {watch('assessment_needed') && !watch('assessment_done') && (
@@ -2425,6 +2425,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     </p>
                   )}
                 </div>
+              </div>
 
               {/* Academic Performance Section */}
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200 shadow-sm">
