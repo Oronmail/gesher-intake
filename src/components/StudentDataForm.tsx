@@ -356,7 +356,17 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
   const nextStep = async () => {
     const fieldsToValidate = getFieldsForStep(currentStep)
-    const isValid = await trigger(fieldsToValidate as (keyof FormData)[])
+    // Filter out fields that are already completed - they don't need validation
+    const fieldsNeedingValidation = fieldsToValidate.filter(field => !completedFields.has(field))
+
+    // If all fields are completed, allow moving to next step
+    if (fieldsNeedingValidation.length === 0) {
+      setCurrentStep(currentStep + 1)
+      return
+    }
+
+    // Otherwise validate only incomplete fields
+    const isValid = await trigger(fieldsNeedingValidation as (keyof FormData)[])
     if (isValid && currentStep < totalSteps) {
       setCurrentStep(currentStep + 1)
     }
