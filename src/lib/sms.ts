@@ -86,15 +86,10 @@ class InwiseSMS {
             {
               mobile_number: formattedPhone
             }
-          ]
-        },
-        // Optional: Add tags for tracking if referralNumber provided
-        ...(referralNumber && {
-          message: {
-            ...{ content: message, charset: 'unicode', to: [{ mobile_number: formattedPhone }] },
-            tags: [referralNumber]
-          }
-        })
+          ],
+          // Add tags inside the message object (not as a duplicate message key)
+          ...(referralNumber && { tags: [referralNumber] })
+        }
       };
 
       console.log('[SMS] Sending SMS via Inwise to:', formattedPhone);
