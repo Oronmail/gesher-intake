@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { sendCounselorNotification } from '@/lib/email'
+import { sendCounselorSMS } from '@/lib/sms'
 import { getBrandingFromDestination } from '@/lib/branding'
 import salesforceJWT from '@/lib/salesforce-jwt'
 
@@ -109,6 +110,12 @@ export async function POST(request: NextRequest) {
     // Get branding based on warm home destination
     const branding = getBrandingFromDestination(data.warm_home_destination)
 
+    // Track notification results
+    const notifications = {
+      email: false,
+      sms: false,
+    }
+
     // Send email to counselor
     if (data.counselor_email) {
       const emailResult = await sendCounselorNotification({
@@ -120,13 +127,34 @@ export async function POST(request: NextRequest) {
         referralNumber: referral_number,
         organizationName: branding.organizationName,
       })
-      
+
       if (emailResult.success) {
-        console.log('Notification email sent to counselor:', data.counselor_email)
+        console.log('[EMAIL] ✅ Notification email sent to counselor:', data.counselor_email)
+        notifications.email = true
       } else {
-        console.log('Failed to send counselor notification:', emailResult.error)
+        console.log('[EMAIL] ❌ Failed to send counselor notification:', emailResult.error)
       }
     }
+
+    // Send SMS to counselor if mobile number provided
+    if (data.counselor_mobile) {
+      const smsResult = await sendCounselorSMS({
+        counselorPhone: data.counselor_mobile,
+        studentName: student_name,
+        formUrl: studentFormUrl,
+      })
+
+      if (smsResult.success) {
+        console.log('[SMS] ✅ Notification SMS sent to counselor:', data.counselor_mobile)
+        notifications.sms = true
+      } else {
+        console.log('[SMS] ❌ Failed to send counselor SMS:', smsResult.error)
+        // SMS failure is not critical - continue anyway
+      }
+    }
+
+    // Log notification summary
+    console.log('[NOTIFICATIONS] Counselor notifications sent:', notifications)
     
     console.log('====================================')
     console.log('✅ CONSENT SIGNED SUCCESSFULLY!')

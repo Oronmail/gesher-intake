@@ -33,12 +33,12 @@ class InwiseSMS {
   }
 
   /**
-   * Format Israeli phone number to international format
+   * Format Israeli phone number to Inwise format (972-XX-XXXXXXX)
    */
   private formatPhoneNumber(phone: string): string {
     // Remove all non-digits
     let cleaned = phone.replace(/\D/g, '');
-    
+
     // Handle Israeli numbers
     if (cleaned.startsWith('0')) {
       // Remove leading 0 and add country code
@@ -47,9 +47,17 @@ class InwiseSMS {
       // Assume it's Israeli if no country code
       cleaned = '972' + cleaned;
     }
-    
-    // Add + prefix for international format
-    return '+' + cleaned;
+
+    // Format as 972-XX-XXXXXXX (Inwise format)
+    // Example: 972501234567 -> 972-50-1234567
+    if (cleaned.startsWith('972')) {
+      const countryCode = cleaned.substring(0, 3); // 972
+      const areaCode = cleaned.substring(3, 5);     // 50
+      const number = cleaned.substring(5);          // 1234567
+      return `${countryCode}-${areaCode}-${number}`;
+    }
+
+    return cleaned;
   }
 
   /**
@@ -59,34 +67,48 @@ class InwiseSMS {
     const { phone, message, referralNumber } = params;
 
     if (!this.config.apiKey) {
-      console.error('Inwise API key not configured');
+      console.error('[SMS] Inwise API key not configured');
       return { success: false, error: 'SMS service not configured' };
     }
 
     try {
       const formattedPhone = this.formatPhoneNumber(phone);
-      
+
       // Inwise API endpoint for transactional SMS
       const endpoint = `${this.config.baseUrl}/transactional/sms/send`;
-      
+
+      // Inwise API request format (based on official documentation)
       const requestBody = {
-        phoneNumber: formattedPhone,
-        message: message,
-        sender: this.config.senderId,
-        // Add tracking info if available
-        customField: referralNumber || undefined,
+        message: {
+          content: message,
+          charset: 'unicode', // Required for Hebrew text
+          to: [
+            {
+              mobile_number: formattedPhone
+            }
+          ]
+        },
+        // Optional: Add tags for tracking if referralNumber provided
+        ...(referralNumber && {
+          message: {
+            ...{ content: message, charset: 'unicode', to: [{ mobile_number: formattedPhone }] },
+            tags: [referralNumber]
+          }
+        })
       };
 
-      console.log('Sending SMS via Inwise to:', formattedPhone);
-      console.log('Message:', message);
+      console.log('[SMS] Sending SMS via Inwise to:', formattedPhone);
+      console.log('[SMS] Message preview:', message.substring(0, 50) + '...');
+      console.log('[SMS] Request body:', JSON.stringify(requestBody, null, 2));
 
-      // Inwise authentication: Use X-API-Key header
+      // Try both common authentication header formats
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'X-API-Key': this.config.apiKey,
+        'Authorization': `Bearer ${this.config.apiKey}`, // Common format
+        'X-API-Key': this.config.apiKey, // Alternative format
       }
-      
+
       const response = await fetch(endpoint, {
         method: 'POST',
         headers,
@@ -94,10 +116,18 @@ class InwiseSMS {
       });
 
       const responseText = await response.text();
-      
+
       if (!response.ok) {
-        console.error('Inwise SMS API Error:', response.status, responseText);
-        
+        console.error('[SMS] Inwise SMS API Error:', response.status, responseText);
+
+        // Check for common error codes
+        if (response.status === 401) {
+          return {
+            success: false,
+            error: 'Authentication failed - check API key',
+          };
+        }
+
         return {
           success: false,
           error: `SMS sending failed: ${response.status} - ${responseText}`,
@@ -113,14 +143,24 @@ class InwiseSMS {
         result = { messageId: responseText };
       }
 
-      console.log('SMS sent successfully via Inwise:', result);
-      
+      console.log('[SMS] ✅ SMS sent successfully via Inwise');
+      console.log('[SMS] Response:', result);
+
+      // Check for status in response
+      if (result.status === 'rejected' || result.status === 'invalid') {
+        console.error('[SMS] Message rejected:', result.reject_reason);
+        return {
+          success: false,
+          error: `Message rejected: ${result.reject_reason || 'unknown reason'}`,
+        };
+      }
+
       return {
         success: true,
-        messageId: result.messageId || result.id || 'sent',
+        messageId: result.messageId || result.id || result.status || 'sent',
       };
     } catch (error) {
-      console.error('Inwise SMS sending error:', error);
+      console.error('[SMS] Inwise SMS sending error:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',

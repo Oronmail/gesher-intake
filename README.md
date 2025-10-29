@@ -1,9 +1,10 @@
 # Gesher Al HaNoar - Digital Intake System
 
-🔗 **Live Production**: https://gesher-intake.vercel.app  
-📅 **Last Updated**: November 11, 2025  
-✅ **Status**: Fully Operational with Image-Based Consent  
+🔗 **Live Production**: https://gesher-intake.vercel.app
+📅 **Last Updated**: October 29, 2025
+✅ **Status**: Fully Operational with Email & SMS Notifications
 📧 **Email Service**: Gmail SMTP (gesheryouth@gmail.com)
+📱 **SMS Service**: Inwise API (Hebrew support)
 
 A privacy-compliant digital intake system for Gesher Al HaNoar (גשר אל הנוער), a non-profit organization providing free tutoring and family support to at-risk youth in Israel.
 
@@ -27,7 +28,7 @@ This system digitizes the student referral process, replacing paper forms with a
 - **Salesforce Integration**: Direct sync with Registration_Request__c object and ContentDocument
 - **JWT Authentication**: Fully automated server-to-server authentication
 - **Page Layouts**: Custom Salesforce layouts for data visualization
-- **SMS Support**: Automatic Israeli phone number formatting and Hebrew SMS (Inwise)
+- **SMS Notifications**: Dual delivery (Email + SMS) via Inwise API with Hebrew support
 - **Modern UI/UX**: Beautiful gradient designs with smooth transitions
 - **Progress Indicators**: Mobile-optimized progress bar, desktop circular navigation
 - **Security Hardened**: Rate limiting, CORS protection, input sanitization

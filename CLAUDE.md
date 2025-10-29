@@ -377,11 +377,20 @@ CREATE TABLE referrals (
 
 ## 📧 Email & SMS Notification System (FULLY OPERATIONAL)
 
-### Implementation
-- **Service**: Resend (API Key: re_CxNvBTmc_KqPVvVKJoyCo8L5tJPHpZToN)
-- **Sender**: onboarding@resend.dev
+### Email Implementation (Gmail SMTP)
+- **Service**: Gmail SMTP (Primary email service)
+- **Account**: gesheryouth@gmail.com
+- **Authentication**: App Password (16 characters)
 - **Templates**: HTML emails with Hebrew RTL support
 - **Automation**: Fully automated and tested
+
+### SMS Implementation (Inwise)
+- **Service**: Inwise Transactional SMS API
+- **API Endpoint**: https://api.inwise.com/rest/v1/transactional/sms/send
+- **Authentication**: API Key (Bearer token or X-API-Key header)
+- **Hebrew Support**: Unicode charset for Hebrew text
+- **Phone Format**: Israeli format (972-XX-XXXXXXX)
+- **Status**: ✅ Implemented and ready for testing
 
 ### Email Flow
 1. **Parent Consent Email**
@@ -413,17 +422,30 @@ CREATE TABLE referrals (
 4. For production: Verify domain or use resend.dev sender
 
 ### SMS Setup Requirements (Inwise)
-1. Get Inwise API key from your account
-2. Add to environment variables:
-   ```
-   INWISE_API_KEY=your_api_key_here
+1. **Create Inwise Account**: Sign up at [Inwise.com](https://www.inwise.com)
+2. **Get API Key**: Find your API key in account settings
+3. **Add to Environment Variables**:
+   ```env
+   INWISE_API_KEY=your_api_token_here
    INWISE_BASE_URL=https://api.inwise.com/rest/v1
    INWISE_SENDER_ID=GesherYouth
    ```
-3. Test SMS functionality:
+4. **Test SMS Functionality**:
    ```bash
+   # Test with Israeli phone number (any format)
    node test-sms.js 0501234567
+   node test-sms.js 972501234567
+
+   # The script will:
+   # - Format phone number to Inwise format (972-50-1234567)
+   # - Test both authentication methods (Bearer and X-API-Key)
+   # - Send Hebrew test message
+   # - Display detailed API request/response
    ```
+5. **Verify in Production**:
+   - Add environment variables to Vercel dashboard
+   - Deploy updated code
+   - Test full workflow: counselor form → parent SMS → consent → counselor SMS
 
 ### Notification Flow
 - **When parent phone + email provided**: Both SMS and email sent
@@ -586,16 +608,21 @@ NODE_ENV=production
   - [x] Full end-to-end workflow tested and working
   - [x] Successfully creating records in Salesforce
   - [x] Email notifications functioning properly
-- [x] **SMS INTEGRATION - January 2025**
-  - [x] Inwise SMS service integration
-  - [x] Dual notification system (Email + SMS)
-  - [x] Automatic Israeli phone number formatting
-  - [x] SMS templates in Hebrew
+- [x] **SMS INTEGRATION - October 2025 (Updated)**
+  - [x] Inwise SMS service integration with official API format
+  - [x] Dual notification system (Email + SMS) for both parents and counselors
+  - [x] Automatic Israeli phone number formatting (972-XX-XXXXXXX format)
+  - [x] SMS templates in Hebrew with unicode charset
+  - [x] Parent consent SMS with link to consent form
+  - [x] Counselor notification SMS after parent signs consent
   - [x] Fallback handling if one notification fails
-  - [x] Environment variables configured in Vercel
-  - [x] Production deployment complete
-  - [x] Test script for SMS verification
-  - [x] API authentication troubleshooting documented
+  - [x] Request format matches Inwise transactional SMS API spec
+  - [x] Multiple authentication header support (Bearer + X-API-Key)
+  - [x] Comprehensive test script (test-sms.js) with detailed debugging
+  - [x] Enhanced logging with [SMS] prefixes for easy debugging
+  - [x] API response parsing for status codes (queued, sent, rejected, invalid)
+  - [x] Environment variables documented in .env.example
+  - [x] Ready for production deployment after API token configuration
 - [x] **UI/UX FIXES - January 2025**
   - [x] Fixed student form success message premature display
   - [x] Success screen shows only after submission
