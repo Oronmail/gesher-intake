@@ -105,8 +105,14 @@ export function middleware(request: NextRequest) {
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://gesher-intake.vercel.app'
       
       // Check if this is a same-origin request (from our own frontend)
-      const isSameOrigin = !origin || origin === appUrl || 
-                          (referer && referer.startsWith(appUrl))
+      // Allow both production URL and all Vercel preview deployment URLs
+      const isVercelDeployment = (url: string) =>
+        url.includes('gesher-intake') && url.includes('vercel.app')
+
+      const isSameOrigin = !origin ||
+                          origin === appUrl ||
+                          isVercelDeployment(origin) ||
+                          (referer && (referer.startsWith(appUrl) || isVercelDeployment(referer)))
       
       // Only require API key for external/cross-origin requests
       if (!isSameOrigin) {
