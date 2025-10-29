@@ -26,7 +26,7 @@ class InwiseSMS {
 
   constructor() {
     this.config = {
-      apiKey: process.env.INWISE_API_KEY || '',
+      apiKey: (process.env.INWISE_API_KEY || '').trim(), // Trim whitespace
       baseUrl: process.env.INWISE_BASE_URL || 'https://api.inwise.com/rest/v1',
       senderId: process.env.INWISE_SENDER_ID || 'GesherYouth',
     };
@@ -95,6 +95,11 @@ class InwiseSMS {
       console.log('[SMS] Sending SMS via Inwise to:', formattedPhone);
       console.log('[SMS] Message preview:', message.substring(0, 50) + '...');
       console.log('[SMS] Request body:', JSON.stringify(requestBody, null, 2));
+
+      // Debug API key (without exposing it)
+      console.log('[SMS] API Key length:', this.config.apiKey.length);
+      console.log('[SMS] API Key first 4 chars:', this.config.apiKey.substring(0, 4));
+      console.log('[SMS] API Key last 4 chars:', this.config.apiKey.substring(this.config.apiKey.length - 4));
 
       // Inwise authentication - requires X-API-Key header (NOT Authorization Bearer)
       // Based on API testing: sending both headers causes "invalid" error
