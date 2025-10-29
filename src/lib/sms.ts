@@ -101,15 +101,17 @@ class InwiseSMS {
       console.log('[SMS] Message preview:', message.substring(0, 50) + '...');
       console.log('[SMS] Request body:', JSON.stringify(requestBody, null, 2));
 
-      // Inwise authentication - use Bearer token in Authorization header
-      // Based on API testing, Inwise uses standard OAuth-style Bearer authentication
+      // Inwise authentication - requires X-API-Key header (NOT Authorization Bearer)
+      // Based on API testing: sending both headers causes "invalid" error
+      // Sending only Bearer causes "missing" error
+      // Correct format: X-API-Key header only
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Authorization': `Bearer ${this.config.apiKey}`,
+        'X-API-Key': this.config.apiKey,
       }
 
-      console.log('[SMS] Authentication: Bearer token');
+      console.log('[SMS] Authentication: X-API-Key header');
 
       const response = await fetch(endpoint, {
         method: 'POST',
