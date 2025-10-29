@@ -16,9 +16,17 @@ import { supabase } from '@/lib/supabase';
  * - Response times
  */
 
+interface HealthCheck {
+  status: string;
+  responseTime?: number;
+  error?: string | null;
+  service?: string;
+  authMethod?: string;
+}
+
 export async function GET() {
   const startTime = Date.now();
-  const checks: Record<string, any> = {};
+  const checks: Record<string, HealthCheck> = {};
 
   // 1. Check Supabase
   try {

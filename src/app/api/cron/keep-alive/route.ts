@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
   try {
     // Simple query to keep Supabase active
     // Just count records - lightweight operation
-    const { data, error, count } = await supabase
+    const { error, count } = await supabase
       .from('referrals')
       .select('id', { count: 'exact', head: true });
 
