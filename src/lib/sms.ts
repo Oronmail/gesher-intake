@@ -205,14 +205,14 @@ class InwiseSMS {
 
 // SMS Templates
 export const SMS_TEMPLATES = {
-  CONSENT_REQUEST: (referralNumber: string, consentUrl: string) => 
-    `גשר אל הנוער: נדרשת חתימתך על טופס ויתור סודיות עבור הרשמת ילדך לתוכנית. לחץ על הקישור: ${consentUrl}`,
-  
+  CONSENT_REQUEST: (referralNumber: string, consentUrl: string) =>
+    `גשר אל הנוער: נדרשת חתימתך על טופס ויתור סודיות עבור הרשמת ילדך לתוכנית. לחץ על הקישור: ${consentUrl}\n\nלהסרה מרשימת התפוצה לחץ`,
+
   CONSENT_REMINDER: (studentName: string, consentUrl: string) =>
-    `תזכורת - גשר אל הנוער: טופס ויתור סודיות עבור ${studentName} ממתין לחתימתך: ${consentUrl}`,
-  
+    `תזכורת - גשר אל הנוער: טופס ויתור סודיות עבור ${studentName} ממתין לחתימתך: ${consentUrl}\n\nלהסרה מרשימת התפוצה לחץ`,
+
   COUNSELOR_NOTIFICATION: (studentName: string, formUrl: string) =>
-    `גשר אל הנוער: ההורים חתמו על ויתור סודיות עבור ${studentName}. השלם את הרישום: ${formUrl}`,
+    `גשר אל הנוער: ההורים חתמו על ויתור סודיות עבור ${studentName}. השלם את הרישום: ${formUrl}\n\nלהסרה מרשימת התפוצה לחץ`,
 };
 
 // Export singleton instance
