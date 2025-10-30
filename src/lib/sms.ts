@@ -147,21 +147,46 @@ class InwiseSMS {
         result = { messageId: responseText };
       }
 
-      console.log('[SMS] ✅ SMS sent successfully via Inwise');
+      console.log('[SMS] ✅ SMS request accepted by Inwise');
       console.log('[SMS] Response:', result);
 
-      // Check for status in response
-      if (result.status === 'rejected' || result.status === 'invalid') {
-        console.error('[SMS] Message rejected:', result.reject_reason);
-        return {
-          success: false,
-          error: `Message rejected: ${result.reject_reason || 'unknown reason'}`,
-        };
+      // Handle array response (Inwise returns array of recipient results)
+      const recipients = Array.isArray(result) ? result : [result];
+
+      for (const recipient of recipients) {
+        // Check for gateway configuration issues
+        if (recipient.reject_reason === 'no-available-gateways') {
+          console.error('[SMS] ❌ No SMS gateway configured in Inwise account');
+          console.error('[SMS] Please contact Inwise support to configure SMS gateway');
+          return {
+            success: false,
+            error: 'No SMS gateway configured - contact Inwise support to set up SMS gateway in your account',
+          };
+        }
+
+        // Check for other rejection reasons
+        if (recipient.status === 'exception' || recipient.status === 'rejected' || recipient.status === 'invalid') {
+          console.error('[SMS] ❌ Message rejected:', recipient.reject_reason);
+          return {
+            success: false,
+            error: `Message rejected: ${recipient.reject_reason || 'unknown reason'}`,
+          };
+        }
+
+        // Success case
+        if (recipient.status === 'accepted' || recipient.status === 'queued' || recipient.status === 'sent') {
+          console.log('[SMS] ✅ SMS sent successfully:', recipient.transaction_id);
+          return {
+            success: true,
+            messageId: recipient.transaction_id || recipient.id || 'sent',
+          };
+        }
       }
 
+      // Fallback: if no clear status, assume success
       return {
         success: true,
-        messageId: result.messageId || result.id || result.status || 'sent',
+        messageId: recipients[0]?.transaction_id || 'sent',
       };
     } catch (error) {
       console.error('[SMS] Inwise SMS sending error:', error);
