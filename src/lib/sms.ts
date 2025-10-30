@@ -87,6 +87,11 @@ class InwiseSMS {
               mobile_number: formattedPhone
             }
           ],
+          // Disable unsubscribe link for transactional messages
+          add_unsubscribe_link: false,
+          add_unsubscribe_sms_reply: false,
+          // Try to set sender name/ID (if account supports alphanumeric sender ID)
+          ...(this.config.senderId && { sender_id: this.config.senderId }),
           // Add tags inside the message object (not as a duplicate message key)
           ...(referralNumber && { tags: [referralNumber] })
         }
