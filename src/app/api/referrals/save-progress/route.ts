@@ -4,8 +4,51 @@ import salesforceJWT from '@/lib/salesforce-jwt'
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const { referral_number, ...studentData } = body
+    let referral_number: string
+    let studentData: Record<string, unknown>
+    const files: { assessment_file?: File; grade_sheet?: File } = {}
+
+    // Check if request is FormData (contains files) or JSON
+    const contentType = request.headers.get('content-type') || ''
+
+    if (contentType.includes('multipart/form-data')) {
+      // Handle FormData with files
+      const formData = await request.formData()
+
+      // Extract referral number
+      referral_number = formData.get('referral_number') as string
+
+      // Extract files
+      const assessmentFile = formData.get('assessment_file') as File
+      const gradeSheetFile = formData.get('grade_sheet') as File
+
+      if (assessmentFile && assessmentFile.size > 0) {
+        files.assessment_file = assessmentFile
+      }
+      if (gradeSheetFile && gradeSheetFile.size > 0) {
+        files.grade_sheet = gradeSheetFile
+      }
+
+      // Extract other form data
+      studentData = {}
+      for (const [key, value] of formData.entries()) {
+        if (key !== 'referral_number' && key !== 'assessment_file' && key !== 'grade_sheet') {
+          // Try to parse JSON for complex objects
+          try {
+            studentData[key] = JSON.parse(value as string)
+          } catch {
+            // If not JSON, use as is
+            studentData[key] = value
+          }
+        }
+      }
+    } else {
+      // Handle regular JSON
+      const body = await request.json()
+      referral_number = body.referral_number
+      studentData = { ...body }
+      delete studentData.referral_number
+    }
 
     if (!referral_number) {
       return NextResponse.json(
@@ -136,9 +179,61 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Upload files if provided
+    const uploadedFiles: string[] = []
+
+    if (files.assessment_file) {
+      try {
+        const fileExtension = files.assessment_file.name.split('.').pop() || 'pdf'
+        const fileName = `קובץ_אבחון_${referral_number}.${fileExtension}`
+
+        // Convert file to base64
+        const arrayBuffer = await files.assessment_file.arrayBuffer()
+        const base64 = Buffer.from(arrayBuffer).toString('base64')
+
+        await salesforceJWT.uploadFile(
+          referral.salesforce_contact_id,
+          fileName,
+          base64,
+          files.assessment_file.type,
+          'Assessment File'
+        )
+        uploadedFiles.push('assessment_file')
+        console.log('Assessment file uploaded successfully')
+      } catch (fileError) {
+        console.error('Failed to upload assessment file:', fileError)
+        // Don't fail the whole request if file upload fails
+      }
+    }
+
+    if (files.grade_sheet) {
+      try {
+        const fileExtension = files.grade_sheet.name.split('.').pop() || 'pdf'
+        const fileName = `גליון_ציונים_${referral_number}.${fileExtension}`
+
+        // Convert file to base64
+        const arrayBuffer = await files.grade_sheet.arrayBuffer()
+        const base64 = Buffer.from(arrayBuffer).toString('base64')
+
+        await salesforceJWT.uploadFile(
+          referral.salesforce_contact_id,
+          fileName,
+          base64,
+          files.grade_sheet.type,
+          'Grade Sheet'
+        )
+        uploadedFiles.push('grade_sheet')
+        console.log('Grade sheet uploaded successfully')
+      } catch (fileError) {
+        console.error('Failed to upload grade sheet:', fileError)
+        // Don't fail the whole request if file upload fails
+      }
+    }
+
     return NextResponse.json({
       success: true,
-      message: 'Progress saved successfully'
+      message: 'Progress saved successfully',
+      uploadedFiles: uploadedFiles.length > 0 ? uploadedFiles : undefined
     })
   } catch (error) {
     console.error('API error:', error)

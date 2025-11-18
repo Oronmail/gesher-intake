@@ -115,7 +115,7 @@ const formSchema = z.object({
   floor: z.string().optional(),
   apartment: z.string().optional(),
   phone: z.string().min(9, 'נא להזין טלפון'),
-  student_mobile: z.string().optional(),
+  student_mobile: z.string().min(9, 'נא להזין נייד של התלמיד/ה'),
   school_info_username: z.string().optional(),
   school_info_password: z.string().optional(),
   
@@ -139,13 +139,17 @@ const formSchema = z.object({
   mother_occupation: z.string().optional(),
   mother_profession: z.string().optional(),
   mother_income: z.string().optional(),
-  debts_loans: z.string().optional(),
-  parent_involvement: z.enum(['inhibiting', 'promoting', 'no_involvement']),
-  
+  debts_loans: z.string().min(1, 'נא למלא שדה זה'),
+  parent_involvement: z.enum(['inhibiting', 'promoting', 'no_involvement'], {
+    message: 'נא לבחור רמת מעורבות הורים'
+  }),
+
   // רקע
-  economic_status: z.enum(['low', 'medium', 'high']),
-  economic_details: z.string().optional(),
-  family_background: z.string().optional(),
+  economic_status: z.enum(['low', 'medium', 'high'], {
+    message: 'נא לבחור מצב כלכלי'
+  }),
+  economic_details: z.string().min(1, 'נא למלא פירוט מצב כלכלי'),
+  family_background: z.string().min(1, 'נא למלא רקע משפחתי'),
   
   // פרטי בית ספר
   school_name: z.string().min(2, 'נא להזין שם בית ספר'),
@@ -160,8 +164,12 @@ const formSchema = z.object({
   behavioral_issues_details: z.string().optional(),
   has_potential: z.boolean(),
   potential_explanation: z.string().optional(),
-  motivation_level: z.enum(['low', 'medium', 'high']).refine(val => val !== undefined, { message: 'נא לבחור רמת מוטיבציה' }),
-  motivation_type: z.enum(['internal', 'external']).refine(val => val !== undefined, { message: 'נא לבחור סוג מוטיבציה' }),
+  motivation_level: z.enum(['low', 'medium', 'high'], {
+    message: 'נא לבחור רמת מוטיבציה'
+  }),
+  motivation_type: z.enum(['internal', 'external'], {
+    message: 'נא לבחור סוג מוטיבציה'
+  }),
   external_motivators: z.string().optional(),
   social_status: z.string().min(1, 'נא להזין מצב חברתי'),
   afternoon_activities: z.string().optional(),
@@ -390,14 +398,40 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       console.log('Saving progress for referral:', referralNumber)
       console.log('Current form values:', currentValues)
 
-      const response = await fetch('/api/referrals/save-progress', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          referral_number: referralNumber,
-          ...currentValues
-        }),
-      })
+      // Check if there are any files to upload
+      const hasFiles = currentValues.assessment_file instanceof File || currentValues.grade_sheet instanceof File
+
+      let response: Response
+
+      if (hasFiles) {
+        // Use FormData for file uploads
+        const formData = new FormData()
+        formData.append('referral_number', referralNumber)
+
+        // Add all form fields
+        Object.entries(currentValues).forEach(([key, value]) => {
+          if (value instanceof File) {
+            formData.append(key, value)
+          } else if (value !== null && value !== undefined) {
+            formData.append(key, typeof value === 'object' ? JSON.stringify(value) : String(value))
+          }
+        })
+
+        response = await fetch('/api/referrals/save-progress', {
+          method: 'POST',
+          body: formData,
+        })
+      } else {
+        // Use JSON for text-only data
+        response = await fetch('/api/referrals/save-progress', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            referral_number: referralNumber,
+            ...currentValues
+          }),
+        })
+      }
 
       const result = await response.json()
       console.log('Save progress response:', result)
@@ -429,10 +463,10 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
   const getFieldsForStep = (step: number): string[] => {
     switch(step) {
-      case 1: return ['student_first_name', 'student_last_name', 'student_id', 'date_of_birth', 'country_of_birth', 'gender', 'address', 'phone']
-      case 2: return ['father_name', 'father_mobile', 'father_occupation', 'father_profession', 'mother_name', 'mother_mobile', 'mother_occupation', 'mother_profession']
-      case 3: return ['school_name', 'grade', 'homeroom_teacher', 'teacher_phone', 'counselor_name', 'counselor_phone', 'school_info_username', 'school_info_password']
-      case 4: return ['behavioral_issues', 'has_potential', 'motivation_level', 'motivation_type', 'learning_disability', 'adhd', 'assessment_done', 'assessment_needed'] // Merged stages 4 & 5
+      case 1: return ['student_first_name', 'student_last_name', 'student_id', 'date_of_birth', 'country_of_birth', 'gender', 'address', 'phone', 'student_mobile']
+      case 2: return ['siblings_count', 'father_name', 'father_mobile', 'father_occupation', 'father_profession', 'mother_name', 'mother_mobile', 'mother_occupation', 'mother_profession', 'debts_loans', 'parent_involvement', 'economic_status', 'economic_details', 'family_background']
+      case 3: return ['school_name', 'grade', 'homeroom_teacher', 'teacher_phone', 'counselor_name', 'counselor_phone']
+      case 4: return ['behavioral_issues', 'has_potential', 'motivation_level', 'motivation_type', 'social_status', 'learning_disability', 'adhd', 'assessment_done', 'assessment_needed'] // Merged stages 4 & 5
       case 5: return ['criminal_record', 'drug_use', 'smoking', 'psychological_treatment', 'psychiatric_treatment', 'takes_medication'] // Was step 6
       case 6: return ['military_service_potential', 'can_handle_program', 'risk_level', 'failing_grades_count'] // Was step 7
       default: return []
@@ -1004,6 +1038,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           נייד של התלמיד/ה
+                          <span className="text-red-500 mr-1">*</span>
                         </label>
                         <FieldWrapper fieldName="student_mobile" completedFields={completedFields}>
                           <div className="relative">
@@ -1016,6 +1051,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
                         </FieldWrapper>
+                        {errors.student_mobile && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.student_mobile.message}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1300,6 +1341,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           חובות/הלוואות/משכנתא
+                          <span className="text-red-500 mr-1">*</span>
                         </label>
                         <FieldWrapper fieldName="debts_loans" completedFields={completedFields}>
                           <div className="relative">
@@ -1316,6 +1358,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           רמת מעורבות ההורים
+                          <span className="text-red-500 mr-1">*</span>
                         </label>
                         <FieldWrapper fieldName="parent_involvement" completedFields={completedFields}>
                           <div className="relative">
@@ -1335,6 +1378,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           מצב כלכלי
+                          <span className="text-red-500 mr-1">*</span>
                         </label>
                         <FieldWrapper fieldName="economic_status" completedFields={completedFields}>
                           <div className="relative">
@@ -1354,6 +1398,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           פירוט מצב כלכלי
+                          <span className="text-red-500 mr-1">*</span>
                         </label>
                         <FieldWrapper fieldName="economic_details" completedFields={completedFields}>
                           <div className="relative">
@@ -1371,6 +1416,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           רקע משפחתי
+                          <span className="text-red-500 mr-1">*</span>
                         </label>
                         <FieldWrapper fieldName="family_background" completedFields={completedFields}>
                           <div className="relative">
@@ -2224,7 +2270,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             className="ml-3 w-5 h-5 text-orange-600 border-2 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
                           />
                           <span className="text-gray-700 font-medium group-hover:text-orange-600 transition-colors">
-                            טיפול פסיכולוגי
+                            מקבל/ת טיפול פסיכולוגי
                           </span>
                         </label>
                       </div>
@@ -2239,7 +2285,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             className="ml-3 w-5 h-5 text-orange-600 border-2 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
                           />
                           <span className="text-gray-700 font-medium group-hover:text-orange-600 transition-colors">
-                            טיפול פסיכיאטרי
+                            מקבל/ת טיפול פסיכיאטרי
                           </span>
                         </label>
                       </div>
