@@ -1,0 +1,86 @@
+# Supabase Keep-Alive GitHub Action
+#
+# Purpose: Prevents Supabase free tier from pausing after 7 days of inactivity
+#
+# Schedule: Runs every 3 days at 2:00 AM UTC
+# - This ensures the database never reaches 7 days of inactivity
+#
+# Benefits over Vercel Cron:
+# - ✅ 100% Free (GitHub Actions free tier: 2000 minutes/month)
+# - ✅ Reliable execution (not dependent on Vercel Hobby plan limitations)
+# - ✅ Guaranteed to run at specified times
+# - ✅ Built-in monitoring via GitHub Actions logs
+
+name: Supabase Keep-Alive
+
+on:
+  # Run every 3 days at 2:00 AM UTC
+  schedule:
+    - cron: '0 2 */3 * *'
+
+  # Allow manual trigger from GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping Supabase via Keep-Alive Endpoint
+        run: |
+          echo "🔄 Triggering Supabase keep-alive..."
+
+          # Call the keep-alive endpoint
+          RESPONSE=$(curl -s -w "\n%{http_code}" https://gesher-intake.vercel.app/api/cron/keep-alive)
+
+          # Extract HTTP status code (last line)
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+
+          # Extract response body (everything except last line)
+          BODY=$(echo "$RESPONSE" | head -n-1)
+
+          echo "📊 Response:"
+          echo "$BODY" | jq '.' 2>/dev/null || echo "$BODY"
+
+          # Check if successful
+          if [ "$HTTP_CODE" -eq 200 ]; then
+            echo "✅ Keep-alive successful!"
+
+            # Extract record count if available
+            RECORD_COUNT=$(echo "$BODY" | jq -r '.recordCount' 2>/dev/null || echo "unknown")
+            echo "📈 Database has $RECORD_COUNT referrals"
+
+            exit 0
+          else
+            echo "❌ Keep-alive failed with HTTP $HTTP_CODE"
+            exit 1
+          fi
+
+      - name: Verify Supabase Health
+        if: success()
+        run: |
+          echo "🏥 Checking overall system health..."
+
+          HEALTH=$(curl -s https://gesher-intake.vercel.app/api/health)
+          echo "$HEALTH" | jq '.' 2>/dev/null || echo "$HEALTH"
+
+          # Check if Supabase is healthy
+          STATUS=$(echo "$HEALTH" | jq -r '.checks.supabase.status' 2>/dev/null || echo "unknown")
+
+          if [ "$STATUS" = "healthy" ]; then
+            echo "✅ Supabase is healthy and active!"
+          else
+            echo "⚠️  Supabase status: $STATUS"
+            echo "The keep-alive request was sent, but Supabase may need time to wake up."
+          fi
+
+      - name: Notify on Failure
+        if: failure()
+        run: |
+          echo "❌ Keep-alive failed!"
+          echo "This could mean:"
+          echo "1. Supabase is paused (go to dashboard to resume)"
+          echo "2. Vercel deployment is down"
+          echo "3. Network connectivity issues"
+          echo ""
+          echo "Check the logs above for details."
