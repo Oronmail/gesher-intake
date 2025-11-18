@@ -187,14 +187,14 @@ export async function POST(request: NextRequest) {
         const fileExtension = files.assessment_file.name.split('.').pop() || 'pdf'
         const fileName = `קובץ_אבחון_${referral_number}.${fileExtension}`
 
-        // Convert file to base64
+        // Convert file to Buffer
         const arrayBuffer = await files.assessment_file.arrayBuffer()
-        const base64 = Buffer.from(arrayBuffer).toString('base64')
+        const fileBuffer = Buffer.from(arrayBuffer)
 
         await salesforceJWT.uploadFile(
           referral.salesforce_contact_id,
+          fileBuffer,
           fileName,
-          base64,
           files.assessment_file.type,
           'Assessment File'
         )
@@ -211,14 +211,14 @@ export async function POST(request: NextRequest) {
         const fileExtension = files.grade_sheet.name.split('.').pop() || 'pdf'
         const fileName = `גליון_ציונים_${referral_number}.${fileExtension}`
 
-        // Convert file to base64
+        // Convert file to Buffer
         const arrayBuffer = await files.grade_sheet.arrayBuffer()
-        const base64 = Buffer.from(arrayBuffer).toString('base64')
+        const fileBuffer = Buffer.from(arrayBuffer)
 
         await salesforceJWT.uploadFile(
           referral.salesforce_contact_id,
+          fileBuffer,
           fileName,
-          base64,
           files.grade_sheet.type,
           'Grade Sheet'
         )
