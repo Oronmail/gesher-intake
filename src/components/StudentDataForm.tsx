@@ -399,7 +399,8 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       console.log('Current form values:', currentValues)
 
       // Check if there are any files to upload
-      const hasFiles = currentValues.assessment_file instanceof File || currentValues.grade_sheet instanceof File
+      // File inputs return FileList, not File directly
+      const hasFiles = (currentValues.assessment_file?.length > 0) || (currentValues.grade_sheet?.length > 0)
 
       let response: Response
 
@@ -410,9 +411,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
         // Add all form fields
         Object.entries(currentValues).forEach(([key, value]) => {
-          if (value instanceof File) {
-            formData.append(key, value)
-          } else if (value !== null && value !== undefined) {
+          // Handle file inputs (FileList objects)
+          if (key === 'assessment_file' || key === 'grade_sheet') {
+            if (value && value.length > 0) {
+              formData.append(key, value[0]) // Get first file from FileList
+            }
+          }
+          // Handle other values
+          else if (value !== null && value !== undefined) {
             formData.append(key, typeof value === 'object' ? JSON.stringify(value) : String(value))
           }
         })
@@ -782,10 +788,29 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
           </div>
 
           <div className="p-8">
-            <form 
-              onSubmit={(e) => {
+            <form
+              onSubmit={async (e) => {
                 e.preventDefault()
                 if (isIntentionalSubmit) {
+                  // Get all required fields across all steps
+                  const allRequiredFields: string[] = []
+                  for (let step = 1; step <= totalSteps; step++) {
+                    allRequiredFields.push(...getFieldsForStep(step))
+                  }
+
+                  // Filter out fields that are already completed
+                  const fieldsToValidate = allRequiredFields.filter(field => !completedFields.has(field))
+
+                  // Only validate incomplete fields
+                  if (fieldsToValidate.length > 0) {
+                    const isValid = await trigger(fieldsToValidate as (keyof FormData)[])
+                    if (!isValid) {
+                      setIsIntentionalSubmit(false)
+                      return
+                    }
+                  }
+
+                  // All validation passed, submit the form
                   handleSubmit(onSubmit)(e)
                   setIsIntentionalSubmit(false)
                 }
