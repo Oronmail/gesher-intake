@@ -78,91 +78,102 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Filter out false boolean values - only save true checkboxes
+    const filteredData: Record<string, unknown> = {}
+    Object.entries(studentData).forEach(([key, value]) => {
+      // Skip boolean fields that are false (unchecked/default)
+      if (typeof value === 'boolean' && value === false) {
+        return
+      }
+      // Include all other values
+      filteredData[key] = value
+    })
+
     // Prepare data in camelCase format expected by Salesforce service
     const mappedData = {
       // Personal Information
-      studentFirstName: studentData.student_first_name,
-      studentLastName: studentData.student_last_name,
-      studentId: studentData.student_id,
-      dateOfBirth: studentData.date_of_birth,
-      gender: studentData.gender,
-      countryOfBirth: studentData.country_of_birth,
-      immigrationYear: studentData.immigration_year,
-      studentAddress: studentData.address,
-      studentFloor: studentData.floor,
-      studentApartment: studentData.apartment,
-      studentPhone: studentData.phone,
-      studentMobile: studentData.student_mobile,
-      schoolInfoUsername: studentData.school_info_username,
-      schoolInfoPassword: studentData.school_info_password,
+      studentFirstName: filteredData.student_first_name,
+      studentLastName: filteredData.student_last_name,
+      studentId: filteredData.student_id,
+      dateOfBirth: filteredData.date_of_birth,
+      gender: filteredData.gender,
+      countryOfBirth: filteredData.country_of_birth,
+      immigrationYear: filteredData.immigration_year,
+      studentAddress: filteredData.address,
+      studentFloor: filteredData.floor,
+      studentApartment: filteredData.apartment,
+      studentPhone: filteredData.phone,
+      studentMobile: filteredData.student_mobile,
+      schoolInfoUsername: filteredData.school_info_username,
+      schoolInfoPassword: filteredData.school_info_password,
 
       // Family Information
-      siblingsCount: studentData.siblings_count,
-      fatherName: studentData.father_name,
-      fatherMobile: studentData.father_mobile,
-      fatherOccupation: studentData.father_occupation,
-      fatherProfession: studentData.father_profession,
-      fatherIncome: studentData.father_income,
-      motherName: studentData.mother_name,
-      motherMobile: studentData.mother_mobile,
-      motherOccupation: studentData.mother_occupation,
-      motherProfession: studentData.mother_profession,
-      motherIncome: studentData.mother_income,
-      debtsLoans: studentData.debts_loans,
-      parentInvolvement: studentData.parent_involvement,
+      siblingsCount: filteredData.siblings_count,
+      fatherName: filteredData.father_name,
+      fatherMobile: filteredData.father_mobile,
+      fatherOccupation: filteredData.father_occupation,
+      fatherProfession: filteredData.father_profession,
+      fatherIncome: filteredData.father_income,
+      motherName: filteredData.mother_name,
+      motherMobile: filteredData.mother_mobile,
+      motherOccupation: filteredData.mother_occupation,
+      motherProfession: filteredData.mother_profession,
+      motherIncome: filteredData.mother_income,
+      debtsLoans: filteredData.debts_loans,
+      parentInvolvement: filteredData.parent_involvement,
 
       // Background
-      economicStatus: studentData.economic_status,
-      economicDetails: studentData.economic_details,
-      familyBackground: studentData.family_background,
+      economicStatus: filteredData.economic_status,
+      economicDetails: filteredData.economic_details,
+      familyBackground: filteredData.family_background,
 
       // School Information
-      schoolName: studentData.school_name,
-      grade: studentData.grade,
-      homeroomTeacher: studentData.homeroom_teacher,
-      teacherPhone: studentData.teacher_phone,
-      schoolCounselorName: studentData.counselor_name,
-      schoolCounselorPhone: studentData.counselor_phone,
+      schoolName: filteredData.school_name,
+      grade: filteredData.grade,
+      homeroomTeacher: filteredData.homeroom_teacher,
+      teacherPhone: filteredData.teacher_phone,
+      schoolCounselorName: filteredData.counselor_name,
+      schoolCounselorPhone: filteredData.counselor_phone,
 
       // Intake Assessment
-      behavioralIssues: studentData.behavioral_issues,
-      behavioralIssuesDetails: studentData.behavioral_issues_details,
-      hasPotential: studentData.has_potential,
-      potentialExplanation: studentData.potential_explanation,
-      motivationLevel: studentData.motivation_level,
-      motivationType: studentData.motivation_type,
-      externalMotivators: studentData.external_motivators,
-      socialStatus: studentData.social_status,
-      afternoonActivities: studentData.afternoon_activities,
+      behavioralIssues: filteredData.behavioral_issues,
+      behavioralIssuesDetails: filteredData.behavioral_issues_details,
+      hasPotential: filteredData.has_potential,
+      potentialExplanation: filteredData.potential_explanation,
+      motivationLevel: filteredData.motivation_level,
+      motivationType: filteredData.motivation_type,
+      externalMotivators: filteredData.external_motivators,
+      socialStatus: filteredData.social_status,
+      afternoonActivities: filteredData.afternoon_activities,
 
       // Learning Assessment
-      learningDisability: studentData.learning_disability,
-      learningDisabilityExplanation: studentData.learning_disability_explanation,
-      requiresRemedialTeaching: studentData.requires_remedial_teaching,
-      adhd: studentData.adhd,
-      adhdTreatment: studentData.adhd_treatment,
-      assessmentDone: studentData.assessment_done,
-      assessmentNeeded: studentData.assessment_needed,
-      assessmentDetails: studentData.assessment_details,
+      learningDisability: filteredData.learning_disability,
+      learningDisabilityExplanation: filteredData.learning_disability_explanation,
+      requiresRemedialTeaching: filteredData.requires_remedial_teaching,
+      adhd: filteredData.adhd,
+      adhdTreatment: filteredData.adhd_treatment,
+      assessmentDone: filteredData.assessment_done,
+      assessmentNeeded: filteredData.assessment_needed,
+      assessmentDetails: filteredData.assessment_details,
 
       // Risk Assessment
-      criminalRecord: studentData.criminal_record,
-      drugUse: studentData.drug_use,
-      smoking: studentData.smoking,
-      probationOfficer: studentData.probation_officer,
-      youthProbationOfficer: studentData.youth_probation_officer,
-      psychologicalTreatment: studentData.psychological_treatment,
-      psychiatricTreatment: studentData.psychiatric_treatment,
-      takesMedication: studentData.takes_medication,
-      medicationDescription: studentData.medication_description,
+      criminalRecord: filteredData.criminal_record,
+      drugUse: filteredData.drug_use,
+      smoking: filteredData.smoking,
+      probationOfficer: filteredData.probation_officer,
+      youthProbationOfficer: filteredData.youth_probation_officer,
+      psychologicalTreatment: filteredData.psychological_treatment,
+      psychiatricTreatment: filteredData.psychiatric_treatment,
+      takesMedication: filteredData.takes_medication,
+      medicationDescription: filteredData.medication_description,
 
       // Final Assessment
-      militaryServicePotential: studentData.military_service_potential,
-      canHandleProgram: studentData.can_handle_program,
-      riskLevel: studentData.risk_level,
-      riskFactors: studentData.risk_factors,
-      personalOpinion: studentData.personal_opinion,
-      failingGradesCount: studentData.failing_grades_count,
+      militaryServicePotential: filteredData.military_service_potential,
+      canHandleProgram: filteredData.can_handle_program,
+      riskLevel: filteredData.risk_level,
+      riskFactors: filteredData.risk_factors,
+      personalOpinion: filteredData.personal_opinion,
+      failingGradesCount: filteredData.failing_grades_count,
     }
 
     // Update Salesforce with partial data

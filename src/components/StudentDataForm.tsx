@@ -438,10 +438,18 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
       if (response.ok) {
         setSaveSuccess(true)
-        // Update completed fields
+        // Update completed fields - only mark fields as completed if they have meaningful values
         const newCompleted = new Set(completedFields)
         Object.entries(currentValues).forEach(([key, value]) => {
-          if (value !== null && value !== '' && value !== undefined) {
+          // Don't mark boolean fields as completed if they are false (unchecked/default)
+          // Only mark them completed if explicitly set to true
+          if (typeof value === 'boolean') {
+            if (value === true) {
+              newCompleted.add(key)
+            }
+          }
+          // For other fields, mark as completed if they have a non-empty value
+          else if (value !== null && value !== '' && value !== undefined && value !== 0) {
             newCompleted.add(key)
           }
         })
