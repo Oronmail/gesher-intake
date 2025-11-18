@@ -1135,7 +1135,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          שם האב
+                          שם
                           <span className="text-red-500 mr-1">*</span>
                         </label>
                         <FieldWrapper fieldName="father_name" completedFields={completedFields}>
@@ -1143,7 +1143,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <input
                               {...register('father_name')}
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                              placeholder="שם מלא של האב"
+                              placeholder="שם מלא"
                             />
                             <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
@@ -1158,7 +1158,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          נייד האב
+                          נייד
                           <span className="text-red-500 mr-1">*</span>
                         </label>
                         <FieldWrapper fieldName="father_mobile" completedFields={completedFields}>
@@ -1256,7 +1256,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          שם הורה 2
+                          שם
                         </label>
                         <FieldWrapper fieldName="mother_name" completedFields={completedFields}>
                           <div className="relative">
@@ -1278,7 +1278,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          נייד הורה 2
+                          נייד
                         </label>
                         <FieldWrapper fieldName="mother_mobile" completedFields={completedFields}>
                           <div className="relative">
