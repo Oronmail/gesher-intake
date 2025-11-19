@@ -349,14 +349,23 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 'known_to_welfare', 'youth_promotion'
               ])
 
+              // Define all numeric fields where 0 is a valid completed value
+              const numericFields = new Set([
+                'siblings_count', 'failing_grades_count', 'risk_level'
+              ])
+
               // Track completed fields WITHOUT populating values (for privacy)
               Object.entries(sfData).forEach(([key, value]) => {
                 const isBooleanField = booleanFields.has(key)
+                const isNumericField = numericFields.has(key)
                 // For boolean fields: both true and false are valid completed answers
-                // For other fields: exclude null, empty string, 0, and false
+                // For numeric fields: any number (including 0) is a valid completed answer
+                // For other fields: exclude null, empty string, and false
                 const isCompleted = isBooleanField
                   ? (value === true || value === false)
-                  : (value !== null && value !== '' && value !== 0 && value !== false)
+                  : isNumericField
+                  ? (typeof value === 'number')
+                  : (value !== null && value !== '' && value !== false)
 
                 if (isCompleted) {
                   // Only add to completed set, do NOT setValue to maintain privacy
