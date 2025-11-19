@@ -350,6 +350,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
               // Check file upload boolean fields from Salesforce
               if (sfData.assessmentFileUploaded === true) {
                 completedSet.add('assessment_file')
+                // Auto-check "נעשה אבחון" checkbox when assessment file exists
+                setValue('assessment_done', true)
+                completedSet.add('assessment_done')
               }
               if (sfData.gradeSheetUploaded === true) {
                 completedSet.add('grade_sheet')
