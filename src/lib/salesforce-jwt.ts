@@ -887,6 +887,10 @@ class SalesforceJWTService {
       if (data.personalOpinion && typeof data.personalOpinion === 'string' && data.personalOpinion.trim()) updateData.Personal_Opinion__c = data.personalOpinion;
       if (data.failingGradesCount !== undefined) updateData.Failing_Grades_Count__c = data.failingGradesCount || 0;
 
+      // File upload tracking
+      if (data.assessmentFileUploaded !== undefined) updateData.Assessment_File_Uploaded__c = data.assessmentFileUploaded;
+      if (data.gradeSheetUploaded !== undefined) updateData.Grade_Sheet_Uploaded__c = data.gradeSheetUploaded;
+
       console.log('Updating Registration Request with partial student data...');
 
       const result = await this.executeWithRetry(async (conn) => {
