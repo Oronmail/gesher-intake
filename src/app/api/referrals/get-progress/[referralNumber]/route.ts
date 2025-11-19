@@ -117,6 +117,10 @@ export async function GET(
       risk_factors: sfData.Risk_Factors__c || '',
       personal_opinion: sfData.Personal_Opinion__c || '',
       failing_grades_count: sfData.Failing_Grades_Count__c || 0,
+
+      // File upload tracking
+      assessmentFileUploaded: sfData.Assessment_File_Uploaded__c || false,
+      gradeSheetUploaded: sfData.Grade_Sheet_Uploaded__c || false,
     }
 
     return NextResponse.json({

@@ -140,12 +140,16 @@ const formSchema = z.object({
   mother_profession: z.string().optional(),
   mother_income: z.string().optional(),
   debts_loans: z.string().min(1, 'נא למלא שדה זה'),
-  parent_involvement: z.enum(['inhibiting', 'promoting', 'no_involvement'], {
+  parent_involvement: z.enum(['', 'inhibiting', 'promoting', 'no_involvement'], {
+    message: 'נא לבחור רמת מעורבות הורים'
+  }).refine((val) => val !== '', {
     message: 'נא לבחור רמת מעורבות הורים'
   }),
 
   // רקע
-  economic_status: z.enum(['low', 'medium', 'high'], {
+  economic_status: z.enum(['', 'low', 'medium', 'high'], {
+    message: 'נא לבחור מצב כלכלי'
+  }).refine((val) => val !== '', {
     message: 'נא לבחור מצב כלכלי'
   }),
   economic_details: z.string().min(1, 'נא למלא פירוט מצב כלכלי'),
@@ -318,12 +322,10 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
           if (data.parent_names) {
             const parentNames = data.parent_names.split(', ')
             if (parentNames[0]) {
-              const firstName = parentNames[0].split(' ')[0] || ''
-              setValue('father_name', firstName)
+              setValue('father_name', parentNames[0])
             }
             if (parentNames[1]) {
-              const secondName = parentNames[1].split(' ')[0] || ''
-              setValue('mother_name', secondName)
+              setValue('mother_name', parentNames[1])
             }
           }
         }
@@ -344,6 +346,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   completedSet.add(key)
                 }
               })
+
+              // Check file upload boolean fields from Salesforce
+              if (sfData.assessmentFileUploaded === true) {
+                completedSet.add('assessment_file')
+              }
+              if (sfData.gradeSheetUploaded === true) {
+                completedSet.add('grade_sheet')
+              }
 
               setCompletedFields(completedSet)
               console.log('Loaded completion markers from Salesforce (values hidden for privacy)')
@@ -1399,6 +1409,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                               {...register('parent_involvement')}
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
                             >
+                              <option value="">בחר רמת מעורבות</option>
                               <option value="promoting">מקדמת</option>
                               <option value="no_involvement">ללא מעורבות</option>
                               <option value="inhibiting">מעכבת</option>
@@ -1406,6 +1417,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <Users className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
                         </FieldWrapper>
+                        {errors.parent_involvement && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.parent_involvement.message}
+                          </p>
+                        )}
                       </div>
 
                       <div>
@@ -1419,6 +1436,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                               {...register('economic_status')}
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
                             >
+                              <option value="">בחר מצב כלכלי</option>
                               <option value="low">נמוך</option>
                               <option value="medium">בינוני</option>
                               <option value="high">גבוה</option>
@@ -1426,6 +1444,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
                         </FieldWrapper>
+                        {errors.economic_status && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.economic_status.message}
+                          </p>
+                        )}
                       </div>
 
                       <div className="md:col-span-2">

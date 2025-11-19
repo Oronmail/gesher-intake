@@ -212,6 +212,8 @@ export async function POST(request: NextRequest) {
 
     // Upload files to Salesforce if present
     const uploadedFiles: string[] = []
+    let assessmentFileUploaded = false
+    let gradeSheetUploaded = false
 
     // Get student full name for file naming
     const studentFullName = `${studentData.student_first_name || ''} ${studentData.student_last_name || ''}`.trim() || 'Student'
@@ -237,6 +239,7 @@ export async function POST(request: NextRequest) {
         if (uploadResult.success) {
           console.log(`Assessment file uploaded successfully: ${uploadResult.contentDocumentId}`)
           uploadedFiles.push('assessment_file')
+          assessmentFileUploaded = true
         } else {
           console.error(`Failed to upload assessment file: ${uploadResult.error}`)
         }
@@ -266,6 +269,7 @@ export async function POST(request: NextRequest) {
         if (uploadResult.success) {
           console.log(`Grade sheet uploaded successfully: ${uploadResult.contentDocumentId}`)
           uploadedFiles.push('grade_sheet')
+          gradeSheetUploaded = true
         } else {
           console.error(`Failed to upload grade sheet: ${uploadResult.error}`)
         }
@@ -276,6 +280,23 @@ export async function POST(request: NextRequest) {
 
     if (uploadedFiles.length > 0) {
       console.log(`Successfully uploaded ${uploadedFiles.length} file(s) to Salesforce`)
+    }
+
+    // Update Salesforce with file upload status if any files were uploaded
+    if (assessmentFileUploaded || gradeSheetUploaded) {
+      try {
+        await salesforceJWT.updatePartialStudentData(
+          referral.salesforce_contact_id,
+          {
+            assessmentFileUploaded,
+            gradeSheetUploaded
+          }
+        )
+        console.log('File upload status updated in Salesforce')
+      } catch (statusError) {
+        console.error('Failed to update file upload status:', statusError)
+        // Don't fail the whole request if status update fails
+      }
     }
 
     // Privacy-focused cleanup: Remove all personal data from Supabase after successful Salesforce submission

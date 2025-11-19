@@ -33,12 +33,15 @@ export async function POST(request: NextRequest) {
       studentData = {}
       for (const [key, value] of formData.entries()) {
         if (key !== 'referral_number' && key !== 'assessment_file' && key !== 'grade_sheet') {
+          // Convert FormDataEntryValue to string
+          const stringValue = value.toString()
+
           // Try to parse JSON for complex objects
           try {
-            studentData[key] = JSON.parse(value as string)
+            studentData[key] = JSON.parse(stringValue)
           } catch {
-            // If not JSON, use as is
-            studentData[key] = value
+            // If not JSON, use string value
+            studentData[key] = stringValue
           }
         }
       }
@@ -192,6 +195,8 @@ export async function POST(request: NextRequest) {
 
     // Upload files if provided
     const uploadedFiles: string[] = []
+    let assessmentFileUploaded = false
+    let gradeSheetUploaded = false
 
     if (files.assessment_file) {
       try {
@@ -210,6 +215,7 @@ export async function POST(request: NextRequest) {
           'Assessment File'
         )
         uploadedFiles.push('assessment_file')
+        assessmentFileUploaded = true
         console.log('Assessment file uploaded successfully')
       } catch (fileError) {
         console.error('Failed to upload assessment file:', fileError)
@@ -234,10 +240,28 @@ export async function POST(request: NextRequest) {
           'Grade Sheet'
         )
         uploadedFiles.push('grade_sheet')
+        gradeSheetUploaded = true
         console.log('Grade sheet uploaded successfully')
       } catch (fileError) {
         console.error('Failed to upload grade sheet:', fileError)
         // Don't fail the whole request if file upload fails
+      }
+    }
+
+    // Update Salesforce with file upload status if any files were uploaded
+    if (assessmentFileUploaded || gradeSheetUploaded) {
+      try {
+        await salesforceJWT.updatePartialStudentData(
+          referral.salesforce_contact_id,
+          {
+            assessmentFileUploaded,
+            gradeSheetUploaded
+          }
+        )
+        console.log('File upload status updated in Salesforce')
+      } catch (statusError) {
+        console.error('Failed to update file upload status:', statusError)
+        // Don't fail the whole request if status update fails
       }
     }
 
