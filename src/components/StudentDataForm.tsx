@@ -339,9 +339,26 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
               const sfData = progressData.data
               const completedSet = new Set<string>()
 
+              // Define all boolean checkbox fields that should show green checkmark when set to true OR false
+              const booleanFields = new Set([
+                'behavioral_issues', 'has_potential', 'learning_disability',
+                'requires_remedial_teaching', 'adhd', 'assessment_done', 'assessment_needed',
+                'criminal_record', 'drug_use', 'smoking',
+                'psychological_treatment', 'psychiatric_treatment', 'takes_medication',
+                'military_service_potential', 'can_handle_program',
+                'known_to_welfare', 'youth_promotion'
+              ])
+
               // Track completed fields WITHOUT populating values (for privacy)
               Object.entries(sfData).forEach(([key, value]) => {
-                if (value !== null && value !== '' && value !== 0 && value !== false) {
+                const isBooleanField = booleanFields.has(key)
+                // For boolean fields: both true and false are valid completed answers
+                // For other fields: exclude null, empty string, 0, and false
+                const isCompleted = isBooleanField
+                  ? (value === true || value === false)
+                  : (value !== null && value !== '' && value !== 0 && value !== false)
+
+                if (isCompleted) {
                   // Only add to completed set, do NOT setValue to maintain privacy
                   completedSet.add(key)
                 }
