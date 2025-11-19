@@ -831,10 +831,17 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   // Filter out fields that are already completed
                   const fieldsToValidate = allRequiredFields.filter(field => !completedFields.has(field))
 
+                  // Debug logging
+                  console.log('=== FINAL SUBMIT VALIDATION DEBUG ===')
+                  console.log('Completed fields (green checkmarks):', Array.from(completedFields))
+                  console.log('All required fields:', allRequiredFields)
+                  console.log('Fields to validate (required but not completed):', fieldsToValidate)
+
                   // Only validate incomplete fields
                   if (fieldsToValidate.length > 0) {
                     const isValid = await trigger(fieldsToValidate as (keyof FormData)[])
                     if (!isValid) {
+                      console.log('Validation failed. Check form errors above.')
                       setIsIntentionalSubmit(false)
                       return
                     }
