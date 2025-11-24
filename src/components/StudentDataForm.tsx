@@ -551,9 +551,11 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       case 1: return ['student_first_name', 'student_last_name', 'student_id', 'date_of_birth', 'country_of_birth', 'gender', 'address', 'phone', 'student_mobile']
       case 2: return ['siblings_count', 'father_name', 'father_mobile', 'father_occupation', 'father_profession', 'mother_name', 'mother_mobile', 'mother_occupation', 'mother_profession', 'debts_loans', 'parent_involvement', 'economic_status', 'economic_details', 'family_background']
       case 3: return ['school_name', 'grade', 'homeroom_teacher', 'teacher_phone', 'counselor_name', 'counselor_phone']
-      case 4: return ['behavioral_issues', 'has_potential', 'motivation_level', 'motivation_type', 'social_status', 'learning_disability', 'adhd', 'assessment_done', 'assessment_needed'] // Merged stages 4 & 5
-      case 5: return ['criminal_record', 'drug_use', 'smoking', 'psychological_treatment', 'psychiatric_treatment', 'takes_medication'] // Was step 6
-      case 6: return ['military_service_potential', 'can_handle_program', 'risk_level', 'failing_grades_count'] // Was step 7
+      // Step 4: Only require dropdown fields, checkboxes are optional (can be checked or unchecked)
+      case 4: return ['motivation_level', 'motivation_type', 'social_status']
+      // Step 5 & 6: All checkbox fields are optional, user can check or leave unchecked
+      case 5: return [] // No required fields - all checkboxes optional
+      case 6: return ['risk_level', 'failing_grades_count'] // Only numeric fields required
       default: return []
     }
   }
