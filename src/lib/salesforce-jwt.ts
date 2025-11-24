@@ -330,7 +330,7 @@ class SalesforceJWTService {
         }
       }
 
-      const studentUpdate = {
+      const studentUpdate: Record<string, any> = {
         Id: recordId,
         Status__c: 'Data Submitted',
         Priority__c: data.riskLevel >= 7 ? 'High' : data.riskLevel >= 4 ? 'Medium' : 'Low',
@@ -339,7 +339,8 @@ class SalesforceJWTService {
         Student_First_Name__c: data.studentFirstName,
         Student_Last_Name__c: data.studentLastName,
         Student_ID__c: data.studentId,
-        Date_of_Birth__c: formattedDOB || null,
+        // Only include Date_of_Birth__c if we have a valid formatted date - don't overwrite existing value with null
+        ...(formattedDOB && { Date_of_Birth__c: formattedDOB }),
         Gender__c: data.gender === 'male' ? 'Male' : 'Female',
         Country_of_Birth__c: data.countryOfBirth,
         Immigration_Year__c: data.immigrationYear || '',
