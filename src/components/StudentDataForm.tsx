@@ -358,14 +358,23 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
               Object.entries(sfData).forEach(([key, value]) => {
                 const isBooleanField = booleanFields.has(key)
                 const isNumericField = numericFields.has(key)
-                // For boolean fields: both true and false are valid completed answers
-                // For numeric fields: any number (including 0) is a valid completed answer
-                // For other fields: exclude null, empty string, and false
-                const isCompleted = isBooleanField
-                  ? (value === true || value === false)
-                  : isNumericField
-                  ? (typeof value === 'number')
-                  : (value !== null && value !== '' && value !== false)
+
+                // IMPORTANT: Only mark field as completed if it has been explicitly set in Salesforce
+                // null means "never answered" - don't show green checkmark
+                // false/0 means "explicitly answered" - show green checkmark
+
+                let isCompleted = false
+
+                if (isBooleanField) {
+                  // For boolean: true OR false (but not null) means completed
+                  isCompleted = (value === true || value === false)
+                } else if (isNumericField) {
+                  // For numeric: any number including 0 (but not null) means completed
+                  isCompleted = (typeof value === 'number')
+                } else {
+                  // For text fields: non-empty string means completed
+                  isCompleted = (value !== null && value !== '' && value !== false)
+                }
 
                 if (isCompleted) {
                   // Only add to completed set, do NOT setValue to maintain privacy

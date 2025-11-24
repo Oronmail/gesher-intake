@@ -728,6 +728,8 @@ class SalesforceJWTService {
            Gender__c, Country_of_Birth__c, Immigration_Year__c, Student_Address__c,
            Student_Floor__c, Student_Apartment__c, Student_Phone__c, Student_Mobile__c,
            School_Info_Username__c, School_Info_Password__c,
+           Known_to_Welfare__c, Social_Worker_Name__c, Social_Worker_Phone__c,
+           Youth_Promotion__c, Youth_Worker_Name__c, Youth_Worker_Phone__c,
            Siblings_Count__c, Father_Name__c, Father_Mobile__c, Father_Occupation__c,
            Father_Profession__c, Father_Income__c, Mother_Name__c, Mother_Mobile__c,
            Mother_Occupation__c, Mother_Profession__c, Mother_Income__c, Debts_Loans__c,
