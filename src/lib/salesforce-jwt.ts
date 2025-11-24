@@ -330,7 +330,7 @@ class SalesforceJWTService {
         }
       }
 
-      const studentUpdate: Record<string, any> = {
+      const studentUpdate: Record<string, string | number | boolean | null> = {
         Id: recordId,
         Status__c: 'Data Submitted',
         Priority__c: data.riskLevel >= 7 ? 'High' : data.riskLevel >= 4 ? 'Medium' : 'Low',
