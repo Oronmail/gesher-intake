@@ -864,10 +864,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
             <form
               onSubmit={async (e) => {
                 e.preventDefault()
+                console.log('🚀 NEW CODE RUNNING - SUBMIT CLICKED - NO VALIDATION')
                 if (isIntentionalSubmit) {
                   // No need to re-validate all pages - each "Next" button already validated its step
                   // By the time user reaches this final submit, all previous pages have been validated
                   // Just submit directly
+                  console.log('✅ Submitting form directly without validation')
                   handleSubmit(onSubmit)(e)
                   setIsIntentionalSubmit(false)
                 }
