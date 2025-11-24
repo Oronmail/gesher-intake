@@ -814,6 +814,14 @@ class SalesforceJWTService {
       if (data.schoolInfoUsername && typeof data.schoolInfoUsername === 'string' && data.schoolInfoUsername.trim()) updateData.School_Info_Username__c = data.schoolInfoUsername;
       if (data.schoolInfoPassword && typeof data.schoolInfoPassword === 'string' && data.schoolInfoPassword.trim()) updateData.School_Info_Password__c = data.schoolInfoPassword;
 
+      // Welfare & Social Services - boolean fields
+      if (data.knownToWelfare !== undefined) updateData.Known_to_Welfare__c = data.knownToWelfare;
+      if (data.socialWorkerName && typeof data.socialWorkerName === 'string' && data.socialWorkerName.trim()) updateData.Social_Worker_Name__c = data.socialWorkerName;
+      if (data.socialWorkerPhone && typeof data.socialWorkerPhone === 'string' && data.socialWorkerPhone.trim()) updateData.Social_Worker_Phone__c = data.socialWorkerPhone;
+      if (data.youthPromotion !== undefined) updateData.Youth_Promotion__c = data.youthPromotion;
+      if (data.youthWorkerName && typeof data.youthWorkerName === 'string' && data.youthWorkerName.trim()) updateData.Youth_Worker_Name__c = data.youthWorkerName;
+      if (data.youthWorkerPhone && typeof data.youthWorkerPhone === 'string' && data.youthWorkerPhone.trim()) updateData.Youth_Worker_Phone__c = data.youthWorkerPhone;
+
       // Family fields - only update if has value
       if (data.siblingsCount !== undefined && data.siblingsCount !== null) updateData.Siblings_Count__c = data.siblingsCount;
       if (data.fatherName && typeof data.fatherName === 'string' && data.fatherName.trim()) updateData.Father_Name__c = data.fatherName;
@@ -847,9 +855,9 @@ class SalesforceJWTService {
       if (data.schoolCounselorPhone && typeof data.schoolCounselorPhone === 'string' && data.schoolCounselorPhone.trim()) updateData.School_Counselor_Phone__c = data.schoolCounselorPhone;
 
       // Intake assessment
-      if (data.behavioralIssues && typeof data.behavioralIssues === 'string' && data.behavioralIssues.trim()) updateData.Behavioral_Issues__c = data.behavioralIssues;
+      if (data.behavioralIssues !== undefined) updateData.Behavioral_Issues__c = data.behavioralIssues;
       if (data.behavioralIssuesDetails && typeof data.behavioralIssuesDetails === 'string' && data.behavioralIssuesDetails.trim()) updateData.Behavioral_Issues_Details__c = data.behavioralIssuesDetails;
-      if (data.hasPotential && typeof data.hasPotential === 'string' && data.hasPotential.trim()) updateData.Has_Potential__c = data.hasPotential;
+      if (data.hasPotential !== undefined) updateData.Has_Potential__c = data.hasPotential;
       if (data.potentialExplanation && typeof data.potentialExplanation === 'string' && data.potentialExplanation.trim()) updateData.Potential_Explanation__c = data.potentialExplanation;
       if (data.motivationLevel !== undefined) updateData.Motivation_Level__c =
         data.motivationLevel === 'low' ? 'Low' :
@@ -861,29 +869,29 @@ class SalesforceJWTService {
       if (data.afternoonActivities && typeof data.afternoonActivities === 'string' && data.afternoonActivities.trim()) updateData.Afternoon_Activities__c = data.afternoonActivities;
 
       // Learning assessment
-      if (data.learningDisability && typeof data.learningDisability === 'string' && data.learningDisability.trim()) updateData.Learning_Disability__c = data.learningDisability;
+      if (data.learningDisability !== undefined) updateData.Learning_Disability__c = data.learningDisability;
       if (data.learningDisabilityExplanation && typeof data.learningDisabilityExplanation === 'string' && data.learningDisabilityExplanation.trim()) updateData.Learning_Disability_Explanation__c = data.learningDisabilityExplanation;
-      if (data.requiresRemedialTeaching && typeof data.requiresRemedialTeaching === 'string' && data.requiresRemedialTeaching.trim()) updateData.Requires_Remedial_Teaching__c = data.requiresRemedialTeaching;
-      if (data.adhd && typeof data.adhd === 'string' && data.adhd.trim()) updateData.ADHD__c = data.adhd;
+      if (data.requiresRemedialTeaching !== undefined) updateData.Requires_Remedial_Teaching__c = data.requiresRemedialTeaching;
+      if (data.adhd !== undefined) updateData.ADHD__c = data.adhd;
       if (data.adhdTreatment && typeof data.adhdTreatment === 'string' && data.adhdTreatment.trim()) updateData.ADHD_Treatment__c = data.adhdTreatment;
-      if (data.assessmentDone && typeof data.assessmentDone === 'string' && data.assessmentDone.trim()) updateData.Assessment_Done__c = data.assessmentDone;
-      if (data.assessmentNeeded && typeof data.assessmentNeeded === 'string' && data.assessmentNeeded.trim()) updateData.Assessment_Needed__c = data.assessmentNeeded;
+      if (data.assessmentDone !== undefined) updateData.Assessment_Done__c = data.assessmentDone;
+      if (data.assessmentNeeded !== undefined) updateData.Assessment_Needed__c = data.assessmentNeeded;
       if (data.assessmentDetails && typeof data.assessmentDetails === 'string' && data.assessmentDetails.trim()) updateData.Assessment_Details__c = data.assessmentDetails;
 
       // Risk assessment
-      if (data.criminalRecord && typeof data.criminalRecord === 'string' && data.criminalRecord.trim()) updateData.Criminal_Record__c = data.criminalRecord;
-      if (data.drugUse && typeof data.drugUse === 'string' && data.drugUse.trim()) updateData.Drug_Use__c = data.drugUse;
-      if (data.smoking && typeof data.smoking === 'string' && data.smoking.trim()) updateData.Smoking__c = data.smoking;
+      if (data.criminalRecord !== undefined) updateData.Criminal_Record__c = data.criminalRecord;
+      if (data.drugUse !== undefined) updateData.Drug_Use__c = data.drugUse;
+      if (data.smoking !== undefined) updateData.Smoking__c = data.smoking;
       if (data.probationOfficer && typeof data.probationOfficer === 'string' && data.probationOfficer.trim()) updateData.Probation_Officer__c = data.probationOfficer;
       if (data.youthProbationOfficer && typeof data.youthProbationOfficer === 'string' && data.youthProbationOfficer.trim()) updateData.Youth_Probation_Officer__c = data.youthProbationOfficer;
-      if (data.psychologicalTreatment && typeof data.psychologicalTreatment === 'string' && data.psychologicalTreatment.trim()) updateData.Psychological_Treatment__c = data.psychologicalTreatment;
-      if (data.psychiatricTreatment && typeof data.psychiatricTreatment === 'string' && data.psychiatricTreatment.trim()) updateData.Psychiatric_Treatment__c = data.psychiatricTreatment;
-      if (data.takesMedication && typeof data.takesMedication === 'string' && data.takesMedication.trim()) updateData.Takes_Medication__c = data.takesMedication;
+      if (data.psychologicalTreatment !== undefined) updateData.Psychological_Treatment__c = data.psychologicalTreatment;
+      if (data.psychiatricTreatment !== undefined) updateData.Psychiatric_Treatment__c = data.psychiatricTreatment;
+      if (data.takesMedication !== undefined) updateData.Takes_Medication__c = data.takesMedication;
       if (data.medicationDescription && typeof data.medicationDescription === 'string' && data.medicationDescription.trim()) updateData.Medication_Description__c = data.medicationDescription;
 
       // Final assessment
-      if (data.militaryServicePotential && typeof data.militaryServicePotential === 'string' && data.militaryServicePotential.trim()) updateData.Military_Service_Potential__c = data.militaryServicePotential;
-      if (data.canHandleProgram && typeof data.canHandleProgram === 'string' && data.canHandleProgram.trim()) updateData.Can_Handle_Program__c = data.canHandleProgram;
+      if (data.militaryServicePotential !== undefined) updateData.Military_Service_Potential__c = data.militaryServicePotential;
+      if (data.canHandleProgram !== undefined) updateData.Can_Handle_Program__c = data.canHandleProgram;
       if (data.riskLevel && typeof data.riskLevel === 'string' && data.riskLevel.trim()) updateData.Risk_Level__c = data.riskLevel;
       if (data.riskFactors && typeof data.riskFactors === 'string' && data.riskFactors.trim()) updateData.Risk_Factors__c = data.riskFactors;
       if (data.personalOpinion && typeof data.personalOpinion === 'string' && data.personalOpinion.trim()) updateData.Personal_Opinion__c = data.personalOpinion;
