@@ -865,52 +865,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
               onSubmit={async (e) => {
                 e.preventDefault()
                 if (isIntentionalSubmit) {
-                  // Get all required fields across all steps
-                  const allRequiredFields: string[] = []
-                  for (let step = 1; step <= totalSteps; step++) {
-                    allRequiredFields.push(...getFieldsForStep(step))
-                  }
-
-                  // Filter out fields that are already completed
-                  const fieldsToValidate = allRequiredFields.filter(field => !completedFields.has(field))
-
-                  // Debug logging
-                  console.log('=== FINAL SUBMIT VALIDATION DEBUG ===')
-                  console.log('Completed fields (green checkmarks):', Array.from(completedFields))
-                  console.log('All required fields:', allRequiredFields)
-                  console.log('Fields to validate (required but not completed):', fieldsToValidate)
-
-                  // Only validate incomplete fields
-                  if (fieldsToValidate.length > 0) {
-                    const isValid = await trigger(fieldsToValidate as (keyof FormData)[])
-                    if (!isValid) {
-                      console.log('Validation failed. Check form errors above.')
-
-                      // Find which step has errors
-                      const formErrors = Object.keys(errors)
-                      let errorStep = -1
-                      for (let step = 1; step <= totalSteps; step++) {
-                        const stepFields = getFieldsForStep(step)
-                        if (stepFields.some(field => formErrors.includes(field))) {
-                          errorStep = step
-                          break
-                        }
-                      }
-
-                      // Navigate to the step with errors
-                      if (errorStep > 0) {
-                        setCurrentStep(errorStep)
-                        alert(`נא למלא את כל השדות הנדרשים בשלב ${errorStep}: ${getStepTitle(errorStep)}`)
-                      } else {
-                        alert('נא למלא את כל השדות הנדרשים בטופס')
-                      }
-
-                      setIsIntentionalSubmit(false)
-                      return
-                    }
-                  }
-
-                  // All validation passed, submit the form
+                  // No need to re-validate all pages - each "Next" button already validated its step
+                  // By the time user reaches this final submit, all previous pages have been validated
+                  // Just submit directly
                   handleSubmit(onSubmit)(e)
                   setIsIntentionalSubmit(false)
                 }
