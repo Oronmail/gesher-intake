@@ -311,16 +311,35 @@ class SalesforceJWTService {
     error?: string;
   }> {
     try {
+      // Format date of birth properly for Salesforce (YYYY-MM-DD format only, no time)
+      let formattedDOB = '';
+      if (data.dateOfBirth) {
+        // If it's already in YYYY-MM-DD format, use as is
+        if (/^\d{4}-\d{2}-\d{2}$/.test(data.dateOfBirth)) {
+          formattedDOB = data.dateOfBirth;
+        } else {
+          // Try to parse and format
+          try {
+            const date = new Date(data.dateOfBirth);
+            if (!isNaN(date.getTime())) {
+              formattedDOB = date.toISOString().split('T')[0]; // Get YYYY-MM-DD part only
+            }
+          } catch {
+            console.warn('Invalid date of birth format:', data.dateOfBirth);
+          }
+        }
+      }
+
       const studentUpdate = {
         Id: recordId,
         Status__c: 'Data Submitted',
         Priority__c: data.riskLevel >= 7 ? 'High' : data.riskLevel >= 4 ? 'Medium' : 'Low',
-        
+
         // Student Personal Information
         Student_First_Name__c: data.studentFirstName,
         Student_Last_Name__c: data.studentLastName,
         Student_ID__c: data.studentId,
-        Date_of_Birth__c: data.dateOfBirth,
+        Date_of_Birth__c: formattedDOB || null,
         Gender__c: data.gender === 'male' ? 'Male' : 'Female',
         Country_of_Birth__c: data.countryOfBirth,
         Immigration_Year__c: data.immigrationYear || '',
