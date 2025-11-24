@@ -493,21 +493,43 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
       if (response.ok) {
         setSaveSuccess(true)
-        // Update completed fields - only mark fields as completed if they have meaningful values
+        // Update completed fields after successful save
         const newCompleted = new Set(completedFields)
+
+        // Define field types for proper completion detection
+        const booleanFields = new Set([
+          'behavioral_issues', 'has_potential', 'learning_disability',
+          'requires_remedial_teaching', 'adhd', 'assessment_done', 'assessment_needed',
+          'criminal_record', 'drug_use', 'smoking',
+          'psychological_treatment', 'psychiatric_treatment', 'takes_medication',
+          'military_service_potential', 'can_handle_program',
+          'known_to_welfare', 'youth_promotion'
+        ])
+
+        const numericFields = new Set(['siblings_count', 'failing_grades_count', 'risk_level'])
+
         Object.entries(currentValues).forEach(([key, value]) => {
-          // Don't mark boolean fields as completed if they are false (unchecked/default)
-          // Only mark them completed if explicitly set to true
-          if (typeof value === 'boolean') {
+          const isBooleanField = booleanFields.has(key)
+          const isNumericField = numericFields.has(key)
+
+          // Boolean fields: only mark as completed if true
+          if (isBooleanField) {
             if (value === true) {
               newCompleted.add(key)
             }
           }
-          // For other fields, mark as completed if they have a non-empty value
-          else if (value !== null && value !== '' && value !== undefined && value !== 0) {
+          // Numeric fields: mark as completed for any number including 0
+          else if (isNumericField) {
+            if (typeof value === 'number' || (typeof value === 'string' && value !== '')) {
+              newCompleted.add(key)
+            }
+          }
+          // Text/dropdown fields: mark as completed if non-empty
+          else if (value !== null && value !== '' && value !== undefined) {
             newCompleted.add(key)
           }
         })
+
         setCompletedFields(newCompleted)
 
         // Hide success message after 5 seconds
@@ -861,6 +883,26 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     const isValid = await trigger(fieldsToValidate as (keyof FormData)[])
                     if (!isValid) {
                       console.log('Validation failed. Check form errors above.')
+
+                      // Find which step has errors
+                      const formErrors = Object.keys(errors)
+                      let errorStep = -1
+                      for (let step = 1; step <= totalSteps; step++) {
+                        const stepFields = getFieldsForStep(step)
+                        if (stepFields.some(field => formErrors.includes(field))) {
+                          errorStep = step
+                          break
+                        }
+                      }
+
+                      // Navigate to the step with errors
+                      if (errorStep > 0) {
+                        setCurrentStep(errorStep)
+                        alert(`נא למלא את כל השדות הנדרשים בשלב ${errorStep}: ${getStepTitle(errorStep)}`)
+                      } else {
+                        alert('נא למלא את כל השדות הנדרשים בטופס')
+                      }
+
                       setIsIntentionalSubmit(false)
                       return
                     }
