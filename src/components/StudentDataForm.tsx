@@ -366,8 +366,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 let isCompleted = false
 
                 if (isBooleanField) {
-                  // For boolean: true OR false (but not null) means completed
-                  isCompleted = (value === true || value === false)
+                  // For boolean: ONLY true means completed (not false or null)
+                  // false = default/not answered, true = explicitly checked
+                  isCompleted = (value === true)
                 } else if (isNumericField) {
                   // For numeric: any number including 0 (but not null) means completed
                   isCompleted = (typeof value === 'number')
