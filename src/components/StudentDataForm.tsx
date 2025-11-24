@@ -561,30 +561,35 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
   }
 
   const onSubmit = async (data: FormData) => {
-    console.log('📝 onSubmit function called with data:', Object.keys(data))
+    console.log('🔥 [1/10] onSubmit function called with data:', Object.keys(data))
 
     // Prevent accidental double submission
     if (isSubmitting) {
-      console.log('⚠️ Already submitting, returning early')
+      console.log('⚠️ [STOP] Already submitting, returning early')
       return
     }
 
-    console.log('✅ Starting submission process')
+    console.log('🔥 [2/10] Starting submission process')
     setIsSubmitting(true)
     setSubmitResult(null)
 
     try {
+      console.log('🔥 [3/10] Inside try block')
+
       // Check if we have files to upload
       const hasFiles = data.assessment_file?.length > 0 || data.grade_sheet?.length > 0
-      console.log('📎 Has files:', hasFiles)
+      console.log('🔥 [4/10] Has files:', hasFiles)
 
       // Validate file sizes (10MB limit)
       const maxFileSize = 10 * 1024 * 1024 // 10MB in bytes
 
       if (hasFiles) {
+        console.log('🔥 [5a/10] Validating files...')
         if (data.assessment_file?.length > 0) {
           const file = data.assessment_file[0]
+          console.log('📎 Assessment file:', file.name, file.size, file.type)
           if (file.size > maxFileSize) {
+            console.log('❌ Assessment file too large')
             setSubmitResult({
               success: false,
               message: `קובץ האבחון גדול מדי (${Math.round(file.size / 1024 / 1024)}MB). הגודל המקסימלי הוא 10MB`
@@ -595,6 +600,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
           // Validate file type
           const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png']
           if (!allowedTypes.includes(file.type)) {
+            console.log('❌ Assessment file wrong type')
             setSubmitResult({
               success: false,
               message: 'קובץ האבחון חייב להיות PDF, JPG או PNG'
@@ -606,7 +612,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
         if (data.grade_sheet?.length > 0) {
           const file = data.grade_sheet[0]
+          console.log('📎 Grade sheet:', file.name, file.size, file.type)
           if (file.size > maxFileSize) {
+            console.log('❌ Grade sheet too large')
             setSubmitResult({
               success: false,
               message: `גליון הציונים גדול מדי (${Math.round(file.size / 1024 / 1024)}MB). הגודל המקסימלי הוא 10MB`
@@ -617,6 +625,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
           // Validate file type
           const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png']
           if (!allowedTypes.includes(file.type)) {
+            console.log('❌ Grade sheet wrong type')
             setSubmitResult({
               success: false,
               message: 'גליון הציונים חייב להיות PDF, JPG או PNG'
@@ -625,11 +634,16 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
             return
           }
         }
+        console.log('✅ File validation passed')
+      } else {
+        console.log('🔥 [5b/10] No files to validate')
       }
 
+      console.log('🔥 [6/10] Preparing request...')
       let response: Response
 
       if (hasFiles) {
+        console.log('🔥 [7a/10] Creating FormData with files...')
         // Use FormData for file uploads
         const formData = new window.FormData()
 
@@ -654,12 +668,16 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
           formData.append('grade_sheet', data.grade_sheet[0])
         }
 
+        console.log('🔥 [8a/10] Sending FormData to API...')
         response = await fetch('/api/referrals/student-data', {
           method: 'POST',
           body: formData, // No Content-Type header needed, browser will set it with boundary
         })
+        console.log('🔥 [9a/10] API response received:', response.status)
       } else {
+        console.log('🔥 [7b/10] Creating JSON request...')
         // Use JSON for regular data without files
+        console.log('🔥 [8b/10] Sending JSON to API...')
         response = await fetch('/api/referrals/student-data', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -668,28 +686,35 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
             referral_number: referralNumber,
           }),
         })
+        console.log('🔥 [9b/10] API response received:', response.status)
       }
 
+      console.log('🔥 [10/10] Parsing response...')
       const result = await response.json()
+      console.log('📦 Response data:', result)
 
       if (response.ok) {
+        console.log('✅ SUCCESS! Form submitted successfully')
         setSubmitResult({
           success: true,
           message: 'הטופס נשלח בהצלחה! המידע נשמר במערכת.',
         })
         // Form will be hidden after successful submission
       } else {
+        console.log('❌ API returned error:', result.error)
         setSubmitResult({
           success: false,
           message: result.error || 'שגיאה בשליחת הטופס',
         })
       }
-    } catch {
+    } catch (error) {
+      console.error('💥 EXCEPTION in onSubmit:', error)
       setSubmitResult({
         success: false,
         message: 'אירעה שגיאה. אנא נסה שנית.',
       })
     } finally {
+      console.log('🏁 Finally block - setting isSubmitting to false')
       setIsSubmitting(false)
     }
   }
@@ -875,9 +900,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 if (isIntentionalSubmit) {
                   // No need to re-validate all pages - each "Next" button already validated its step
                   // By the time user reaches this final submit, all previous pages have been validated
-                  // Just submit directly
+                  // Just submit directly - bypass React Hook Form validation entirely
                   console.log('✅ Submitting form directly without validation')
-                  handleSubmit(onSubmit)(e)
+                  // Get form values directly without validation
+                  const formValues = getValues()
+                  console.log('📋 Form values retrieved, calling onSubmit...')
+                  await onSubmit(formValues as FormData)
                   setIsIntentionalSubmit(false)
                 }
               }}
