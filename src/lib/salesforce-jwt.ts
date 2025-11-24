@@ -437,9 +437,10 @@ class SalesforceJWTService {
       };
 
       console.log('Updating Registration Request with student data...');
-      
+
       const result = await this.executeWithRetry(async (conn) => {
-        return await conn.sobject('Registration_Request__c').update(studentUpdate);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return await conn.sobject('Registration_Request__c').update(studentUpdate as any);
       });
       
       if (result.success) {
