@@ -561,15 +561,22 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
   }
 
   const onSubmit = async (data: FormData) => {
-    // Prevent accidental double submission
-    if (isSubmitting) return
+    console.log('📝 onSubmit function called with data:', Object.keys(data))
 
+    // Prevent accidental double submission
+    if (isSubmitting) {
+      console.log('⚠️ Already submitting, returning early')
+      return
+    }
+
+    console.log('✅ Starting submission process')
     setIsSubmitting(true)
     setSubmitResult(null)
 
     try {
       // Check if we have files to upload
       const hasFiles = data.assessment_file?.length > 0 || data.grade_sheet?.length > 0
+      console.log('📎 Has files:', hasFiles)
 
       // Validate file sizes (10MB limit)
       const maxFileSize = 10 * 1024 * 1024 // 10MB in bytes
