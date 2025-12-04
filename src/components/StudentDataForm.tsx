@@ -215,6 +215,24 @@ const formSchema = z.object({
     reason: z.string()
   })).optional(),
   grade_sheet: z.any().optional(),
+}).refine((data) => {
+  // If behavioral_issues is checked, behavioral_issues_details must be filled
+  if (data.behavioral_issues && (!data.behavioral_issues_details || data.behavioral_issues_details.trim() === '')) {
+    return false
+  }
+  return true
+}, {
+  message: 'נא לפרט את בעיות ההתנהגות',
+  path: ['behavioral_issues_details']
+}).refine((data) => {
+  // If has_potential is checked, potential_explanation must be filled
+  if (data.has_potential && (!data.potential_explanation || data.potential_explanation.trim() === '')) {
+    return false
+  }
+  return true
+}, {
+  message: 'נא להסביר על הפוטנציאל',
+  path: ['potential_explanation']
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -552,11 +570,23 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       case 1: return ['student_first_name', 'student_last_name', 'student_id', 'date_of_birth', 'country_of_birth', 'gender', 'address', 'phone', 'student_mobile']
       case 2: return ['siblings_count', 'father_name', 'father_mobile', 'father_occupation', 'father_profession', 'mother_name', 'mother_mobile', 'mother_occupation', 'mother_profession', 'debts_loans', 'parent_involvement', 'economic_status', 'economic_details', 'family_background']
       case 3: return ['school_name', 'grade', 'homeroom_teacher', 'teacher_phone', 'counselor_name', 'counselor_phone']
-      // Step 4: Only require dropdown fields, checkboxes are optional (can be checked or unchecked)
-      case 4: return ['motivation_level', 'motivation_type', 'social_status']
-      // Step 5 & 6: All checkbox fields are optional, user can check or leave unchecked
-      case 5: return [] // No required fields - all checkboxes optional
-      case 6: return ['risk_level', 'failing_grades_count'] // Only numeric fields required
+      // Step 4: Require dropdown fields + conditional fields if checkboxes are checked
+      case 4: {
+        const fields: string[] = ['motivation_level', 'motivation_type', 'social_status']
+        const formValues = getValues()
+        // Add conditional required fields based on checkbox states
+        if (formValues.behavioral_issues) {
+          fields.push('behavioral_issues_details')
+        }
+        if (formValues.has_potential) {
+          fields.push('potential_explanation')
+        }
+        return fields
+      }
+      // Step 5: All checkbox fields are optional, user can check or leave unchecked
+      case 5: return []
+      // Step 6: Include all mandatory fields
+      case 6: return ['risk_level', 'risk_factors', 'personal_opinion', 'grade_sheet', 'failing_grades_count']
       default: return []
     }
   }
