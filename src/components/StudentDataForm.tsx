@@ -1563,24 +1563,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          חובות/הלוואות/משכנתא
-                          <span className="text-red-500 mr-1">*</span>
-                        </label>
-                        <FieldWrapper fieldName="debts_loans" completedFields={completedFields}>
-                          <div className="relative">
-                            <input
-                              {...register('debts_loans')}
-                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                              placeholder="פרטי חובות והלוואות"
-                            />
-                            <CreditCard className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                          </div>
-                        </FieldWrapper>
-                      </div>
-
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          מהי רמת המעורבות של ההורים (מעכבת, מקדמת, ללא מעורבות וכדומה)
+                          מהי רמת המעורבות של ההורים
                           <span className="text-red-500 mr-1">*</span>
                         </label>
                         <FieldWrapper fieldName="parent_involvement" completedFields={completedFields}>
@@ -1589,7 +1572,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                               {...register('parent_involvement')}
                               rows={3}
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-y"
-                              placeholder="תאר את רמת מעורבות ההורים (לדוגמה: מקדמת, מעכבת, ללא מעורבות)"
+                              placeholder="תאר את רמת מעורבות ההורים (מעכבת, מקדמת, ללא מעורבות וכדומה)"
                             />
                             <Users className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
@@ -1643,6 +1626,23 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                               placeholder="פרט את המצב הכלכלי של המשפחה..."
                             />
                             <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                          </div>
+                        </FieldWrapper>
+                      </div>
+
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          חובות/הלוואות/משכנתא
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <FieldWrapper fieldName="debts_loans" completedFields={completedFields}>
+                          <div className="relative">
+                            <input
+                              {...register('debts_loans')}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                              placeholder="פרטי חובות והלוואות"
+                            />
+                            <CreditCard className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
                         </FieldWrapper>
                       </div>
