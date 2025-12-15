@@ -164,16 +164,14 @@ const formSchema = z.object({
   behavioral_issues_details: z.string().optional(),
   has_potential: z.boolean(),
   potential_explanation: z.string().optional(),
-  motivation_level: z.enum(['low', 'medium', 'high'], {
-    message: 'נא לבחור רמת מוטיבציה'
-  }),
+  motivation_level: z.string().min(1, 'נא למלא שדה זה'),
   motivation_type: z.enum(['internal', 'external'], {
     message: 'נא לבחור סוג מוטיבציה'
   }),
   external_motivators: z.string().optional(),
   social_status: z.string().min(1, 'נא להזין מצב חברתי'),
   afternoon_activities: z.string().optional(),
-  
+
   // הערכת למידה
   learning_disability: z.boolean(),
   learning_disability_explanation: z.string().optional(),
@@ -184,9 +182,10 @@ const formSchema = z.object({
   assessment_file: z.any().optional(),
   assessment_needed: z.boolean(),
   assessment_details: z.string().optional(),
-  
+
   // הערכת סיכון - all mandatory
   criminal_record: z.boolean(),
+  criminal_record_details: z.string().optional(),
   drug_use: z.boolean(),
   smoking: z.boolean(),
   probation_officer: z.string().optional(),
@@ -199,7 +198,7 @@ const formSchema = z.object({
   // הערכה סופית - all mandatory
   military_service_potential: z.boolean(),
   can_handle_program: z.boolean(),
-  risk_level: z.number().min(1, 'נא לבחור רמת סיכון').max(10),
+  risk_level: z.number().min(1, 'נא לבחור רמת סיכון').max(10).nullable(),
   risk_factors: z.string().min(1, 'נא להזין גורמי סיכון'),
   personal_opinion: z.string().min(1, 'נא להזין חוות דעת אישית'),
   
@@ -260,6 +259,24 @@ const formSchema = z.object({
 }, {
   message: 'נא להזין מקצוע הורה 2',
   path: ['mother_profession']
+}).refine((data) => {
+  // If ADHD is checked, adhd_treatment must be filled
+  if (data.adhd && (!data.adhd_treatment || data.adhd_treatment.trim() === '')) {
+    return false
+  }
+  return true
+}, {
+  message: 'נא למלא פירוט טיפול ב-ADHD',
+  path: ['adhd_treatment']
+}).refine((data) => {
+  // If criminal_record is checked, criminal_record_details must be filled
+  if (data.criminal_record && (!data.criminal_record_details || data.criminal_record_details.trim() === '')) {
+    return false
+  }
+  return true
+}, {
+  message: 'נא למלא פרטי עבר פלילי',
+  path: ['criminal_record_details']
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -336,7 +353,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       can_handle_program: false,
       siblings_count: null,
       failing_grades_count: 0,
-      risk_level: 1,
+      risk_level: null,
     }
   })
 
@@ -600,7 +617,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       case 3: return ['school_name', 'grade', 'homeroom_teacher', 'teacher_phone', 'counselor_name', 'counselor_phone']
       // Step 4: Require dropdown fields + conditional fields if checkboxes are checked
       case 4: {
-        const fields: string[] = ['motivation_level', 'motivation_type', 'social_status']
+        const fields: string[] = ['motivation_level', 'social_status']
         const formValues = getValues()
         // Add conditional required fields based on checkbox states
         if (formValues.behavioral_issues) {
@@ -611,8 +628,18 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
         }
         return fields
       }
-      // Step 5: All checkbox fields are optional, user can check or leave unchecked
-      case 5: return []
+      // Step 5: All checkbox fields are optional, but add conditional fields if checked
+      case 5: {
+        const fields: string[] = []
+        const formValues = getValues()
+        if (formValues.adhd) {
+          fields.push('adhd_treatment')
+        }
+        if (formValues.criminal_record) {
+          fields.push('criminal_record_details')
+        }
+        return fields
+      }
       // Step 6: Include all mandatory fields
       case 6: return ['risk_level', 'risk_factors', 'personal_opinion', 'grade_sheet', 'failing_grades_count']
       default: return []
@@ -2027,76 +2054,29 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   )}
 
                   {/* Motivation Section */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        רמת מוטיבציה
-                        <span className="text-red-500 mr-1">*</span>
-                      </label>
-                      <FieldWrapper fieldName="motivation_level" completedFields={completedFields}>
-                        <div className="relative">
-                          <select
-                            {...register('motivation_level')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
-                          >
-                            <option value="">בחר רמת מוטיבציה</option>
-                            <option value="low">נמוך</option>
-                            <option value="medium">בינוני</option>
-                            <option value="high">גבוה</option>
-                          </select>
-                          <Zap className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
-                      </FieldWrapper>
-                      {errors.motivation_level && (
-                        <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
-                          <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                          {errors.motivation_level.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        סוג מוטיבציה
-                        <span className="text-red-500 mr-1">*</span>
-                      </label>
-                      <FieldWrapper fieldName="motivation_type" completedFields={completedFields}>
-                        <div className="relative">
-                          <select
-                            {...register('motivation_type')}
-                            className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
-                          >
-                            <option value="">בחר סוג מוטיבציה</option>
-                            <option value="internal">פנימית</option>
-                            <option value="external">חיצונית</option>
-                          </select>
-                          <Heart className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                        </div>
-                      </FieldWrapper>
-                      {errors.motivation_type && (
-                        <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
-                          <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                          {errors.motivation_type.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  {watch('motivation_type') === 'external' && (
-                    <div className="animate-fadeIn">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        גורמים חיצוניים
-                      </label>
-                      <FieldWrapper fieldName="external_motivators" completedFields={completedFields}>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      רמת מוטיבציה (אנא ציין האם המוטיבציה פנימית או חיצונית. במידה וחיצונית פרט מי הגורם המניע)
+                      <span className="text-red-500 mr-1">*</span>
+                    </label>
+                    <FieldWrapper fieldName="motivation_level" completedFields={completedFields}>
+                      <div className="relative">
                         <textarea
-                          {...register('external_motivators')}
-                          rows={3}
-                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
-                          placeholder="פרט את הגורמים החיצוניים..."
+                          {...register('motivation_level')}
+                          rows={4}
+                          className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 resize-y"
+                          placeholder="תאר את רמת המוטיבציה (לדוגמה: מוטיבציה גבוהה/בינונית/נמוכה, פנימית/חיצונית. אם חיצונית - פרט מי הגורם המניע)"
                         />
-                      </FieldWrapper>
-                    </div>
-                  )}
+                        <Zap className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                      </div>
+                    </FieldWrapper>
+                    {errors.motivation_level && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        {errors.motivation_level.message}
+                      </p>
+                    )}
+                  </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -2217,6 +2197,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <div className="mt-4 animate-fadeIn">
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             האם הפרעת הקשב מטופלת? כיצד?
+                            <span className="text-red-500 mr-1">*</span>
                           </label>
                           <FieldWrapper fieldName="adhd_treatment" completedFields={completedFields}>
                             <div className="relative">
@@ -2229,6 +2210,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                               <Brain className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                             </div>
                           </FieldWrapper>
+                          {errors.adhd_treatment && (
+                            <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                              <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                              {errors.adhd_treatment.message}
+                            </p>
+                          )}
                         </div>
                       )}
                     </div>
@@ -2406,6 +2393,27 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 {watch('criminal_record') && (
                   <div className="mt-6 animate-fadeIn">
                     <div className="bg-red-50 rounded-xl p-4 border border-red-100">
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-red-800 mb-2">
+                          פרטי עבר פלילי
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <FieldWrapper fieldName="criminal_record_details" completedFields={completedFields}>
+                          <textarea
+                            {...register('criminal_record_details')}
+                            rows={3}
+                            className="w-full px-4 py-3 border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white hover:border-red-300 resize-y"
+                            placeholder="פרט את העבר הפלילי (סוג העבירות, תאריכים, מעורבות משפטית וכדומה)..."
+                          />
+                        </FieldWrapper>
+                        {errors.criminal_record_details && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.criminal_record_details.message}
+                          </p>
+                        )}
+                      </div>
+
                       <h4 className="text-sm font-semibold text-red-800 mb-4 flex items-center">
                         <Shield className="w-4 h-4 ml-2" />
                         פרטי גורמים מטפלים

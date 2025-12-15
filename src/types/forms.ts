@@ -78,12 +78,12 @@ export interface StudentDataForm {
   behavioral_issues_details?: string
   has_potential: boolean
   potential_explanation?: string
-  motivation_level: 'low' | 'medium' | 'high'
+  motivation_level: string
   motivation_type: 'internal' | 'external'
   external_motivators?: string
   social_status?: string
   afternoon_activities?: string
-  
+
   // Learning Assessment
   learning_disability: boolean
   learning_disability_explanation?: string
@@ -94,9 +94,10 @@ export interface StudentDataForm {
   assessment_file?: File | null
   assessment_needed: boolean
   assessment_details?: string
-  
+
   // Risk Assessment
   criminal_record: boolean
+  criminal_record_details?: string
   drug_use: boolean
   smoking: boolean
   probation_officer?: string
@@ -105,11 +106,11 @@ export interface StudentDataForm {
   psychiatric_treatment: boolean
   takes_medication: boolean
   medication_description?: string
-  
+
   // Final Assessment
   military_service_potential: boolean
   can_handle_program: boolean
-  risk_level: number // 1-10
+  risk_level: number | null // 1-10
   risk_factors?: string
   personal_opinion?: string
   
