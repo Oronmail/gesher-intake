@@ -403,8 +403,8 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
               const sfData = progressData.data
               const completedSet = new Set<string>()
 
-              // Define all boolean checkbox fields that should show green checkmark when set to true OR false
-              const booleanFields = new Set([
+              // Define all dropdown fields (former boolean checkboxes) with yes/no/unknown options
+              const dropdownFields = new Set([
                 'behavioral_issues', 'has_potential', 'learning_disability',
                 'requires_remedial_teaching', 'adhd', 'assessment_done', 'assessment_needed',
                 'criminal_record', 'drug_use', 'smoking',
@@ -420,19 +420,20 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
               // Track completed fields WITHOUT populating values (for privacy)
               Object.entries(sfData).forEach(([key, value]) => {
-                const isBooleanField = booleanFields.has(key)
+                const isDropdownField = dropdownFields.has(key)
                 const isNumericField = numericFields.has(key)
 
                 // IMPORTANT: Only mark field as completed if it has been explicitly set in Salesforce
                 // null means "never answered" - don't show green checkmark
-                // false/0 means "explicitly answered" - show green checkmark
 
                 let isCompleted = false
 
-                if (isBooleanField) {
-                  // For boolean: ONLY true means completed (not false or null)
-                  // false = default/not answered, true = explicitly checked
-                  isCompleted = (value === true)
+                if (isDropdownField) {
+                  // For dropdown: any non-empty value ('yes', 'no', 'unknown') means completed
+                  // Map old boolean values: true -> 'yes', false -> 'no'
+                  if (value === true || value === 'yes' || value === 'no' || value === 'unknown') {
+                    isCompleted = true
+                  }
                 } else if (isNumericField) {
                   // For numeric: any number including 0 (but not null) means completed
                   isCompleted = (typeof value === 'number')
@@ -450,8 +451,8 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
               // Check file upload boolean fields from Salesforce
               if (sfData.assessmentFileUploaded === true) {
                 completedSet.add('assessment_file')
-                // Auto-check "נעשה אבחון" checkbox when assessment file exists
-                setValue('assessment_done', true)
+                // Auto-check "נעשה אבחון" dropdown when assessment file exists
+                setValue('assessment_done', 'yes')
                 completedSet.add('assessment_done')
               }
               if (sfData.gradeSheetUploaded === true) {
@@ -572,7 +573,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
         const newCompleted = new Set(completedFields)
 
         // Define field types for proper completion detection
-        const booleanFields = new Set([
+        const dropdownFields = new Set([
           'behavioral_issues', 'has_potential', 'learning_disability',
           'requires_remedial_teaching', 'adhd', 'assessment_done', 'assessment_needed',
           'criminal_record', 'drug_use', 'smoking',
@@ -584,12 +585,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
         const numericFields = new Set(['siblings_count', 'failing_grades_count', 'risk_level'])
 
         Object.entries(currentValues).forEach(([key, value]) => {
-          const isBooleanField = booleanFields.has(key)
+          const isDropdownField = dropdownFields.has(key)
           const isNumericField = numericFields.has(key)
 
-          // Boolean fields: only mark as completed if true
-          if (isBooleanField) {
-            if (value === true) {
+          // Dropdown fields: mark as completed if yes/no/unknown selected
+          if (isDropdownField) {
+            if (value === 'yes' || value === 'no' || value === 'unknown') {
               newCompleted.add(key)
             }
           }
