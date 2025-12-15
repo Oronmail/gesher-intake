@@ -2215,33 +2215,32 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       </select>
                     </FieldWrapper>
 
-                      {watch('adhd') === 'yes' && (
-                        <div className="mt-4 animate-fadeIn">
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            האם הפרעת הקשב מטופלת? כיצד?
-                            <span className="text-red-500 mr-1">*</span>
-                          </label>
-                          <FieldWrapper fieldName="adhd_treatment" completedFields={completedFields}>
-                            <div className="relative">
-                              <textarea
-                                {...register('adhd_treatment')}
-                                rows={3}
-                                className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
-                                placeholder="תאר את הטיפול הנוכחי..."
-                              />
-                              <Brain className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                            </div>
-                          </FieldWrapper>
-                          {errors.adhd_treatment && (
-                            <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
-                              <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                              {errors.adhd_treatment.message}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </FieldWrapper>
+                    {watch('adhd') === 'yes' && (
+                      <div className="mt-4 animate-fadeIn">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          האם הפרעת הקשב מטופלת? כיצד?
+                          <span className="text-red-500 mr-1">*</span>
+                        </label>
+                        <FieldWrapper fieldName="adhd_treatment" completedFields={completedFields}>
+                          <div className="relative">
+                            <textarea
+                              {...register('adhd_treatment')}
+                              rows={3}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-none"
+                              placeholder="תאר את הטיפול הנוכחי..."
+                            />
+                            <Brain className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                          </div>
+                        </FieldWrapper>
+                        {errors.adhd_treatment && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.adhd_treatment.message}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -2549,7 +2548,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       </select>
                     </FieldWrapper>
 
-                  {watch('takes_medication') === 'yes' && (
+                    {watch('takes_medication') === 'yes' && (
                       <div className="mt-4 animate-fadeIn">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           תיאור התרופות והמינונים
@@ -2567,8 +2566,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         </FieldWrapper>
                       </div>
                     )}
-                    </div>
-                  </FieldWrapper>
+                  </div>
                 </div>
               </div>
             </div>
