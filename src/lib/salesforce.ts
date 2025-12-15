@@ -76,47 +76,48 @@ export interface RegistrationRequestData {
   failingSubjects?: string;
   
   // Welfare & Social Services
-  knownToWelfare: boolean;
+  knownToWelfare: '' | 'yes' | 'no' | 'unknown';
   socialWorkerName?: string;
   socialWorkerPhone?: string;
-  youthPromotion: boolean;
+  youthPromotion: '' | 'yes' | 'no' | 'unknown';
   youthWorkerName?: string;
   youthWorkerPhone?: string;
-  
+
   // Assessment
-  behavioralIssues: boolean;
-  hasPotential: boolean;
+  behavioralIssues: '' | 'yes' | 'no' | 'unknown';
+  hasPotential: '' | 'yes' | 'no' | 'unknown';
   motivationLevel: 'low' | 'medium' | 'high';
   motivationType: 'internal' | 'external';
   externalMotivators?: string;
   socialStatus?: string;
   afternoonActivities?: string;
-  
+
   // Learning & Health
-  learningDisability: boolean;
-  requiresRemedialTeaching?: boolean;
-  adhd: boolean;
+  learningDisability: '' | 'yes' | 'no' | 'unknown';
+  requiresRemedialTeaching?: '' | 'yes' | 'no' | 'unknown';
+  adhd: '' | 'yes' | 'no' | 'unknown';
   adhdTreatment?: string;
-  assessmentDone: boolean;
-  assessmentNeeded: boolean;
+  assessmentDone: '' | 'yes' | 'no' | 'unknown';
+  assessmentNeeded: '' | 'yes' | 'no' | 'unknown';
   assessmentDetails?: string;
-  
+
   // Risk Assessment
-  criminalRecord: boolean;
-  drugUse: boolean;
-  smoking: boolean;
+  criminalRecord: '' | 'yes' | 'no' | 'unknown';
+  criminalRecordDetails?: string;
+  drugUse: '' | 'yes' | 'no' | 'unknown';
+  smoking: '' | 'yes' | 'no' | 'unknown';
   probationOfficer?: string;
   youthProbationOfficer?: string;
-  psychologicalTreatment: boolean;
-  psychiatricTreatment: boolean;
-  takesMedication: boolean;
+  psychologicalTreatment: '' | 'yes' | 'no' | 'unknown';
+  psychiatricTreatment: '' | 'yes' | 'no' | 'unknown';
+  takesMedication: '' | 'yes' | 'no' | 'unknown';
   medicationDescription?: string;
-  riskLevel: number;
+  riskLevel: number | null;
   riskFactors?: string;
-  
+
   // Final Assessment
-  militaryServicePotential: boolean;
-  canHandleProgram: boolean;
+  militaryServicePotential: '' | 'yes' | 'no' | 'unknown';
+  canHandleProgram: '' | 'yes' | 'no' | 'unknown';
   personalOpinion?: string;
 }
 
@@ -154,6 +155,7 @@ class SalesforceService {
     // We'll initialize connection lazily when needed
     console.log('Salesforce service initialized');
   }
+
 
   /**
    * Get or create a valid Salesforce connection
@@ -254,7 +256,7 @@ class SalesforceService {
         // Metadata
         Name: data.referralNumber,  // Using standard Name field
         Status__c: 'Pending Review',
-        Priority__c: data.riskLevel >= 7 ? 'High' : data.riskLevel >= 4 ? 'Medium' : 'Low',
+        Priority__c: data.riskLevel !== null && data.riskLevel >= 7 ? 'High' : data.riskLevel !== null && data.riskLevel >= 4 ? 'Medium' : 'Low',
         Submission_Date__c: data.submissionDate,
         Consent_Date__c: data.consentDate,
         
@@ -322,7 +324,7 @@ class SalesforceService {
         Failing_Grades_Count__c: data.failingGradesCount,
         Failing_Subjects__c: data.failingSubjects || '',
         
-        // Welfare & Social Services
+        // Welfare & Social Services (storing as text: '', 'yes', 'no', 'unknown')
         Known_to_Welfare__c: data.knownToWelfare,
         Social_Worker_Name__c: data.socialWorkerName || '',
         Social_Worker_Phone__c: data.socialWorkerPhone || '',
@@ -330,7 +332,7 @@ class SalesforceService {
         Youth_Worker_Name__c: data.youthWorkerName || '',
         Youth_Worker_Phone__c: data.youthWorkerPhone || '',
         
-        // Assessment
+        // Assessment (storing as text: '', 'yes', 'no', 'unknown')
         Behavioral_Issues__c: data.behavioralIssues,
         Has_Potential__c: data.hasPotential,
         Motivation_Level__c: 
@@ -342,17 +344,18 @@ class SalesforceService {
         Social_Status__c: data.socialStatus || '',
         Afternoon_Activities__c: data.afternoonActivities || '',
         
-        // Learning & Health
+        // Learning & Health (storing as text: '', 'yes', 'no', 'unknown')
         Learning_Disability__c: data.learningDisability,
-        Requires_Remedial_Teaching__c: data.requiresRemedialTeaching || false,
+        Requires_Remedial_Teaching__c: data.requiresRemedialTeaching || '',
         ADHD__c: data.adhd,
         ADHD_Treatment__c: data.adhdTreatment || '',
         Assessment_Done__c: data.assessmentDone,
         Assessment_Needed__c: data.assessmentNeeded,
         Assessment_Details__c: data.assessmentDetails || '',
         
-        // Risk Assessment
+        // Risk Assessment (storing as text: '', 'yes', 'no', 'unknown')
         Criminal_Record__c: data.criminalRecord,
+        Criminal_Record_Details__c: data.criminalRecordDetails || '',
         Drug_Use__c: data.drugUse,
         Smoking__c: data.smoking,
         Probation_Officer__c: data.probationOfficer || '',
@@ -364,7 +367,7 @@ class SalesforceService {
         Risk_Level__c: data.riskLevel,
         Risk_Factors__c: data.riskFactors || '',
         
-        // Final Assessment
+        // Final Assessment (storing as text: '', 'yes', 'no', 'unknown')
         Military_Service_Potential__c: data.militaryServicePotential,
         Can_Handle_Program__c: data.canHandleProgram,
         Personal_Opinion__c: data.personalOpinion || ''
@@ -505,7 +508,7 @@ class SalesforceService {
       const studentUpdate = {
         Id: recordId,
         Status__c: 'Data Submitted',
-        Priority__c: data.riskLevel >= 7 ? 'High' : data.riskLevel >= 4 ? 'Medium' : 'Low',
+        Priority__c: data.riskLevel !== null && data.riskLevel >= 7 ? 'High' : data.riskLevel !== null && data.riskLevel >= 4 ? 'Medium' : 'Low',
         
         // Student Personal Information
         Student_First_Name__c: data.studentFirstName,
@@ -553,7 +556,7 @@ class SalesforceService {
         Failing_Grades_Count__c: data.failingGradesCount,
         Failing_Subjects__c: data.failingSubjects || '',
         
-        // Welfare & Social Services
+        // Welfare & Social Services (storing as text: '', 'yes', 'no', 'unknown')
         Known_to_Welfare__c: data.knownToWelfare,
         Social_Worker_Name__c: data.socialWorkerName || '',
         Social_Worker_Phone__c: data.socialWorkerPhone || '',
@@ -561,7 +564,7 @@ class SalesforceService {
         Youth_Worker_Name__c: data.youthWorkerName || '',
         Youth_Worker_Phone__c: data.youthWorkerPhone || '',
         
-        // Assessment
+        // Assessment (storing as text: '', 'yes', 'no', 'unknown')
         Behavioral_Issues__c: data.behavioralIssues,
         Has_Potential__c: data.hasPotential,
         Motivation_Level__c: 
@@ -573,17 +576,18 @@ class SalesforceService {
         Social_Status__c: data.socialStatus || '',
         Afternoon_Activities__c: data.afternoonActivities || '',
         
-        // Learning & Health
+        // Learning & Health (storing as text: '', 'yes', 'no', 'unknown')
         Learning_Disability__c: data.learningDisability,
-        Requires_Remedial_Teaching__c: data.requiresRemedialTeaching || false,
+        Requires_Remedial_Teaching__c: data.requiresRemedialTeaching || '',
         ADHD__c: data.adhd,
         ADHD_Treatment__c: data.adhdTreatment || '',
         Assessment_Done__c: data.assessmentDone,
         Assessment_Needed__c: data.assessmentNeeded,
         Assessment_Details__c: data.assessmentDetails || '',
         
-        // Risk Assessment
+        // Risk Assessment (storing as text: '', 'yes', 'no', 'unknown')
         Criminal_Record__c: data.criminalRecord,
+        Criminal_Record_Details__c: data.criminalRecordDetails || '',
         Drug_Use__c: data.drugUse,
         Smoking__c: data.smoking,
         Probation_Officer__c: data.probationOfficer || '',
@@ -595,7 +599,7 @@ class SalesforceService {
         Risk_Level__c: data.riskLevel,
         Risk_Factors__c: data.riskFactors || '',
         
-        // Final Assessment
+        // Final Assessment (storing as text: '', 'yes', 'no', 'unknown')
         Military_Service_Potential__c: data.militaryServicePotential,
         Can_Handle_Program__c: data.canHandleProgram,
         Personal_Opinion__c: data.personalOpinion || ''
