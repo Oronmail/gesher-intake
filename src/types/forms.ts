@@ -46,19 +46,19 @@ export interface StudentDataForm {
   youth_worker_phone?: string
   
   // Family Information
-  siblings_count: number
+  siblings_count: number | null
   father_name: string
   father_mobile: string
   father_occupation: string
   father_profession: string
   father_income?: string
-  mother_name: string
-  mother_mobile: string
-  mother_occupation: string
-  mother_profession: string
+  mother_name?: string
+  mother_mobile?: string
+  mother_occupation?: string
+  mother_profession?: string
   mother_income?: string
   debts_loans?: string
-  parent_involvement: 'inhibiting' | 'promoting' | 'no_involvement'
+  parent_involvement: string
   
   // Background
   economic_status: 'low' | 'medium' | 'high'

@@ -128,7 +128,7 @@ const formSchema = z.object({
   youth_worker_phone: z.string().optional(),
   
   // מידע משפחתי
-  siblings_count: z.number().min(0),
+  siblings_count: z.number().min(0).nullable(),
   father_name: z.string().min(2, 'נא להזין שם הורה 1'),
   father_mobile: z.string().min(9, 'נא להזין טלפון הורה 1'),
   father_occupation: z.string().min(2, 'נא להזין עיסוק'),
@@ -140,11 +140,7 @@ const formSchema = z.object({
   mother_profession: z.string().optional(),
   mother_income: z.string().optional(),
   debts_loans: z.string().min(1, 'נא למלא שדה זה'),
-  parent_involvement: z.enum(['', 'inhibiting', 'promoting', 'no_involvement'], {
-    message: 'נא לבחור רמת מעורבות הורים'
-  }).refine((val) => val !== '', {
-    message: 'נא לבחור רמת מעורבות הורים'
-  }),
+  parent_involvement: z.string().min(1, 'נא למלא שדה זה'),
 
   // רקע
   economic_status: z.enum(['', 'low', 'medium', 'high'], {
@@ -233,6 +229,37 @@ const formSchema = z.object({
 }, {
   message: 'נא להסביר על הפוטנציאל',
   path: ['potential_explanation']
+}).refine((data) => {
+  // If mother_name is filled, mother_mobile, mother_occupation, and mother_profession must be filled
+  if (data.mother_name && data.mother_name.trim() !== '') {
+    if (!data.mother_mobile || data.mother_mobile.trim() === '') {
+      return false
+    }
+  }
+  return true
+}, {
+  message: 'נא להזין נייד הורה 2',
+  path: ['mother_mobile']
+}).refine((data) => {
+  if (data.mother_name && data.mother_name.trim() !== '') {
+    if (!data.mother_occupation || data.mother_occupation.trim() === '') {
+      return false
+    }
+  }
+  return true
+}, {
+  message: 'נא להזין עיסוק הורה 2',
+  path: ['mother_occupation']
+}).refine((data) => {
+  if (data.mother_name && data.mother_name.trim() !== '') {
+    if (!data.mother_profession || data.mother_profession.trim() === '') {
+      return false
+    }
+  }
+  return true
+}, {
+  message: 'נא להזין מקצוע הורה 2',
+  path: ['mother_profession']
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -307,7 +334,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       takes_medication: false,
       military_service_potential: false,
       can_handle_program: false,
-      siblings_count: 0,
+      siblings_count: null,
       failing_grades_count: 0,
       risk_level: 1,
     }
@@ -432,19 +459,20 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
   const nextStep = async () => {
     const fieldsToValidate = getFieldsForStep(currentStep)
-    // Filter out fields that are already completed - they don't need validation
-    const fieldsNeedingValidation = fieldsToValidate.filter(field => !completedFields.has(field))
 
-    // If all fields are completed, allow moving to next step
-    if (fieldsNeedingValidation.length === 0) {
-      setCurrentStep(currentStep + 1)
-      return
-    }
+    // Validate all fields for this step to ensure error messages show
+    const isValid = await trigger(fieldsToValidate as (keyof FormData)[])
 
-    // Otherwise validate only incomplete fields
-    const isValid = await trigger(fieldsNeedingValidation as (keyof FormData)[])
     if (isValid && currentStep < totalSteps) {
       setCurrentStep(currentStep + 1)
+    } else if (!isValid) {
+      // Scroll to the first error if validation fails
+      setTimeout(() => {
+        const firstError = document.querySelector('.text-red-600')
+        if (firstError) {
+          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }, 100)
     }
   }
 
@@ -1513,22 +1541,19 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         </FieldWrapper>
                       </div>
 
-                      <div>
+                      <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          רמת מעורבות ההורים
+                          מהי רמת המעורבות של ההורים (מעכבת, מקדמת, ללא מעורבות וכדומה)
                           <span className="text-red-500 mr-1">*</span>
                         </label>
                         <FieldWrapper fieldName="parent_involvement" completedFields={completedFields}>
                           <div className="relative">
-                            <select
+                            <textarea
                               {...register('parent_involvement')}
-                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm appearance-none"
-                            >
-                              <option value="">בחר רמת מעורבות</option>
-                              <option value="promoting">מקדמת</option>
-                              <option value="no_involvement">ללא מעורבות</option>
-                              <option value="inhibiting">מעכבת</option>
-                            </select>
+                              rows={3}
+                              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm resize-y"
+                              placeholder="תאר את רמת מעורבות ההורים (לדוגמה: מקדמת, מעכבת, ללא מעורבות)"
+                            />
                             <Users className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
                         </FieldWrapper>
