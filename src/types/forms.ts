@@ -38,10 +38,10 @@ export interface StudentDataForm {
   school_info_password?: string
   
   // Welfare Status
-  known_to_welfare: boolean
+  known_to_welfare: '' | 'yes' | 'no' | 'unknown'
   social_worker_name?: string
   social_worker_phone?: string
-  youth_promotion: boolean
+  youth_promotion: '' | 'yes' | 'no' | 'unknown'
   youth_worker_name?: string
   youth_worker_phone?: string
   
@@ -74,9 +74,9 @@ export interface StudentDataForm {
   counselor_phone: string
   
   // Intake Assessment
-  behavioral_issues: boolean
+  behavioral_issues: '' | 'yes' | 'no' | 'unknown'
   behavioral_issues_details?: string
-  has_potential: boolean
+  has_potential: '' | 'yes' | 'no' | 'unknown'
   potential_explanation?: string
   motivation_level: string
   motivation_type: 'internal' | 'external'
@@ -85,31 +85,31 @@ export interface StudentDataForm {
   afternoon_activities?: string
 
   // Learning Assessment
-  learning_disability: boolean
+  learning_disability: '' | 'yes' | 'no' | 'unknown'
   learning_disability_explanation?: string
-  requires_remedial_teaching?: boolean
-  adhd: boolean
+  requires_remedial_teaching: '' | 'yes' | 'no' | 'unknown'
+  adhd: '' | 'yes' | 'no' | 'unknown'
   adhd_treatment?: string
-  assessment_done: boolean
+  assessment_done: '' | 'yes' | 'no' | 'unknown'
   assessment_file?: File | null
-  assessment_needed: boolean
+  assessment_needed: '' | 'yes' | 'no' | 'unknown'
   assessment_details?: string
 
   // Risk Assessment
-  criminal_record: boolean
+  criminal_record: '' | 'yes' | 'no' | 'unknown'
   criminal_record_details?: string
-  drug_use: boolean
-  smoking: boolean
+  drug_use: '' | 'yes' | 'no' | 'unknown'
+  smoking: '' | 'yes' | 'no' | 'unknown'
   probation_officer?: string
   youth_probation_officer?: string
-  psychological_treatment: boolean
-  psychiatric_treatment: boolean
-  takes_medication: boolean
+  psychological_treatment: '' | 'yes' | 'no' | 'unknown'
+  psychiatric_treatment: '' | 'yes' | 'no' | 'unknown'
+  takes_medication: '' | 'yes' | 'no' | 'unknown'
   medication_description?: string
 
   // Final Assessment
-  military_service_potential: boolean
-  can_handle_program: boolean
+  military_service_potential: '' | 'yes' | 'no' | 'unknown'
+  can_handle_program: '' | 'yes' | 'no' | 'unknown'
   risk_level: number | null // 1-10
   risk_factors?: string
   personal_opinion?: string

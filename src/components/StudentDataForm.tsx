@@ -120,10 +120,10 @@ const formSchema = z.object({
   school_info_password: z.string().optional(),
   
   // מצב רווחה
-  known_to_welfare: z.boolean(),
+  known_to_welfare: z.enum(['', 'yes', 'no', 'unknown']),
   social_worker_name: z.string().optional(),
   social_worker_phone: z.string().optional(),
-  youth_promotion: z.boolean(),
+  youth_promotion: z.enum(['', 'yes', 'no', 'unknown']),
   youth_worker_name: z.string().optional(),
   youth_worker_phone: z.string().optional(),
   
@@ -160,9 +160,9 @@ const formSchema = z.object({
   counselor_phone: z.string().min(9, 'נא להזין טלפון יועצת'),
   
   // נתוני קליטה
-  behavioral_issues: z.boolean(),
+  behavioral_issues: z.enum(['', 'yes', 'no', 'unknown']),
   behavioral_issues_details: z.string().optional(),
-  has_potential: z.boolean(),
+  has_potential: z.enum(['', 'yes', 'no', 'unknown']),
   potential_explanation: z.string().optional(),
   motivation_level: z.string().min(1, 'נא למלא שדה זה'),
   motivation_type: z.enum(['internal', 'external'], {
@@ -173,31 +173,31 @@ const formSchema = z.object({
   afternoon_activities: z.string().optional(),
 
   // הערכת למידה
-  learning_disability: z.boolean(),
+  learning_disability: z.enum(['', 'yes', 'no', 'unknown']),
   learning_disability_explanation: z.string().optional(),
-  requires_remedial_teaching: z.boolean().optional(),
-  adhd: z.boolean(),
+  requires_remedial_teaching: z.enum(['', 'yes', 'no', 'unknown']),
+  adhd: z.enum(['', 'yes', 'no', 'unknown']),
   adhd_treatment: z.string().optional(),
-  assessment_done: z.boolean(),
+  assessment_done: z.enum(['', 'yes', 'no', 'unknown']),
   assessment_file: z.any().optional(),
-  assessment_needed: z.boolean(),
+  assessment_needed: z.enum(['', 'yes', 'no', 'unknown']),
   assessment_details: z.string().optional(),
 
   // הערכת סיכון - all mandatory
-  criminal_record: z.boolean(),
+  criminal_record: z.enum(['', 'yes', 'no', 'unknown']),
   criminal_record_details: z.string().optional(),
-  drug_use: z.boolean(),
-  smoking: z.boolean(),
+  drug_use: z.enum(['', 'yes', 'no', 'unknown']),
+  smoking: z.enum(['', 'yes', 'no', 'unknown']),
   probation_officer: z.string().optional(),
   youth_probation_officer: z.string().optional(),
-  psychological_treatment: z.boolean(),
-  psychiatric_treatment: z.boolean(),
-  takes_medication: z.boolean(),
+  psychological_treatment: z.enum(['', 'yes', 'no', 'unknown']),
+  psychiatric_treatment: z.enum(['', 'yes', 'no', 'unknown']),
+  takes_medication: z.enum(['', 'yes', 'no', 'unknown']),
   medication_description: z.string().optional(),
 
   // הערכה סופית - all mandatory
-  military_service_potential: z.boolean(),
-  can_handle_program: z.boolean(),
+  military_service_potential: z.enum(['', 'yes', 'no', 'unknown']),
+  can_handle_program: z.enum(['', 'yes', 'no', 'unknown']),
   risk_level: z.number().min(1, 'נא לבחור רמת סיכון').max(10).nullable(),
   risk_factors: z.string().min(1, 'נא להזין גורמי סיכון'),
   personal_opinion: z.string().min(1, 'נא להזין חוות דעת אישית'),
@@ -211,8 +211,8 @@ const formSchema = z.object({
   })).optional(),
   grade_sheet: z.any().optional(),
 }).refine((data) => {
-  // If behavioral_issues is checked, behavioral_issues_details must be filled
-  if (data.behavioral_issues && (!data.behavioral_issues_details || data.behavioral_issues_details.trim() === '')) {
+  // If behavioral_issues is 'yes', behavioral_issues_details must be filled
+  if (data.behavioral_issues === 'yes' && (!data.behavioral_issues_details || data.behavioral_issues_details.trim() === '')) {
     return false
   }
   return true
@@ -220,8 +220,8 @@ const formSchema = z.object({
   message: 'נא לפרט את בעיות ההתנהגות',
   path: ['behavioral_issues_details']
 }).refine((data) => {
-  // If has_potential is checked, potential_explanation must be filled
-  if (data.has_potential && (!data.potential_explanation || data.potential_explanation.trim() === '')) {
+  // If has_potential is 'yes', potential_explanation must be filled
+  if (data.has_potential === 'yes' && (!data.potential_explanation || data.potential_explanation.trim() === '')) {
     return false
   }
   return true
@@ -260,8 +260,8 @@ const formSchema = z.object({
   message: 'נא להזין מקצוע הורה 2',
   path: ['mother_profession']
 }).refine((data) => {
-  // If ADHD is checked, adhd_treatment must be filled
-  if (data.adhd && (!data.adhd_treatment || data.adhd_treatment.trim() === '')) {
+  // If ADHD is 'yes', adhd_treatment must be filled
+  if (data.adhd === 'yes' && (!data.adhd_treatment || data.adhd_treatment.trim() === '')) {
     return false
   }
   return true
@@ -269,8 +269,8 @@ const formSchema = z.object({
   message: 'נא למלא פירוט טיפול ב-ADHD',
   path: ['adhd_treatment']
 }).refine((data) => {
-  // If criminal_record is checked, criminal_record_details must be filled
-  if (data.criminal_record && (!data.criminal_record_details || data.criminal_record_details.trim() === '')) {
+  // If criminal_record is 'yes', criminal_record_details must be filled
+  if (data.criminal_record === 'yes' && (!data.criminal_record_details || data.criminal_record_details.trim() === '')) {
     return false
   }
   return true
@@ -335,22 +335,23 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      known_to_welfare: false,
-      youth_promotion: false,
-      behavioral_issues: false,
-      has_potential: false,
-      learning_disability: false,
-      adhd: false,
-      assessment_done: false,
-      assessment_needed: false,
-      criminal_record: false,
-      drug_use: false,
-      smoking: false,
-      psychological_treatment: false,
-      psychiatric_treatment: false,
-      takes_medication: false,
-      military_service_potential: false,
-      can_handle_program: false,
+      known_to_welfare: '',
+      youth_promotion: '',
+      behavioral_issues: '',
+      has_potential: '',
+      learning_disability: '',
+      requires_remedial_teaching: '',
+      adhd: '',
+      assessment_done: '',
+      assessment_needed: '',
+      criminal_record: '',
+      drug_use: '',
+      smoking: '',
+      psychological_treatment: '',
+      psychiatric_treatment: '',
+      takes_medication: '',
+      military_service_potential: '',
+      can_handle_program: '',
       siblings_count: null,
       failing_grades_count: 0,
       risk_level: null,
@@ -625,27 +626,27 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       case 1: return ['student_first_name', 'student_last_name', 'student_id', 'date_of_birth', 'country_of_birth', 'gender', 'address', 'phone', 'student_mobile']
       case 2: return ['siblings_count', 'father_name', 'father_mobile', 'father_occupation', 'father_profession', 'mother_name', 'mother_mobile', 'mother_occupation', 'mother_profession', 'debts_loans', 'parent_involvement', 'economic_status', 'economic_details', 'family_background']
       case 3: return ['school_name', 'grade', 'homeroom_teacher', 'teacher_phone', 'counselor_name', 'counselor_phone']
-      // Step 4: Require dropdown fields + conditional fields if checkboxes are checked
+      // Step 4: Require dropdown fields + conditional fields if answered 'yes'
       case 4: {
         const fields: string[] = ['motivation_level', 'social_status']
         const formValues = getValues()
-        // Add conditional required fields based on checkbox states
-        if (formValues.behavioral_issues) {
+        // Add conditional required fields if answered 'yes'
+        if (formValues.behavioral_issues === 'yes') {
           fields.push('behavioral_issues_details')
         }
-        if (formValues.has_potential) {
+        if (formValues.has_potential === 'yes') {
           fields.push('potential_explanation')
         }
         return fields
       }
-      // Step 5: All checkbox fields are optional, but add conditional fields if checked
+      // Step 5: All dropdown fields are optional, but add conditional fields if 'yes'
       case 5: {
         const fields: string[] = []
         const formValues = getValues()
-        if (formValues.adhd) {
+        if (formValues.adhd === 'yes') {
           fields.push('adhd_treatment')
         }
-        if (formValues.criminal_record) {
+        if (formValues.criminal_record === 'yes') {
           fields.push('criminal_record_details')
         }
         return fields
@@ -1881,22 +1882,22 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     
                     {/* Known to Welfare */}
                     <div className="mb-6">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        מוכרים ברווחה
+                      </label>
                       <FieldWrapper fieldName="known_to_welfare" completedFields={completedFields}>
-                        <div className="bg-white rounded-xl p-4 border border-gray-200">
-                          <label className="flex items-center cursor-pointer group">
-                            <input
-                              {...register('known_to_welfare')}
-                              type="checkbox"
-                              className="ml-3 w-5 h-5 text-orange-600 border-2 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
-                            />
-                            <span className="text-gray-700 font-medium group-hover:text-orange-600 transition-colors">
-                              מוכרים ברווחה
-                            </span>
-                          </label>
-                        </div>
+                        <select
+                          {...register('known_to_welfare')}
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                        >
+                          <option value="">בחר</option>
+                          <option value="yes">כן</option>
+                          <option value="no">לא</option>
+                          <option value="unknown">לא ידוע</option>
+                        </select>
                       </FieldWrapper>
-                      
-                      {watch('known_to_welfare') && (
+
+                      {watch('known_to_welfare') === 'yes' && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 animate-fadeIn">
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1935,22 +1936,22 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                     {/* Youth Promotion */}
                     <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        מטופל בקידום נוער
+                      </label>
                       <FieldWrapper fieldName="youth_promotion" completedFields={completedFields}>
-                        <div className="bg-white rounded-xl p-4 border border-gray-200">
-                        <label className="flex items-center cursor-pointer group">
-                          <input
-                            {...register('youth_promotion')}
-                            type="checkbox"
-                            className="ml-3 w-5 h-5 text-orange-600 border-2 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
-                          />
-                          <span className="text-gray-700 font-medium group-hover:text-orange-600 transition-colors">
-                            מטופל בקידום נוער
-                          </span>
-                        </label>
-                      </div>
+                        <select
+                          {...register('youth_promotion')}
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                        >
+                          <option value="">בחר</option>
+                          <option value="yes">כן</option>
+                          <option value="no">לא</option>
+                          <option value="unknown">לא ידוע</option>
+                        </select>
                       </FieldWrapper>
                       
-                      {watch('youth_promotion') && (
+                      {watch('youth_promotion') === 'yes' && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 animate-fadeIn">
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1997,39 +1998,43 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 <div className="space-y-6">
                   {/* Checkboxes Section */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FieldWrapper fieldName="behavioral_issues" completedFields={completedFields}>
-                        <div className="bg-white rounded-xl p-4 border border-gray-200">
-                      <label className="flex items-center cursor-pointer group">
-                        <input
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        בעיות התנהגות
+                      </label>
+                      <FieldWrapper fieldName="behavioral_issues" completedFields={completedFields}>
+                        <select
                           {...register('behavioral_issues')}
-                          type="checkbox"
-                          className="ml-3 w-5 h-5 text-purple-600 border-2 border-gray-300 rounded focus:ring-purple-500 focus:ring-2"
-                        />
-                        <span className="text-gray-700 font-medium group-hover:text-purple-600 transition-colors">
-                          בעיות התנהגות
-                        </span>
-                      </label>
-                    </div>
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                        >
+                          <option value="">בחר</option>
+                          <option value="yes">כן</option>
+                          <option value="no">לא</option>
+                          <option value="unknown">לא ידוע</option>
+                        </select>
                       </FieldWrapper>
+                    </div>
 
-                    <FieldWrapper fieldName="has_potential" completedFields={completedFields}>
-                        <div className="bg-white rounded-xl p-4 border border-gray-200">
-                      <label className="flex items-center cursor-pointer group">
-                        <input
-                          {...register('has_potential')}
-                          type="checkbox"
-                          className="ml-3 w-5 h-5 text-purple-600 border-2 border-gray-300 rounded focus:ring-purple-500 focus:ring-2"
-                        />
-                        <span className="text-gray-700 font-medium group-hover:text-purple-600 transition-colors">
-                          פוטנציאל
-                        </span>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        פוטנציאל
                       </label>
-                    </div>
+                      <FieldWrapper fieldName="has_potential" completedFields={completedFields}>
+                        <select
+                          {...register('has_potential')}
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                        >
+                          <option value="">בחר</option>
+                          <option value="yes">כן</option>
+                          <option value="no">לא</option>
+                          <option value="unknown">לא ידוע</option>
+                        </select>
                       </FieldWrapper>
+                    </div>
                   </div>
 
                   {/* Conditional Detail Fields */}
-                  {watch('behavioral_issues') && (
+                  {watch('behavioral_issues') === 'yes' && (
                     <div className="bg-white rounded-xl p-6 border border-gray-200 animate-fadeIn">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         פרט בעיות התנהגות
@@ -2046,7 +2051,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     </div>
                   )}
 
-                  {watch('has_potential') && (
+                  {watch('has_potential') === 'yes' && (
                     <div className="bg-white rounded-xl p-6 border border-gray-200 animate-fadeIn">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         הסבר על הפוטנציאל
@@ -2142,68 +2147,75 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 </div>
 
                 <div className="space-y-6">
-                  <FieldWrapper fieldName="learning_disability" completedFields={completedFields}>
-                    <div className="bg-white rounded-xl p-4 border border-gray-200">
-                      <label className="flex items-center cursor-pointer group">
-                        <input
-                          {...register('learning_disability')}
-                          type="checkbox"
-                          className="ml-3 w-5 h-5 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
-                        />
-                        <span className="text-gray-700 font-medium group-hover:text-green-600 transition-colors">
-                          לקוי למידה
-                        </span>
-                      </label>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      לקוי למידה
+                    </label>
+                    <FieldWrapper fieldName="learning_disability" completedFields={completedFields}>
+                      <select
+                        {...register('learning_disability')}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                      >
+                        <option value="">בחר</option>
+                        <option value="yes">כן</option>
+                        <option value="no">לא</option>
+                        <option value="unknown">לא ידוע</option>
+                      </select>
+                    </FieldWrapper>
 
-                      {watch('learning_disability') && (
-                        <div className="mt-4 animate-fadeIn space-y-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              פרט על לקות הלמידה
-                              <span className="text-red-500 mr-1">*</span>
-                            </label>
-                            <FieldWrapper fieldName="learning_disability_explanation" completedFields={completedFields}>
-                              <textarea
-                                {...register('learning_disability_explanation')}
-                                rows={3}
-                                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 resize-none"
-                                placeholder="תאר את סוג הלקות ואופן ההתמודדות..."
-                              />
-                            </FieldWrapper>
-                          </div>
-                          <FieldWrapper fieldName="requires_remedial_teaching" completedFields={completedFields}>
-                            <div className="bg-green-50 rounded-xl p-4 border border-green-100">
-                              <label className="flex items-center cursor-pointer group">
-                                <input
-                                  {...register('requires_remedial_teaching')}
-                                  type="checkbox"
-                                  className="ml-3 w-5 h-5 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
-                                />
-                                <span className="text-gray-700 font-medium group-hover:text-green-600 transition-colors">
-                                  מחייב הוראה מתקנת
-                                </span>
-                              </label>
-                            </div>
+                    {watch('learning_disability') === 'yes' && (
+                      <div className="mt-4 animate-fadeIn space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            פרט על לקות הלמידה
+                            <span className="text-red-500 mr-1">*</span>
+                          </label>
+                          <FieldWrapper fieldName="learning_disability_explanation" completedFields={completedFields}>
+                            <textarea
+                              {...register('learning_disability_explanation')}
+                              rows={3}
+                              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 resize-none"
+                              placeholder="תאר את סוג הלקות ואופן ההתמודדות..."
+                            />
                           </FieldWrapper>
                         </div>
-                      )}
-                    </div>
-                  </FieldWrapper>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            מחייב הוראה מתקנת
+                          </label>
+                          <FieldWrapper fieldName="requires_remedial_teaching" completedFields={completedFields}>
+                            <select
+                              {...register('requires_remedial_teaching')}
+                              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                            >
+                              <option value="">בחר</option>
+                              <option value="yes">כן</option>
+                              <option value="no">לא</option>
+                              <option value="unknown">לא ידוע</option>
+                            </select>
+                          </FieldWrapper>
+                        </div>
+                      </div>
+                    )}
+                  </div>
 
-                  <FieldWrapper fieldName="adhd" completedFields={completedFields}>
-                    <div className="bg-white rounded-xl p-4 border border-gray-200">
-                      <label className="flex items-center cursor-pointer group">
-                        <input
-                          {...register('adhd')}
-                          type="checkbox"
-                          className="ml-3 w-5 h-5 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
-                        />
-                        <span className="text-gray-700 font-medium group-hover:text-green-600 transition-colors">
-                          הפרעת קשב וריכוז (ADHD)
-                        </span>
-                      </label>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      הפרעת קשב וריכוז (ADHD)
+                    </label>
+                    <FieldWrapper fieldName="adhd" completedFields={completedFields}>
+                      <select
+                        {...register('adhd')}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                      >
+                        <option value="">בחר</option>
+                        <option value="yes">כן</option>
+                        <option value="no">לא</option>
+                        <option value="unknown">לא ידוע</option>
+                      </select>
+                    </FieldWrapper>
 
-                      {watch('adhd') && (
+                      {watch('adhd') === 'yes' && (
                         <div className="mt-4 animate-fadeIn">
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             האם הפרעת הקשב מטופלת? כיצד?
@@ -2244,38 +2256,42 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FieldWrapper fieldName="assessment_done" completedFields={completedFields}>
-                      <div className="bg-white rounded-xl p-4 border border-gray-200">
-                        <label className="flex items-center cursor-pointer group">
-                          <input
-                            {...register('assessment_done')}
-                            type="checkbox"
-                            className="ml-3 w-5 h-5 text-teal-600 border-2 border-gray-300 rounded focus:ring-teal-500 focus:ring-2"
-                          />
-                          <span className="text-gray-700 font-medium group-hover:text-teal-600 transition-colors">
-                            נעשה אבחון
-                          </span>
-                        </label>
-                      </div>
-                    </FieldWrapper>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        נעשה אבחון
+                      </label>
+                      <FieldWrapper fieldName="assessment_done" completedFields={completedFields}>
+                        <select
+                          {...register('assessment_done')}
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                        >
+                          <option value="">בחר</option>
+                          <option value="yes">כן</option>
+                          <option value="no">לא</option>
+                          <option value="unknown">לא ידוע</option>
+                        </select>
+                      </FieldWrapper>
+                    </div>
 
-                    <FieldWrapper fieldName="assessment_needed" completedFields={completedFields}>
-                      <div className="bg-white rounded-xl p-4 border border-gray-200">
-                        <label className="flex items-center cursor-pointer group">
-                          <input
-                            {...register('assessment_needed')}
-                            type="checkbox"
-                            className="ml-3 w-5 h-5 text-teal-600 border-2 border-gray-300 rounded focus:ring-teal-500 focus:ring-2"
-                          />
-                          <span className="text-gray-700 font-medium group-hover:text-teal-600 transition-colors">
-                            יש צורך באבחון
-                          </span>
-                        </label>
-                      </div>
-                    </FieldWrapper>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        יש צורך באבחון
+                      </label>
+                      <FieldWrapper fieldName="assessment_needed" completedFields={completedFields}>
+                        <select
+                          {...register('assessment_needed')}
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                        >
+                          <option value="">בחר</option>
+                          <option value="yes">כן</option>
+                          <option value="no">לא</option>
+                          <option value="unknown">לא ידוע</option>
+                        </select>
+                      </FieldWrapper>
+                    </div>
                   </div>
 
-                  {watch('assessment_done') && (
+                  {watch('assessment_done') === 'yes' && (
                     <div className="animate-fadeIn space-y-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -2313,7 +2329,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     </div>
                     )}
 
-                  {watch('assessment_needed') && !watch('assessment_done') && (
+                  {watch('assessment_needed') === 'yes' && !watch('assessment_done') === 'yes' && (
                     <div className="animate-fadeIn">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         פרטים על האבחון הנדרש
@@ -2354,53 +2370,59 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <FieldWrapper fieldName="criminal_record" completedFields={completedFields}>
-                    <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-red-200 transition-all duration-200">
-                      <label className="flex items-center cursor-pointer group">
-                        <input
-                          {...register('criminal_record')}
-                          type="checkbox"
-                          className="ml-3 w-5 h-5 text-red-600 border-2 border-gray-300 rounded focus:ring-red-500 focus:ring-2"
-                        />
-                        <span className="text-gray-700 font-medium group-hover:text-red-600 transition-colors">
-                          בעל/ת עבר פלילי
-                        </span>
-                      </label>
-                    </div>
-                  </FieldWrapper>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      בעל/ת עבר פלילי
+                    </label>
+                    <FieldWrapper fieldName="criminal_record" completedFields={completedFields}>
+                      <select
+                        {...register('criminal_record')}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                      >
+                        <option value="">בחר</option>
+                        <option value="yes">כן</option>
+                        <option value="no">לא</option>
+                        <option value="unknown">לא ידוע</option>
+                      </select>
+                    </FieldWrapper>
+                  </div>
 
-                  <FieldWrapper fieldName="drug_use" completedFields={completedFields}>
-                    <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-red-200 transition-all duration-200">
-                      <label className="flex items-center cursor-pointer group">
-                        <input
-                          {...register('drug_use')}
-                          type="checkbox"
-                          className="ml-3 w-5 h-5 text-red-600 border-2 border-gray-300 rounded focus:ring-red-500 focus:ring-2"
-                        />
-                        <span className="text-gray-700 font-medium group-hover:text-red-600 transition-colors">
-                          שימוש בסמים
-                        </span>
-                      </label>
-                    </div>
-                  </FieldWrapper>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      שימוש בסמים
+                    </label>
+                    <FieldWrapper fieldName="drug_use" completedFields={completedFields}>
+                      <select
+                        {...register('drug_use')}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                      >
+                        <option value="">בחר</option>
+                        <option value="yes">כן</option>
+                        <option value="no">לא</option>
+                        <option value="unknown">לא ידוע</option>
+                      </select>
+                    </FieldWrapper>
+                  </div>
 
-                  <FieldWrapper fieldName="smoking" completedFields={completedFields}>
-                    <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-red-200 transition-all duration-200">
-                      <label className="flex items-center cursor-pointer group">
-                        <input
-                          {...register('smoking')}
-                          type="checkbox"
-                          className="ml-3 w-5 h-5 text-red-600 border-2 border-gray-300 rounded focus:ring-red-500 focus:ring-2"
-                        />
-                        <span className="text-gray-700 font-medium group-hover:text-red-600 transition-colors">
-                          מעשן/ת
-                        </span>
-                      </label>
-                    </div>
-                  </FieldWrapper>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      מעשן/ת
+                    </label>
+                    <FieldWrapper fieldName="smoking" completedFields={completedFields}>
+                      <select
+                        {...register('smoking')}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                      >
+                        <option value="">בחר</option>
+                        <option value="yes">כן</option>
+                        <option value="no">לא</option>
+                        <option value="unknown">לא ידוע</option>
+                      </select>
+                    </FieldWrapper>
+                  </div>
                 </div>
 
-                {watch('criminal_record') && (
+                {watch('criminal_record') === 'yes' && (
                   <div className="mt-6 animate-fadeIn">
                     <div className="bg-red-50 rounded-xl p-4 border border-red-100">
                       <div className="mb-4">
@@ -2476,51 +2498,58 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FieldWrapper fieldName="psychological_treatment" completedFields={completedFields}>
-                      <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-orange-200 transition-all duration-200">
-                        <label className="flex items-center cursor-pointer group">
-                          <input
-                            {...register('psychological_treatment')}
-                            type="checkbox"
-                            className="ml-3 w-5 h-5 text-orange-600 border-2 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
-                          />
-                          <span className="text-gray-700 font-medium group-hover:text-orange-600 transition-colors">
-                            מקבל/ת טיפול פסיכולוגי
-                          </span>
-                        </label>
-                      </div>
-                    </FieldWrapper>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        מקבל/ת טיפול פסיכולוגי
+                      </label>
+                      <FieldWrapper fieldName="psychological_treatment" completedFields={completedFields}>
+                        <select
+                          {...register('psychological_treatment')}
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                        >
+                          <option value="">בחר</option>
+                          <option value="yes">כן</option>
+                          <option value="no">לא</option>
+                          <option value="unknown">לא ידוע</option>
+                        </select>
+                      </FieldWrapper>
+                    </div>
 
-                    <FieldWrapper fieldName="psychiatric_treatment" completedFields={completedFields}>
-                      <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-orange-200 transition-all duration-200">
-                        <label className="flex items-center cursor-pointer group">
-                          <input
-                            {...register('psychiatric_treatment')}
-                            type="checkbox"
-                            className="ml-3 w-5 h-5 text-orange-600 border-2 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
-                          />
-                          <span className="text-gray-700 font-medium group-hover:text-orange-600 transition-colors">
-                            מקבל/ת טיפול פסיכיאטרי
-                          </span>
-                        </label>
-                      </div>
-                    </FieldWrapper>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        מקבל/ת טיפול פסיכיאטרי
+                      </label>
+                      <FieldWrapper fieldName="psychiatric_treatment" completedFields={completedFields}>
+                        <select
+                          {...register('psychiatric_treatment')}
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                        >
+                          <option value="">בחר</option>
+                          <option value="yes">כן</option>
+                          <option value="no">לא</option>
+                          <option value="unknown">לא ידוע</option>
+                        </select>
+                      </FieldWrapper>
+                    </div>
                   </div>
 
-                  <FieldWrapper fieldName="takes_medication" completedFields={completedFields}>
-                    <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-orange-200 transition-all duration-200">
-                      <label className="flex items-center cursor-pointer group">
-                        <input
-                          {...register('takes_medication')}
-                          type="checkbox"
-                          className="ml-3 w-5 h-5 text-orange-600 border-2 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
-                        />
-                        <span className="text-gray-700 font-medium group-hover:text-orange-600 transition-colors">
-                          נוטל/ת תרופות
-                        </span>
-                      </label>
-                    
-                    {watch('takes_medication') && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      נוטל/ת תרופות
+                    </label>
+                    <FieldWrapper fieldName="takes_medication" completedFields={completedFields}>
+                      <select
+                        {...register('takes_medication')}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                      >
+                        <option value="">בחר</option>
+                        <option value="yes">כן</option>
+                        <option value="no">לא</option>
+                        <option value="unknown">לא ידוע</option>
+                      </select>
+                    </FieldWrapper>
+
+                  {watch('takes_medication') === 'yes' && (
                       <div className="mt-4 animate-fadeIn">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           תיאור התרופות והמינונים
@@ -2558,35 +2587,39 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FieldWrapper fieldName="military_service_potential" completedFields={completedFields}>
-                    <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-amber-200 transition-all duration-200">
-                      <label className="flex items-center cursor-pointer group">
-                        <input
-                          {...register('military_service_potential')}
-                          type="checkbox"
-                          className="ml-3 w-5 h-5 text-amber-600 border-2 border-gray-300 rounded focus:ring-amber-500 focus:ring-2"
-                        />
-                        <span className="text-gray-700 font-medium group-hover:text-amber-600 transition-colors">
-                          בעל/ת סיכויים להתגייס לצה&quot;ל
-                        </span>
-                      </label>
-                    </div>
-                  </FieldWrapper>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      בעל/ת סיכויים להתגייס לצה&quot;ל
+                    </label>
+                    <FieldWrapper fieldName="military_service_potential" completedFields={completedFields}>
+                      <select
+                        {...register('military_service_potential')}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                      >
+                        <option value="">בחר</option>
+                        <option value="yes">כן</option>
+                        <option value="no">לא</option>
+                        <option value="unknown">לא ידוע</option>
+                      </select>
+                    </FieldWrapper>
+                  </div>
 
-                  <FieldWrapper fieldName="can_handle_program" completedFields={completedFields}>
-                    <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-amber-200 transition-all duration-200">
-                      <label className="flex items-center cursor-pointer group">
-                        <input
-                          {...register('can_handle_program')}
-                          type="checkbox"
-                          className="ml-3 w-5 h-5 text-amber-600 border-2 border-gray-300 rounded focus:ring-amber-500 focus:ring-2"
-                        />
-                        <span className="text-gray-700 font-medium group-hover:text-amber-600 transition-colors">
-                          יכול/ה לעמוד בעומס המסגרת המוצעת
-                        </span>
-                      </label>
-                    </div>
-                  </FieldWrapper>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      יכול/ה לעמוד בעומס המסגרת המוצעת
+                    </label>
+                    <FieldWrapper fieldName="can_handle_program" completedFields={completedFields}>
+                      <select
+                        {...register('can_handle_program')}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                      >
+                        <option value="">בחר</option>
+                        <option value="yes">כן</option>
+                        <option value="no">לא</option>
+                        <option value="unknown">לא ידוע</option>
+                      </select>
+                    </FieldWrapper>
+                  </div>
                 </div>
               </div>
 
