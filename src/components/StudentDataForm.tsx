@@ -2329,7 +2329,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     </div>
                     )}
 
-                  {watch('assessment_needed') === 'yes' && !watch('assessment_done') === 'yes' && (
+                  {watch('assessment_needed') === 'yes' && watch('assessment_done') !== 'yes' && (
                     <div className="animate-fadeIn">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         פרטים על האבחון הנדרש
