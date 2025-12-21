@@ -360,6 +360,8 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
     trigger,
     setValue,
     getValues,
+    setError,
+    clearErrors,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -520,9 +522,54 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
     // Validate only incomplete fields to show error messages
     const isValid = await trigger(fieldsNeedingValidation as (keyof FormData)[])
 
-    if (isValid && currentStep < totalSteps) {
+    // For Step 4, also manually validate conditional text fields
+    // (Zod .optional() fields don't trigger validation, so we check manually)
+    let conditionalValid = true
+    if (currentStep === 4) {
+      const formValues = getValues()
+
+      // Clear previous conditional errors
+      clearErrors(['behavioral_issues_details', 'potential_explanation', 'learning_disability_explanation', 'adhd_treatment', 'assessment_file'])
+
+      // Check behavioral_issues_details if behavioral_issues is 'yes'
+      if (formValues.behavioral_issues === 'yes' &&
+          (!formValues.behavioral_issues_details || formValues.behavioral_issues_details.trim() === '')) {
+        setError('behavioral_issues_details', { type: 'manual', message: 'נא למלא שדה זה' })
+        conditionalValid = false
+      }
+
+      // Check potential_explanation if has_potential is 'yes'
+      if (formValues.has_potential === 'yes' &&
+          (!formValues.potential_explanation || formValues.potential_explanation.trim() === '')) {
+        setError('potential_explanation', { type: 'manual', message: 'נא למלא שדה זה' })
+        conditionalValid = false
+      }
+
+      // Check learning_disability_explanation if learning_disability is 'yes'
+      if (formValues.learning_disability === 'yes' &&
+          (!formValues.learning_disability_explanation || formValues.learning_disability_explanation.trim() === '')) {
+        setError('learning_disability_explanation', { type: 'manual', message: 'נא למלא שדה זה' })
+        conditionalValid = false
+      }
+
+      // Check adhd_treatment if adhd is 'yes'
+      if (formValues.adhd === 'yes' &&
+          (!formValues.adhd_treatment || formValues.adhd_treatment.trim() === '')) {
+        setError('adhd_treatment', { type: 'manual', message: 'נא למלא שדה זה' })
+        conditionalValid = false
+      }
+
+      // Check assessment_file if assessment_done is 'yes'
+      if (formValues.assessment_done === 'yes' &&
+          (!formValues.assessment_file || formValues.assessment_file.length === 0)) {
+        setError('assessment_file', { type: 'manual', message: 'נא להעלות קובץ אבחון' })
+        conditionalValid = false
+      }
+    }
+
+    if (isValid && conditionalValid && currentStep < totalSteps) {
       setCurrentStep(currentStep + 1)
-    } else if (!isValid) {
+    } else if (!isValid || !conditionalValid) {
       // Scroll to the first error if validation fails
       setTimeout(() => {
         const firstError = document.querySelector('.text-red-600')
@@ -676,8 +723,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
         if (formValues.has_potential === 'yes') {
           fields.push('potential_explanation')
         }
+        if (formValues.learning_disability === 'yes') {
+          fields.push('learning_disability_explanation')
+        }
         if (formValues.adhd === 'yes') {
           fields.push('adhd_treatment')
+        }
+        if (formValues.assessment_done === 'yes') {
+          fields.push('assessment_file')
         }
         return fields
       }
@@ -1503,9 +1556,6 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <Heart className="w-6 h-6 text-pink-600" />
                       </div>
                       <h3 className="text-lg font-semibold text-gray-800">פרטי הורה 2</h3>
-                      {isParent2Required && (
-                        <span className="mr-2 text-sm text-pink-600 font-medium">(שדות חובה כאשר שם מלא)</span>
-                      )}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -2163,6 +2213,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           placeholder="תאר את בעיות ההתנהגות..."
                         />
                       </FieldWrapper>
+                      {errors.behavioral_issues_details && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                          <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                          {errors.behavioral_issues_details.message}
+                        </p>
+                      )}
                     </div>
                   )}
 
@@ -2180,6 +2236,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           placeholder="פרט על הפוטנציאל של התלמיד..."
                         />
                       </FieldWrapper>
+                      {errors.potential_explanation && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                          <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                          {errors.potential_explanation.message}
+                        </p>
+                      )}
                     </div>
                   )}
 
@@ -2300,6 +2362,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                               placeholder="תאר את סוג הלקות ואופן ההתמודדות..."
                             />
                           </FieldWrapper>
+                          {errors.learning_disability_explanation && (
+                            <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                              <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                              {errors.learning_disability_explanation.message}
+                            </p>
+                          )}
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -2448,6 +2516,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
                           />
                         </FieldWrapper>
+                        {errors.assessment_file && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {typeof errors.assessment_file.message === 'string' ? errors.assessment_file.message : 'נא להעלות קובץ אבחון'}
+                          </p>
+                        )}
                         <p className="mt-2 text-sm text-gray-500">
                           קבצים מותרים: PDF, JPG, PNG (עד 10MB)
                         </p>
