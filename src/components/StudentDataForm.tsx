@@ -565,8 +565,10 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       }
 
       // Check assessment_file if assessment_done is 'yes'
+      // Skip validation if file was already uploaded previously (marked in completedFields)
       if (formValues.assessment_done === 'yes' &&
-          (!formValues.assessment_file || formValues.assessment_file.length === 0)) {
+          (!formValues.assessment_file || formValues.assessment_file.length === 0) &&
+          !completedFields.has('assessment_file')) {
         setError('assessment_file', { type: 'manual', message: 'נא להעלות קובץ אבחון' })
         conditionalValid = false
       }

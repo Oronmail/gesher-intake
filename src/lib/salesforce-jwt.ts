@@ -806,9 +806,12 @@ class SalesforceJWTService {
 
   /**
    * Update Registration Request with partial student data (for progress saving)
+   * @param recordId - Salesforce record ID
+   * @param data - Data to update
+   * @param updateStatus - Whether to update status to 'In Progress' (default: true)
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async updatePartialStudentData(recordId: string, data: Record<string, any>): Promise<{
+  async updatePartialStudentData(recordId: string, data: Record<string, any>, updateStatus: boolean = true): Promise<{
     success: boolean;
     error?: string;
   }> {
@@ -817,8 +820,12 @@ class SalesforceJWTService {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const updateData: Record<string, any> = {
         Id: recordId,
-        Status__c: 'In Progress', // Mark as in progress, not fully submitted
       };
+
+      // Only update status if explicitly requested (for progress saving, not file uploads after final submit)
+      if (updateStatus) {
+        updateData.Status__c = 'In Progress';
+      }
 
       // Map form fields to Salesforce fields (only if provided AND not empty)
       if (data.studentFirstName && typeof data.studentFirstName === 'string' && data.studentFirstName.trim()) updateData.Student_First_Name__c = data.studentFirstName;

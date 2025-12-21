@@ -283,6 +283,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Update Salesforce with file upload status if any files were uploaded
+    // Pass false for updateStatus to NOT change the 'Data Submitted' status back to 'In Progress'
     if (assessmentFileUploaded || gradeSheetUploaded) {
       try {
         await salesforceJWT.updatePartialStudentData(
@@ -290,7 +291,8 @@ export async function POST(request: NextRequest) {
           {
             assessmentFileUploaded,
             gradeSheetUploaded
-          }
+          },
+          false // Don't update status - already set to 'Data Submitted'
         )
         console.log('File upload status updated in Salesforce')
       } catch (statusError) {
