@@ -224,8 +224,12 @@ const formSchema = z.object({
   medication_description: z.string().optional(),
 
   // הערכה סופית - all mandatory
-  military_service_potential: z.enum(['', 'yes', 'no', 'unknown']),
-  can_handle_program: z.enum(['', 'yes', 'no', 'unknown']),
+  military_service_potential: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+    message: 'נא לבחור אפשרות'
+  }),
+  can_handle_program: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+    message: 'נא לבחור אפשרות'
+  }),
   risk_level: z.number().min(1, 'נא לבחור רמת סיכון').max(10).nullable(),
   risk_factors: z.string().min(1, 'נא להזין גורמי סיכון'),
   personal_opinion: z.string().min(1, 'נא להזין חוות דעת אישית'),
@@ -2847,6 +2851,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       בעל/ת סיכויים להתגייס לצה&quot;ל
+                      <span className="text-red-500 mr-1">*</span>
                     </label>
                     <FieldWrapper fieldName="military_service_potential" completedFields={completedFields}>
                       <select
@@ -2859,11 +2864,18 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <option value="unknown">לא ידוע</option>
                       </select>
                     </FieldWrapper>
+                    {errors.military_service_potential && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        {errors.military_service_potential.message}
+                      </p>
+                    )}
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       יכול/ה לעמוד בעומס המסגרת המוצעת
+                      <span className="text-red-500 mr-1">*</span>
                     </label>
                     <FieldWrapper fieldName="can_handle_program" completedFields={completedFields}>
                       <select
@@ -2876,6 +2888,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <option value="unknown">לא ידוע</option>
                       </select>
                     </FieldWrapper>
+                    {errors.can_handle_program && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        {errors.can_handle_program.message}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
