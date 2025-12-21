@@ -119,11 +119,15 @@ const formSchema = z.object({
   school_info_username: z.string().optional(),
   school_info_password: z.string().optional(),
   
-  // מצב רווחה
-  known_to_welfare: z.enum(['', 'yes', 'no', 'unknown']),
+  // מצב רווחה - mandatory fields
+  known_to_welfare: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+    message: 'נא לבחור אפשרות'
+  }),
   social_worker_name: z.string().optional(),
   social_worker_phone: z.string().optional(),
-  youth_promotion: z.enum(['', 'yes', 'no', 'unknown']),
+  youth_promotion: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+    message: 'נא לבחור אפשרות'
+  }),
   youth_worker_name: z.string().optional(),
   youth_worker_phone: z.string().optional(),
   
@@ -159,10 +163,14 @@ const formSchema = z.object({
   counselor_name: z.string().min(2, 'נא להזין שם יועצת'),
   counselor_phone: z.string().min(9, 'נא להזין טלפון יועצת'),
   
-  // נתוני קליטה
-  behavioral_issues: z.enum(['', 'yes', 'no', 'unknown']),
+  // נתוני קליטה - mandatory dropdown fields
+  behavioral_issues: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+    message: 'נא לבחור אפשרות'
+  }),
   behavioral_issues_details: z.string().optional(),
-  has_potential: z.enum(['', 'yes', 'no', 'unknown']),
+  has_potential: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+    message: 'נא לבחור אפשרות'
+  }),
   potential_explanation: z.string().optional(),
   motivation_level: z.string().min(1, 'נא למלא שדה זה'),
   motivation_type: z.enum(['internal', 'external'], {
@@ -172,27 +180,47 @@ const formSchema = z.object({
   social_status: z.string().min(1, 'נא להזין מצב חברתי'),
   afternoon_activities: z.string().optional(),
 
-  // הערכת למידה
-  learning_disability: z.enum(['', 'yes', 'no', 'unknown']),
+  // הערכת למידה - mandatory dropdown fields
+  learning_disability: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+    message: 'נא לבחור אפשרות'
+  }),
   learning_disability_explanation: z.string().optional(),
   requires_remedial_teaching: z.enum(['', 'yes', 'no', 'unknown']),
-  adhd: z.enum(['', 'yes', 'no', 'unknown']),
+  adhd: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+    message: 'נא לבחור אפשרות'
+  }),
   adhd_treatment: z.string().optional(),
-  assessment_done: z.enum(['', 'yes', 'no', 'unknown']),
+  assessment_done: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+    message: 'נא לבחור אפשרות'
+  }),
   assessment_file: z.any().optional(),
-  assessment_needed: z.enum(['', 'yes', 'no', 'unknown']),
+  assessment_needed: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+    message: 'נא לבחור אפשרות'
+  }),
   assessment_details: z.string().optional(),
 
-  // הערכת סיכון - all mandatory
-  criminal_record: z.enum(['', 'yes', 'no', 'unknown']),
+  // הערכת סיכון - all mandatory dropdown fields
+  criminal_record: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+    message: 'נא לבחור אפשרות'
+  }),
   criminal_record_details: z.string().optional(),
-  drug_use: z.enum(['', 'yes', 'no', 'unknown']),
-  smoking: z.enum(['', 'yes', 'no', 'unknown']),
+  drug_use: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+    message: 'נא לבחור אפשרות'
+  }),
+  smoking: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+    message: 'נא לבחור אפשרות'
+  }),
   probation_officer: z.string().optional(),
   youth_probation_officer: z.string().optional(),
-  psychological_treatment: z.enum(['', 'yes', 'no', 'unknown']),
-  psychiatric_treatment: z.enum(['', 'yes', 'no', 'unknown']),
-  takes_medication: z.enum(['', 'yes', 'no', 'unknown']),
+  psychological_treatment: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+    message: 'נא לבחור אפשרות'
+  }),
+  psychiatric_treatment: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+    message: 'נא לבחור אפשרות'
+  }),
+  takes_medication: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+    message: 'נא לבחור אפשרות'
+  }),
   medication_description: z.string().optional(),
 
   // הערכה סופית - all mandatory
@@ -625,11 +653,21 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
   const getFieldsForStep = (step: number): string[] => {
     switch(step) {
       case 1: return ['student_first_name', 'student_last_name', 'student_id', 'date_of_birth', 'country_of_birth', 'gender', 'address', 'phone', 'student_mobile']
-      case 2: return ['siblings_count', 'father_name', 'father_mobile', 'father_occupation', 'father_profession', 'mother_name', 'mother_mobile', 'mother_occupation', 'mother_profession', 'debts_loans', 'parent_involvement', 'economic_status', 'economic_details', 'family_background']
-      case 3: return ['school_name', 'grade', 'homeroom_teacher', 'teacher_phone', 'counselor_name', 'counselor_phone']
+      case 2: {
+        // Base fields for step 2 (Parent 1 is always required)
+        const fields = ['father_name', 'father_mobile', 'father_occupation', 'father_profession', 'debts_loans', 'parent_involvement', 'economic_status', 'economic_details', 'family_background']
+        const formValues = getValues()
+        // If mother_name is filled, add Parent 2 required fields
+        if (formValues.mother_name && formValues.mother_name.trim() !== '') {
+          fields.push('mother_mobile', 'mother_occupation', 'mother_profession')
+        }
+        return fields
+      }
+      case 3: return ['school_name', 'grade', 'homeroom_teacher', 'teacher_phone', 'counselor_name', 'counselor_phone', 'known_to_welfare', 'youth_promotion']
       // Step 4: Require dropdown fields + conditional fields if answered 'yes'
       case 4: {
-        const fields: string[] = ['motivation_level', 'social_status']
+        // Base mandatory fields: behavioral_issues, has_potential, motivation_level, social_status, learning fields
+        const fields: string[] = ['behavioral_issues', 'has_potential', 'motivation_level', 'social_status', 'learning_disability', 'adhd', 'assessment_done', 'assessment_needed']
         const formValues = getValues()
         // Add conditional required fields if answered 'yes'
         if (formValues.behavioral_issues === 'yes') {
@@ -638,22 +676,22 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
         if (formValues.has_potential === 'yes') {
           fields.push('potential_explanation')
         }
-        return fields
-      }
-      // Step 5: All dropdown fields are optional, but add conditional fields if 'yes'
-      case 5: {
-        const fields: string[] = []
-        const formValues = getValues()
         if (formValues.adhd === 'yes') {
           fields.push('adhd_treatment')
         }
+        return fields
+      }
+      // Step 5: All dropdown fields are mandatory
+      case 5: {
+        const fields: string[] = ['criminal_record', 'drug_use', 'smoking', 'psychological_treatment', 'psychiatric_treatment', 'takes_medication']
+        const formValues = getValues()
         if (formValues.criminal_record === 'yes') {
           fields.push('criminal_record_details')
         }
         return fields
       }
-      // Step 6: Include all mandatory fields
-      case 6: return ['risk_level', 'risk_factors', 'personal_opinion', 'grade_sheet', 'failing_grades_count']
+      // Step 6: Include all mandatory fields (failing_subjects added dynamically in submit handler)
+      case 6: return ['risk_level', 'risk_factors', 'personal_opinion']
       default: return []
     }
   }
@@ -994,15 +1032,33 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
             <form
               onSubmit={async (e) => {
                 e.preventDefault()
-                console.log('🚀 NEW CODE RUNNING - SUBMIT CLICKED - NO VALIDATION')
+                console.log('🚀 SUBMIT CLICKED - Validating Step 6 fields')
                 if (isIntentionalSubmit) {
-                  // No need to re-validate all pages - each "Next" button already validated its step
-                  // By the time user reaches this final submit, all previous pages have been validated
-                  // Just submit directly - bypass React Hook Form validation entirely
-                  console.log('✅ Submitting form directly without validation')
-                  // Get form values directly without validation
+                  // Validate Step 6 fields before submitting
+                  const step6Fields = getFieldsForStep(6)
+                  console.log('📋 Step 6 fields to validate:', step6Fields)
+
+                  // Add dynamic failing_subjects validation if count > 0
                   const formValues = getValues()
-                  console.log('📋 Form values retrieved, calling onSubmit...')
+                  const failingCount = formValues.failing_grades_count || 0
+                  if (failingCount > 0) {
+                    for (let i = 0; i < failingCount; i++) {
+                      step6Fields.push(`failing_subjects.${i}.subject`)
+                      step6Fields.push(`failing_subjects.${i}.grade`)
+                      step6Fields.push(`failing_subjects.${i}.reason`)
+                    }
+                  }
+
+                  const isValid = await trigger(step6Fields as (keyof FormData)[])
+                  console.log('✅ Step 6 validation result:', isValid)
+
+                  if (!isValid) {
+                    console.log('❌ Step 6 validation failed, not submitting')
+                    setIsIntentionalSubmit(false)
+                    return
+                  }
+
+                  console.log('✅ Submitting form after Step 6 validation passed')
                   await onSubmit(formValues as FormData)
                   setIsIntentionalSubmit(false)
                 }
@@ -1437,12 +1493,19 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   </div>
 
                   {/* Parent 2 Information */}
+                  {(() => {
+                    const motherNameValue = watch('mother_name')
+                    const isParent2Required = motherNameValue && motherNameValue.trim() !== ''
+                    return (
                   <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-2xl p-6 border border-pink-200 shadow-sm">
                     <div className="flex items-center mb-6">
                       <div className="bg-pink-100 p-3 rounded-xl ml-3">
                         <Heart className="w-6 h-6 text-pink-600" />
                       </div>
                       <h3 className="text-lg font-semibold text-gray-800">פרטי הורה 2</h3>
+                      {isParent2Required && (
+                        <span className="mr-2 text-sm text-pink-600 font-medium">(שדות חובה כאשר שם מלא)</span>
+                      )}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1471,13 +1534,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           נייד
+                          {isParent2Required && <span className="text-red-500 mr-1">*</span>}
                         </label>
                         <FieldWrapper fieldName="mother_mobile" completedFields={completedFields}>
                           <div className="relative">
                             <input
                               {...register('mother_mobile')}
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                              placeholder="050-1234567 (אופציונלי)"
+                              placeholder={isParent2Required ? "050-1234567" : "050-1234567 (אופציונלי)"}
                               dir="ltr"
                             />
                             <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
@@ -1494,13 +1558,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           עיסוק
+                          {isParent2Required && <span className="text-red-500 mr-1">*</span>}
                         </label>
                         <FieldWrapper fieldName="mother_occupation" completedFields={completedFields}>
                           <div className="relative">
                             <input
                               {...register('mother_occupation')}
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                              placeholder="עבודה, לא עובדת, גמלאית (אופציונלי)"
+                              placeholder={isParent2Required ? "עבודה, לא עובדת, גמלאית" : "עבודה, לא עובדת, גמלאית (אופציונלי)"}
                             />
                             <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
@@ -1516,13 +1581,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           מקצוע
+                          {isParent2Required && <span className="text-red-500 mr-1">*</span>}
                         </label>
                         <FieldWrapper fieldName="mother_profession" completedFields={completedFields}>
                           <div className="relative">
                             <input
                               {...register('mother_profession')}
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                              placeholder="מה המקצוע הספציפי (אופציונלי)"
+                              placeholder={isParent2Required ? "מה המקצוע הספציפי" : "מה המקצוע הספציפי (אופציונלי)"}
                             />
                             <Trophy className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
@@ -1552,6 +1618,8 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       </div>
                     </div>
                   </div>
+                    )
+                  })()}
 
                   {/* Family Additional Information */}
                   <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-2xl p-6 border border-green-200 shadow-sm">
@@ -1630,6 +1698,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
                         </FieldWrapper>
+                        {errors.economic_details && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.economic_details.message}
+                          </p>
+                        )}
                       </div>
 
                       <div className="md:col-span-2">
@@ -1647,6 +1721,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <CreditCard className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
                         </FieldWrapper>
+                        {errors.debts_loans && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.debts_loans.message}
+                          </p>
+                        )}
                       </div>
 
                       <div className="md:col-span-2">
@@ -1665,6 +1745,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <FileText className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
                         </FieldWrapper>
+                        {errors.family_background && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.family_background.message}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1885,6 +1971,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     <div className="mb-6">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         מוכרים ברווחה
+                        <span className="text-red-500 mr-1">*</span>
                       </label>
                       <FieldWrapper fieldName="known_to_welfare" completedFields={completedFields}>
                         <select
@@ -1897,6 +1984,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           <option value="unknown">לא ידוע</option>
                         </select>
                       </FieldWrapper>
+                      {errors.known_to_welfare && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                          <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                          נא לבחור אפשרות
+                        </p>
+                      )}
 
                       {watch('known_to_welfare') === 'yes' && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 animate-fadeIn">
@@ -1939,6 +2032,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         מטופל בקידום נוער
+                        <span className="text-red-500 mr-1">*</span>
                       </label>
                       <FieldWrapper fieldName="youth_promotion" completedFields={completedFields}>
                         <select
@@ -1951,6 +2045,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           <option value="unknown">לא ידוע</option>
                         </select>
                       </FieldWrapper>
+                      {errors.youth_promotion && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                          <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                          נא לבחור אפשרות
+                        </p>
+                      )}
                       
                       {watch('youth_promotion') === 'yes' && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 animate-fadeIn">
@@ -2002,6 +2102,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         בעיות התנהגות
+                        <span className="text-red-500 mr-1">*</span>
                       </label>
                       <FieldWrapper fieldName="behavioral_issues" completedFields={completedFields}>
                         <select
@@ -2014,11 +2115,18 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           <option value="unknown">לא ידוע</option>
                         </select>
                       </FieldWrapper>
+                      {errors.behavioral_issues && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                          <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                          נא לבחור אפשרות
+                        </p>
+                      )}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         פוטנציאל
+                        <span className="text-red-500 mr-1">*</span>
                       </label>
                       <FieldWrapper fieldName="has_potential" completedFields={completedFields}>
                         <select
@@ -2031,6 +2139,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           <option value="unknown">לא ידוע</option>
                         </select>
                       </FieldWrapper>
+                      {errors.has_potential && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                          <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                          נא לבחור אפשרות
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -2072,7 +2186,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   {/* Motivation Section */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      רמת מוטיבציה (אנא ציין האם המוטיבציה פנימית או חיצונית. במידה וחיצונית פרט מי הגורם המניע)
+                      רמת מוטיבציה
                       <span className="text-red-500 mr-1">*</span>
                     </label>
                     <FieldWrapper fieldName="motivation_level" completedFields={completedFields}>
@@ -2081,7 +2195,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           {...register('motivation_level')}
                           rows={4}
                           className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 resize-y"
-                          placeholder="תאר את רמת המוטיבציה (לדוגמה: מוטיבציה גבוהה/בינונית/נמוכה, פנימית/חיצונית. אם חיצונית - פרט מי הגורם המניע)"
+                          placeholder="ציין האם המוטיבציה פנימית או חיצונית. במידה וחיצונית פרט מי הגורם המניע"
                         />
                         <Zap className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                       </div>
@@ -2151,6 +2265,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       לקוי למידה
+                      <span className="text-red-500 mr-1">*</span>
                     </label>
                     <FieldWrapper fieldName="learning_disability" completedFields={completedFields}>
                       <select
@@ -2163,6 +2278,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <option value="unknown">לא ידוע</option>
                       </select>
                     </FieldWrapper>
+                    {errors.learning_disability && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        נא לבחור אפשרות
+                      </p>
+                    )}
 
                     {watch('learning_disability') === 'yes' && (
                       <div className="mt-4 animate-fadeIn space-y-4">
@@ -2203,6 +2324,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       הפרעת קשב וריכוז (ADHD)
+                      <span className="text-red-500 mr-1">*</span>
                     </label>
                     <FieldWrapper fieldName="adhd" completedFields={completedFields}>
                       <select
@@ -2215,6 +2337,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <option value="unknown">לא ידוע</option>
                       </select>
                     </FieldWrapper>
+                    {errors.adhd && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        נא לבחור אפשרות
+                      </p>
+                    )}
 
                     {watch('adhd') === 'yes' && (
                       <div className="mt-4 animate-fadeIn">
@@ -2259,6 +2387,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         נעשה אבחון
+                        <span className="text-red-500 mr-1">*</span>
                       </label>
                       <FieldWrapper fieldName="assessment_done" completedFields={completedFields}>
                         <select
@@ -2271,11 +2400,18 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           <option value="unknown">לא ידוע</option>
                         </select>
                       </FieldWrapper>
+                      {errors.assessment_done && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                          <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                          נא לבחור אפשרות
+                        </p>
+                      )}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         יש צורך באבחון
+                        <span className="text-red-500 mr-1">*</span>
                       </label>
                       <FieldWrapper fieldName="assessment_needed" completedFields={completedFields}>
                         <select
@@ -2288,6 +2424,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           <option value="unknown">לא ידוע</option>
                         </select>
                       </FieldWrapper>
+                      {errors.assessment_needed && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                          <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                          נא לבחור אפשרות
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -2373,6 +2515,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       בעל/ת עבר פלילי
+                      <span className="text-red-500 mr-1">*</span>
                     </label>
                     <FieldWrapper fieldName="criminal_record" completedFields={completedFields}>
                       <select
@@ -2385,11 +2528,18 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <option value="unknown">לא ידוע</option>
                       </select>
                     </FieldWrapper>
+                    {errors.criminal_record && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        נא לבחור אפשרות
+                      </p>
+                    )}
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       שימוש בסמים
+                      <span className="text-red-500 mr-1">*</span>
                     </label>
                     <FieldWrapper fieldName="drug_use" completedFields={completedFields}>
                       <select
@@ -2402,11 +2552,18 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <option value="unknown">לא ידוע</option>
                       </select>
                     </FieldWrapper>
+                    {errors.drug_use && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        נא לבחור אפשרות
+                      </p>
+                    )}
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       מעשן/ת
+                      <span className="text-red-500 mr-1">*</span>
                     </label>
                     <FieldWrapper fieldName="smoking" completedFields={completedFields}>
                       <select
@@ -2419,6 +2576,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <option value="unknown">לא ידוע</option>
                       </select>
                     </FieldWrapper>
+                    {errors.smoking && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        נא לבחור אפשרות
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -2501,6 +2664,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         מקבל/ת טיפול פסיכולוגי
+                        <span className="text-red-500 mr-1">*</span>
                       </label>
                       <FieldWrapper fieldName="psychological_treatment" completedFields={completedFields}>
                         <select
@@ -2513,11 +2677,18 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           <option value="unknown">לא ידוע</option>
                         </select>
                       </FieldWrapper>
+                      {errors.psychological_treatment && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                          <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                          נא לבחור אפשרות
+                        </p>
+                      )}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         מקבל/ת טיפול פסיכיאטרי
+                        <span className="text-red-500 mr-1">*</span>
                       </label>
                       <FieldWrapper fieldName="psychiatric_treatment" completedFields={completedFields}>
                         <select
@@ -2530,12 +2701,19 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           <option value="unknown">לא ידוע</option>
                         </select>
                       </FieldWrapper>
+                      {errors.psychiatric_treatment && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                          <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                          נא לבחור אפשרות
+                        </p>
+                      )}
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       נוטל/ת תרופות
+                      <span className="text-red-500 mr-1">*</span>
                     </label>
                     <FieldWrapper fieldName="takes_medication" completedFields={completedFields}>
                       <select
@@ -2548,6 +2726,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <option value="unknown">לא ידוע</option>
                       </select>
                     </FieldWrapper>
+                    {errors.takes_medication && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        נא לבחור אפשרות
+                      </p>
+                    )}
 
                     {watch('takes_medication') === 'yes' && (
                       <div className="mt-4 animate-fadeIn">
@@ -2638,28 +2822,31 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       <span className="text-red-500 mr-1">*</span>
                     </label>
                     <FieldWrapper fieldName="risk_level" completedFields={completedFields}>
-                      <div className="space-y-2">
-                        <input
-                          {...register('risk_level', { valueAsNumber: true })}
-                          type="range"
-                          min="1"
-                          max="10"
-                          step="1"
-                          defaultValue="5"
-                          className="w-full cursor-pointer"
-                        />
-                        <div className="flex justify-between text-xs text-gray-600">
-                          <span>1</span>
-                          <span>2</span>
-                          <span>3</span>
-                          <span>4</span>
-                          <span>5</span>
-                          <span>6</span>
-                          <span>7</span>
-                          <span>8</span>
-                          <span>9</span>
-                          <span>10</span>
-                        </div>
+                      <div className="flex flex-wrap gap-2">
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((level) => (
+                          <label
+                            key={level}
+                            className={`
+                              flex items-center justify-center w-10 h-10 rounded-xl border-2 cursor-pointer transition-all duration-200
+                              ${watch('risk_level') === level
+                                ? 'border-yellow-500 bg-yellow-100 text-yellow-700 font-bold shadow-md'
+                                : 'border-gray-200 bg-white hover:border-yellow-300 hover:bg-yellow-50 text-gray-600'
+                              }
+                            `}
+                          >
+                            <input
+                              type="radio"
+                              {...register('risk_level', { valueAsNumber: true })}
+                              value={level}
+                              className="sr-only"
+                            />
+                            {level}
+                          </label>
+                        ))}
+                      </div>
+                      <div className="flex justify-between text-xs text-gray-500 mt-2 px-1">
+                        <span>סיכון נמוך</span>
+                        <span>סיכון גבוה</span>
                       </div>
                     </FieldWrapper>
                     {errors.risk_level && (
@@ -2795,16 +2982,20 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                   {watch('failing_grades_count') > 0 && (
                     <div className="animate-fadeIn space-y-4">
-                      <h4 className="text-sm font-medium text-gray-700">פרט על הציונים השליליים:</h4>
+                      <h4 className="text-sm font-medium text-gray-700">
+                        פרט על הציונים השליליים:
+                        <span className="text-red-500 mr-1">*</span>
+                      </h4>
                       {Array.from({ length: watch('failing_grades_count') || 0 }).map((_, index) => (
                         <div key={index} className="bg-gray-50 p-4 rounded-xl border border-gray-200">
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                               <label className="block text-xs font-medium text-gray-600 mb-1">
                                 מקצוע {index + 1}
+                                <span className="text-red-500 mr-1">*</span>
                               </label>
                               <input
-                                {...register(`failing_subjects.${index}.subject`)}
+                                {...register(`failing_subjects.${index}.subject`, { required: true })}
                                 type="text"
                                 className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                                 placeholder="שם המקצוע"
@@ -2813,9 +3004,10 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <div>
                               <label className="block text-xs font-medium text-gray-600 mb-1">
                                 ציון
+                                <span className="text-red-500 mr-1">*</span>
                               </label>
                               <input
-                                {...register(`failing_subjects.${index}.grade`)}
+                                {...register(`failing_subjects.${index}.grade`, { required: true })}
                                 type="text"
                                 className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                                 placeholder="הציון"
@@ -2824,9 +3016,10 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <div>
                               <label className="block text-xs font-medium text-gray-600 mb-1">
                                 סיבה לציון השלילי
+                                <span className="text-red-500 mr-1">*</span>
                               </label>
                               <input
-                                {...register(`failing_subjects.${index}.reason`)}
+                                {...register(`failing_subjects.${index}.reason`, { required: true })}
                                 type="text"
                                 className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                                 placeholder="הסיבה לכישלון"

@@ -306,45 +306,54 @@ The system now includes enterprise-grade security measures to protect sensitive 
 **Consent Status Check**: The form automatically checks if consent was already signed. If already signed, displays a confirmation page with signature details instead of the form.
 
 ### 3. Student Data Form (StudentDataForm.tsx)
-**7-Step Wizard Form:**
+**6-Step Wizard Form** (consolidated from 7 steps):
 
 #### Step 1: Personal Information (פרטים אישיים)
 - Name, ID, DOB, birthplace, immigration year
 - Gender, address, phone numbers
 - School system password
+- **All fields mandatory**
 
 #### Step 2: Family Information (מידע משפחתי)
-- Siblings count
-- Father details (name, phone, occupation, income)
-- Mother details (name, phone, occupation, income)
-- Debts/loans, parent involvement level
-- Economic status, family background
+- Father details (name*, phone*, occupation*, income) - **All mandatory**
+- Mother/Parent 2 details - **Conditional: when name is filled, phone/occupation/profession become mandatory**
+- Debts/loans*, parent involvement*, economic status*, economic details*, family background*
+- **All marked fields mandatory**
 
 #### Step 3: School Information (פרטי בית ספר)
-- School name, grade, homeroom teacher
-- Counselor details
-- Welfare/youth services connections
+- School name*, grade*, homeroom teacher*, teacher phone*
+- Counselor name*, counselor phone*
+- Known to welfare* (כן/לא/לא ידוע) - **Mandatory dropdown**
+- Youth promotion* (כן/לא/לא ידוע) - **Mandatory dropdown**
 
-#### Step 4: Intake Assessment (נתוני קליטה)
-- Behavioral issues, potential
-- Motivation level and type
-- Social status, afternoon activities
+#### Step 4: Intake Assessment + Learning (נתוני קליטה + אבחונים)
+- Behavioral issues* (כן/לא/לא ידוע) - **Mandatory dropdown**
+- Potential* (כן/לא/לא ידוע) - **Mandatory dropdown**
+- Motivation level* (text description)
+- Social status*
+- Afternoon activities (optional)
+- Learning disability* (כן/לא/לא ידוע) - **Mandatory dropdown**
+- ADHD* (כן/לא/לא ידוע) - **Mandatory dropdown**
+- Assessment done* (כן/לא/לא ידוע) - **Mandatory dropdown**
+- Assessment needed* (כן/לא/לא ידוע) - **Mandatory dropdown**
 
-#### Step 5: Learning Assessment (אבחונים)
-- Learning disabilities, ADHD
-- Required treatments
-- Assessment status and needs
+#### Step 5: Risk Assessment (הערכת סיכון)
+- Criminal record* (כן/לא/לא ידוע) - **Mandatory dropdown**
+- Drug use* (כן/לא/לא ידוע) - **Mandatory dropdown**
+- Smoking* (כן/לא/לא ידוע) - **Mandatory dropdown**
+- Psychological treatment* (כן/לא/לא ידוע) - **Mandatory dropdown**
+- Psychiatric treatment* (כן/לא/לא ידוע) - **Mandatory dropdown**
+- Takes medication* (כן/לא/לא ידוע) - **Mandatory dropdown**
 
-#### Step 6: Risk Assessment (הערכת סיכון)
-- Criminal record, substance use
-- Psychological/psychiatric treatment
-- Medications
+#### Step 6: Final Assessment (חוות דעת אישית)
+- Military service potential, program suitability (optional dropdowns)
+- Risk level* (1-10 radio buttons, no default value - must select)
+- Risk factors* (text)
+- Personal opinion* (text)
+- Grade sheet upload
+- Failing grades count + details (subject*, grade*, reason* - **mandatory when count > 0**)
 
-#### Step 7: Final Opinion (חוות דעת אישית)
-- Military service potential
-- Program suitability
-- Risk level (1-10 scale)
-- Academic performance
+**Note**: Step 6 validates on submit button click (not "Next" like other steps)
 
 ---
 
@@ -1234,6 +1243,42 @@ const nextStep = async () => {
 
 **Commit**: "Fix field validation to skip already-completed fields"
 
+### Issue 6: Mandatory Dropdown Fields & Validation Overhaul (RESOLVED - December 2025)
+**Problem**: Many dropdown fields were optional and could be skipped. Also, some mandatory field error messages weren't displaying, and Page 6 submit validation wasn't working.
+
+**Changes Made**:
+
+1. **Page 2 - Family Information**:
+   - Added error messages for `economic_details`, `debts_loans`, `family_background` fields
+   - Parent 2 fields become mandatory when name is filled (conditional validation)
+   - UI shows red asterisks and removes "(אופציונלי)" when Parent 2 name entered
+
+2. **Page 3 - School Information**:
+   - Made `known_to_welfare` and `youth_promotion` mandatory (cannot be "בחר")
+   - Added validation error messages
+
+3. **Page 4 - Intake Assessment + Learning**:
+   - Made mandatory: `behavioral_issues`, `has_potential`, `learning_disability`, `adhd`, `assessment_done`, `assessment_needed`
+   - Changed motivation label from long description to short "רמת מוטיבציה" with placeholder for instructions
+   - All fields show red asterisks and error messages
+
+4. **Page 5 - Risk Assessment**:
+   - Made all 6 dropdown fields mandatory: `criminal_record`, `drug_use`, `smoking`, `psychological_treatment`, `psychiatric_treatment`, `takes_medication`
+   - Added validation error messages
+
+5. **Page 6 - Final Assessment**:
+   - Changed `risk_level` from slider (defaulted to 5) to radio buttons (no default - must select)
+   - Made `failing_subjects` fields mandatory when `failing_grades_count > 0`
+   - Added Step 6 validation on submit button (validates only Page 6 fields)
+
+**Technical Implementation**:
+- Added `.refine()` to Zod schema for all mandatory dropdown fields
+- Updated `getFieldsForStep()` for each step
+- Dynamic validation for `failing_subjects` based on count
+- Submit handler validates Step 6 before submission
+
+**Commit**: "Add comprehensive mandatory field validation across all form steps"
+
 ---
 
 ## 🔮 Future Enhancements (Phase 2)
@@ -1301,8 +1346,8 @@ This is a pro bono project developed for Gesher Al HaNoar. For technical questio
 
 ---
 
-*Last Updated: January 2025 (Field Completion Tracking & FieldWrapper Cleanup)*
-*Project Status: ✅ Fully Operational in Production with Field Completion Indicators*
+*Last Updated: December 2025 (Mandatory Field Validation Overhaul)*
+*Project Status: ✅ Fully Operational in Production with Comprehensive Field Validation*
 *Live URL: https://gesher-intake.vercel.app*
 *Repository: https://github.com/Oronmail/gesher-intake (Private)*
 *Email Service: Gmail SMTP (gesheryouth@gmail.com)*
