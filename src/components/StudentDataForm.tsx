@@ -663,10 +663,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
         ])
 
         const numericFields = new Set(['siblings_count', 'failing_grades_count', 'risk_level'])
+        const fileFields = new Set(['assessment_file', 'grade_sheet'])
 
         Object.entries(currentValues).forEach(([key, value]) => {
           const isDropdownField = dropdownFields.has(key)
           const isNumericField = numericFields.has(key)
+          const isFileField = fileFields.has(key)
 
           // Dropdown fields: mark as completed if yes/no/unknown selected
           if (isDropdownField) {
@@ -680,7 +682,13 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
               newCompleted.add(key)
             }
           }
-          // Text/dropdown fields: mark as completed if non-empty
+          // File fields: mark as completed only if file was uploaded (check FileList length)
+          else if (isFileField) {
+            if (value && value.length > 0) {
+              newCompleted.add(key)
+            }
+          }
+          // Text fields: mark as completed if non-empty
           else if (value !== null && value !== '' && value !== undefined) {
             newCompleted.add(key)
           }
