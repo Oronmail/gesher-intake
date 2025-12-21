@@ -2531,7 +2531,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
                           />
                         </FieldWrapper>
-                        {errors.assessment_file && (
+                        {errors.assessment_file && !completedFields.has('assessment_file') && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
                             {typeof errors.assessment_file.message === 'string' ? errors.assessment_file.message : 'נא להעלות קובץ אבחון'}
