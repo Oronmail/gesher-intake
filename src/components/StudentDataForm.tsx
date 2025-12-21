@@ -352,6 +352,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
   const [isSaving, setIsSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState(false)
   const [completedFields, setCompletedFields] = useState<Set<string>>(new Set())
+  const [riskLevelTouched, setRiskLevelTouched] = useState(false)
 
   const totalSteps = 6
   const branding = getBrandingFromDestination(warmHomeDestination || null)
@@ -2914,31 +2915,48 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       <span className="text-red-500 mr-1">*</span>
                     </label>
                     <FieldWrapper fieldName="risk_level" completedFields={completedFields}>
-                      <div className="flex flex-wrap gap-2">
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((level) => (
-                          <label
-                            key={level}
-                            className={`
-                              flex items-center justify-center w-10 h-10 rounded-xl border-2 cursor-pointer transition-all duration-200
-                              ${watch('risk_level') === level
-                                ? 'border-yellow-500 bg-yellow-100 text-yellow-700 font-bold shadow-md'
-                                : 'border-gray-200 bg-white hover:border-yellow-300 hover:bg-yellow-50 text-gray-600'
-                              }
-                            `}
-                          >
-                            <input
-                              type="radio"
-                              {...register('risk_level', { valueAsNumber: true })}
-                              value={level}
-                              className="sr-only"
-                            />
-                            {level}
-                          </label>
-                        ))}
+                      <div className="relative">
+                        <input
+                          type="range"
+                          min={1}
+                          max={10}
+                          step={1}
+                          {...register('risk_level', { valueAsNumber: true })}
+                          onMouseDown={() => {
+                            if (!riskLevelTouched) {
+                              setRiskLevelTouched(true)
+                              setValue('risk_level', 5)
+                            }
+                          }}
+                          onTouchStart={() => {
+                            if (!riskLevelTouched) {
+                              setRiskLevelTouched(true)
+                              setValue('risk_level', 5)
+                            }
+                          }}
+                          className={`w-full h-3 rounded-lg appearance-none cursor-pointer transition-all duration-200 ${
+                            riskLevelTouched ? '' : 'opacity-40 grayscale'
+                          }`}
+                          style={{
+                            background: riskLevelTouched
+                              ? 'linear-gradient(to right, #10b981 0%, #eab308 50%, #ef4444 100%)'
+                              : '#d1d5db'
+                          }}
+                        />
+                        {riskLevelTouched && watch('risk_level') !== null && (
+                          <div className="text-center text-3xl font-bold mt-3 text-gray-800">
+                            {watch('risk_level')}
+                          </div>
+                        )}
+                        {!riskLevelTouched && (
+                          <div className="text-center text-sm text-gray-500 mt-3">
+                            לחץ על הסרגל לבחירת רמת סיכון
+                          </div>
+                        )}
                       </div>
                       <div className="flex justify-between text-xs text-gray-500 mt-2 px-1">
-                        <span>סיכון נמוך</span>
-                        <span>סיכון גבוה</span>
+                        <span className="text-green-600 font-medium">סיכון נמוך (1)</span>
+                        <span className="text-red-600 font-medium">סיכון גבוה (10)</span>
                       </div>
                     </FieldWrapper>
                     {errors.risk_level && (
