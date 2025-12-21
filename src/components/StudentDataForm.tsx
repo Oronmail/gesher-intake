@@ -494,6 +494,15 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 completedSet.add('grade_sheet')
               }
 
+              // Override parent phone fields with SF values if they exist
+              // (Supabase parent_phone was used as initial fallback, but SF values take precedence)
+              if (sfData.father_mobile && sfData.father_mobile.trim()) {
+                setValue('father_mobile', sfData.father_mobile)
+              }
+              if (sfData.mother_mobile && sfData.mother_mobile.trim()) {
+                setValue('mother_mobile', sfData.mother_mobile)
+              }
+
               setCompletedFields(completedSet)
               console.log('Loaded completion markers from Salesforce (values hidden for privacy)')
             }
