@@ -215,7 +215,7 @@ class SalesforceJWTService {
         Counselor_Email__c: data.counselorEmail || '',
         School_Counselor_Phone__c: data.counselorMobile,
         School_Name__c: data.schoolName,
-        Warm_Home_Destination__c: data.warmHomeDestination || '',
+        Warm_House__c: data.warmHomeDestination || '',
         Parent_Email__c: data.parentEmail || '',
         Parent1_Phone__c: data.parentPhone,
         Submission_Date__c: new Date().toISOString(),
