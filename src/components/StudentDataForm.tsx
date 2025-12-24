@@ -411,11 +411,8 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
           // Pre-populate counselor phone if it was provided in the initial form
           if (data.counselor_phone) setValue('counselor_phone', data.counselor_phone)
 
-          // Prepopulate parent contact info if available
-          if (data.parent_phone) {
-            setValue('parent1_phone', data.parent_phone)
-            setValue('parent2_phone', data.parent_phone)
-          }
+          // NOTE: Parent phone fields are populated from Salesforce only (Parent1_Phone__c, Parent2_Phone__c)
+          // Do NOT pre-populate from Supabase parent_phone (which is the consent signer's phone)
 
           // If parent names are stored (from consent form)
           if (data.parent_names) {
