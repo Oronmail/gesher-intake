@@ -577,6 +577,21 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       }
     }
 
+    // For Step 5, validate criminal_record_details only when criminal_record is 'כן'
+    if (currentStep === 5) {
+      const formValues = getValues()
+
+      // Clear previous conditional errors
+      clearErrors(['criminal_record_details'])
+
+      // Check criminal_record_details only if criminal_record is 'כן'
+      if (formValues.criminal_record === 'כן' &&
+          (!formValues.criminal_record_details || formValues.criminal_record_details.trim() === '')) {
+        setError('criminal_record_details', { type: 'manual', message: 'נא למלא פרטי עבר פלילי' })
+        conditionalValid = false
+      }
+    }
+
     if (isValid && conditionalValid && currentStep < totalSteps) {
       setCurrentStep(currentStep + 1)
     } else if (!isValid || !conditionalValid) {
