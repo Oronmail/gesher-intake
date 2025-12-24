@@ -6,9 +6,7 @@
     <fields>Student_First_Name__c</fields>
     <fields>Student_Last_Name__c</fields>
     <fields>School_Name__c</fields>
-    <fields>Priority__c</fields>
     <fields>Submission_Date__c</fields>
-    <fields>Counselor_Name__c</fields>
     <fields>Parent1_Name__c</fields>
     <fields>Risk_Level__c</fields>
     <label>Registration Request Compact Layout</label>

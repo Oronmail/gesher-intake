@@ -2,9 +2,9 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Failing_Subjects_Details__c</fullName>
     <description>JSON array of failing subjects with subject name, grade, and reason</description>
-    <externalId>false</externalId>
     <label>Failing Subjects Details</label>
     <length>32768</length>
+    <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>LongTextArea</type>
     <visibleLines>10</visibleLines>

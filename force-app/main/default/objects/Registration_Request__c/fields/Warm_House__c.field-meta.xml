@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Warm_Home_Destination__c</fullName>
+    <fullName>Warm_House__c</fullName>
     <description>The warm home destination selected for the student</description>
-    <externalId>false</externalId>
-    <label>Warm Home Destination</label>
+    <label>בית חם</label>
     <required>false</required>
+    <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
-        <restricted>false</restricted>
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>

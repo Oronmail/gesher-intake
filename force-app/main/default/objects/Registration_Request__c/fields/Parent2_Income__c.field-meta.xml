@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Father_Occupation__c</fullName>
-    <label>עיסוק האב</label>
-    <type>Text</type>
-    <length>100</length>
+    <fullName>Parent2_Income__c</fullName>
+    <externalId>false</externalId>
+    <label>הכנסת הורה2</label>
+    <length>50</length>
     <required>false</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
 </CustomField>
