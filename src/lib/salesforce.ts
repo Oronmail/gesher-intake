@@ -57,7 +57,7 @@ export interface RegistrationRequestData {
   parent2Profession?: string;
   parent2Income?: string;
   debtsLoans?: string;
-  parentInvolvement: 'inhibiting' | 'promoting' | 'no_involvement';
+  parentInvolvement: string;
   economicStatus: 'low' | 'medium' | 'high';
   economicDetails?: string;
   familyBackground?: string;
@@ -298,9 +298,7 @@ class SalesforceService {
         Parent2_Profession__c: data.parent2Profession,
         Parent2_Income__c: data.parent2Income || '',
         Debts_Loans__c: data.debtsLoans || '',
-        Parent_Involvement__c: 
-          data.parentInvolvement === 'inhibiting' ? 'Inhibiting' :
-          data.parentInvolvement === 'promoting' ? 'Promoting' : 'No Involvement',
+        Parent_Involvement__c: data.parentInvolvement || '',
         Economic_Status__c: 
           data.economicStatus === 'low' ? 'Low' :
           data.economicStatus === 'medium' ? 'Medium' : 'High',
@@ -527,9 +525,7 @@ class SalesforceService {
         Parent2_Profession__c: data.parent2Profession,
         Parent2_Income__c: data.parent2Income || '',
         Debts_Loans__c: data.debtsLoans || '',
-        Parent_Involvement__c: 
-          data.parentInvolvement === 'inhibiting' ? 'Inhibiting' :
-          data.parentInvolvement === 'promoting' ? 'Promoting' : 'No Involvement',
+        Parent_Involvement__c: data.parentInvolvement || '',
         Economic_Status__c: 
           data.economicStatus === 'low' ? 'Low' :
           data.economicStatus === 'medium' ? 'Medium' : 'High',

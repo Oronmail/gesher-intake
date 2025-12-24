@@ -367,9 +367,7 @@ class SalesforceJWTService {
         Parent2_Profession__c: data.parent2Profession || '',
         Parent2_Income__c: data.parent2Income || '',
         Debts_Loans__c: data.debtsLoans || '',
-        Parent_Involvement__c: data.parentInvolvement ? 
-          (data.parentInvolvement === 'inhibiting' ? 'Inhibiting' : 
-           data.parentInvolvement === 'promoting' ? 'Promoting' : 'No Involvement') : '',
+        Parent_Involvement__c: data.parentInvolvement || '',
         Economic_Status__c: data.economicStatus ? 
           (data.economicStatus === 'low' ? 'Low' : 
            data.economicStatus === 'medium' ? 'Medium' : 'High') : '',
@@ -865,9 +863,7 @@ class SalesforceJWTService {
       if (data.parent2Profession && typeof data.parent2Profession === 'string' && data.parent2Profession.trim()) updateData.Parent2_Profession__c = data.parent2Profession;
       if (data.parent2Income && typeof data.parent2Income === 'string' && data.parent2Income.trim()) updateData.Parent2_Income__c = data.parent2Income;
       if (data.debtsLoans && typeof data.debtsLoans === 'string' && data.debtsLoans.trim()) updateData.Debts_Loans__c = data.debtsLoans;
-      if (data.parentInvolvement !== undefined) updateData.Parent_Involvement__c =
-        data.parentInvolvement === 'inhibiting' ? 'Inhibiting' :
-        data.parentInvolvement === 'promoting' ? 'Promoting' : 'No Involvement';
+      if (data.parentInvolvement && typeof data.parentInvolvement === 'string' && data.parentInvolvement.trim()) updateData.Parent_Involvement__c = data.parentInvolvement;
 
       // Background
       if (data.economicStatus && data.economicStatus !== '') {

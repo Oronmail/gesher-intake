@@ -71,7 +71,7 @@ export async function GET(
       parent2_profession: sfData.Parent2_Profession__c || '',
       parent2_income: sfData.Parent2_Income__c || '',
       debts_loans: sfData.Debts_Loans__c || '',
-      parent_involvement: sfData.Parent_Involvement__c?.toLowerCase().replace(' ', '_') || '',
+      parent_involvement: sfData.Parent_Involvement__c || '',
 
       // Background
       economic_status: sfData.Economic_Status__c?.toLowerCase() || '',
