@@ -83,11 +83,13 @@ export function isValidIsraeliId(id: string): boolean {
 }
 
 /**
- * Validate phone number (Israeli format)
+ * Validate phone number (lenient format to match client-side validation)
  */
 export function isValidPhone(phone: string): boolean {
-  const phoneRegex = /^(\+972|0)([23489]|5[0248]|7[2-9])\d{7}$/
-  return phoneRegex.test(phone.replace(/[-\s]/g, ''))
+  if (!phone) return true  // Empty is valid (handled by other validation)
+  const cleaned = phone.replace(/[-\s\(\)]/g, '')
+  // Allow any string with 9+ digits that only contains phone characters
+  return /^[\d\+]+$/.test(cleaned) && cleaned.replace(/\+/g, '').length >= 9
 }
 
 /**
