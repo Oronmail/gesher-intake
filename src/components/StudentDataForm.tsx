@@ -120,12 +120,12 @@ const formSchema = z.object({
   school_info_password: z.string().optional(),
   
   // מצב רווחה - mandatory fields
-  known_to_welfare: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+  known_to_welfare: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
   social_worker_name: z.string().optional(),
   social_worker_phone: z.string().optional(),
-  youth_promotion: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+  youth_promotion: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
   youth_worker_name: z.string().optional(),
@@ -164,11 +164,11 @@ const formSchema = z.object({
   counselor_phone: z.string().min(9, 'נא להזין טלפון יועצת'),
   
   // נתוני קליטה - mandatory dropdown fields
-  behavioral_issues: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+  behavioral_issues: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
   behavioral_issues_details: z.string().optional(),
-  has_potential: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+  has_potential: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
   potential_explanation: z.string().optional(),
@@ -181,53 +181,53 @@ const formSchema = z.object({
   afternoon_activities: z.string().optional(),
 
   // הערכת למידה - mandatory dropdown fields
-  learning_disability: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+  learning_disability: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
   learning_disability_explanation: z.string().optional(),
-  requires_remedial_teaching: z.enum(['', 'yes', 'no', 'unknown']),
-  adhd: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+  requires_remedial_teaching: z.enum(['', 'כן', 'לא', 'לא ידוע']),
+  adhd: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
   adhd_treatment: z.string().optional(),
-  assessment_done: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+  assessment_done: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
   assessment_file: z.any().optional(),
-  assessment_needed: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+  assessment_needed: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
   assessment_details: z.string().optional(),
 
   // הערכת סיכון - all mandatory dropdown fields
-  criminal_record: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+  criminal_record: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
   criminal_record_details: z.string().optional(),
-  drug_use: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+  drug_use: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
-  smoking: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+  smoking: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
   probation_officer: z.string().optional(),
   youth_probation_officer: z.string().optional(),
-  psychological_treatment: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+  psychological_treatment: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
-  psychiatric_treatment: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+  psychiatric_treatment: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
-  takes_medication: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+  takes_medication: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
   medication_description: z.string().optional(),
 
   // הערכה סופית - all mandatory
-  military_service_potential: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+  military_service_potential: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
-  can_handle_program: z.enum(['', 'yes', 'no', 'unknown']).refine((val) => val !== '', {
+  can_handle_program: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
   risk_level: z.number().min(1, 'נא לבחור רמת סיכון').max(10).nullable(),
@@ -244,7 +244,7 @@ const formSchema = z.object({
   grade_sheet: z.any().optional(),
 }).refine((data) => {
   // If behavioral_issues is 'yes', behavioral_issues_details must be filled
-  if (data.behavioral_issues === 'yes' && (!data.behavioral_issues_details || data.behavioral_issues_details.trim() === '')) {
+  if (data.behavioral_issues === 'כן' && (!data.behavioral_issues_details || data.behavioral_issues_details.trim() === '')) {
     return false
   }
   return true
@@ -253,7 +253,7 @@ const formSchema = z.object({
   path: ['behavioral_issues_details']
 }).refine((data) => {
   // If has_potential is 'yes', potential_explanation must be filled
-  if (data.has_potential === 'yes' && (!data.potential_explanation || data.potential_explanation.trim() === '')) {
+  if (data.has_potential === 'כן' && (!data.potential_explanation || data.potential_explanation.trim() === '')) {
     return false
   }
   return true
@@ -293,7 +293,7 @@ const formSchema = z.object({
   path: ['parent2_profession']
 }).refine((data) => {
   // If ADHD is 'yes', adhd_treatment must be filled
-  if (data.adhd === 'yes' && (!data.adhd_treatment || data.adhd_treatment.trim() === '')) {
+  if (data.adhd === 'כן' && (!data.adhd_treatment || data.adhd_treatment.trim() === '')) {
     return false
   }
   return true
@@ -302,7 +302,7 @@ const formSchema = z.object({
   path: ['adhd_treatment']
 }).refine((data) => {
   // If criminal_record is 'yes', criminal_record_details must be filled
-  if (data.criminal_record === 'yes' && (!data.criminal_record_details || data.criminal_record_details.trim() === '')) {
+  if (data.criminal_record === 'כן' && (!data.criminal_record_details || data.criminal_record_details.trim() === '')) {
     return false
   }
   return true
@@ -463,7 +463,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 if (isDropdownField) {
                   // For dropdown: only 'yes', 'no', 'unknown' are valid completed values
                   // Empty string, null, or legacy 'false'/'true' strings from old saves should NOT be considered completed
-                  if (value === 'yes' || value === 'no' || value === 'unknown') {
+                  if (value === 'כן' || value === 'לא' || value === 'לא ידוע') {
                     isCompleted = true
                   }
                 } else if (isNumericField) {
@@ -484,7 +484,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
               if (sfData.assessmentFileUploaded === true) {
                 completedSet.add('assessment_file')
                 // Auto-check "נעשה אבחון" dropdown when assessment file exists
-                setValue('assessment_done', 'yes')
+                setValue('assessment_done', 'כן')
                 completedSet.add('assessment_done')
               }
               if (sfData.gradeSheetUploaded === true) {
@@ -543,28 +543,28 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       clearErrors(['behavioral_issues_details', 'potential_explanation', 'learning_disability_explanation', 'adhd_treatment', 'assessment_file'])
 
       // Check behavioral_issues_details if behavioral_issues is 'yes'
-      if (formValues.behavioral_issues === 'yes' &&
+      if (formValues.behavioral_issues === 'כן' &&
           (!formValues.behavioral_issues_details || formValues.behavioral_issues_details.trim() === '')) {
         setError('behavioral_issues_details', { type: 'manual', message: 'נא למלא שדה זה' })
         conditionalValid = false
       }
 
       // Check potential_explanation if has_potential is 'yes'
-      if (formValues.has_potential === 'yes' &&
+      if (formValues.has_potential === 'כן' &&
           (!formValues.potential_explanation || formValues.potential_explanation.trim() === '')) {
         setError('potential_explanation', { type: 'manual', message: 'נא למלא שדה זה' })
         conditionalValid = false
       }
 
       // Check learning_disability_explanation if learning_disability is 'yes'
-      if (formValues.learning_disability === 'yes' &&
+      if (formValues.learning_disability === 'כן' &&
           (!formValues.learning_disability_explanation || formValues.learning_disability_explanation.trim() === '')) {
         setError('learning_disability_explanation', { type: 'manual', message: 'נא למלא שדה זה' })
         conditionalValid = false
       }
 
       // Check adhd_treatment if adhd is 'yes'
-      if (formValues.adhd === 'yes' &&
+      if (formValues.adhd === 'כן' &&
           (!formValues.adhd_treatment || formValues.adhd_treatment.trim() === '')) {
         setError('adhd_treatment', { type: 'manual', message: 'נא למלא שדה זה' })
         conditionalValid = false
@@ -572,7 +572,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
       // Check assessment_file if assessment_done is 'yes'
       // Skip validation if file was already uploaded previously (marked in completedFields)
-      if (formValues.assessment_done === 'yes' &&
+      if (formValues.assessment_done === 'כן' &&
           (!formValues.assessment_file || formValues.assessment_file.length === 0) &&
           !completedFields.has('assessment_file')) {
         setError('assessment_file', { type: 'manual', message: 'נא להעלות קובץ אבחון' })
@@ -680,7 +680,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
           // Dropdown fields: mark as completed if yes/no/unknown selected
           if (isDropdownField) {
-            if (value === 'yes' || value === 'no' || value === 'unknown') {
+            if (value === 'כן' || value === 'לא' || value === 'לא ידוע') {
               newCompleted.add(key)
             }
           }
@@ -738,19 +738,19 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
         const fields: string[] = ['behavioral_issues', 'has_potential', 'motivation_level', 'social_status', 'learning_disability', 'adhd', 'assessment_done', 'assessment_needed']
         const formValues = getValues()
         // Add conditional required fields if answered 'yes'
-        if (formValues.behavioral_issues === 'yes') {
+        if (formValues.behavioral_issues === 'כן') {
           fields.push('behavioral_issues_details')
         }
-        if (formValues.has_potential === 'yes') {
+        if (formValues.has_potential === 'כן') {
           fields.push('potential_explanation')
         }
-        if (formValues.learning_disability === 'yes') {
+        if (formValues.learning_disability === 'כן') {
           fields.push('learning_disability_explanation')
         }
-        if (formValues.adhd === 'yes') {
+        if (formValues.adhd === 'כן') {
           fields.push('adhd_treatment')
         }
-        if (formValues.assessment_done === 'yes') {
+        if (formValues.assessment_done === 'כן') {
           fields.push('assessment_file')
         }
         return fields
@@ -759,7 +759,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       case 5: {
         const fields: string[] = ['criminal_record', 'drug_use', 'smoking', 'psychological_treatment', 'psychiatric_treatment', 'takes_medication']
         const formValues = getValues()
-        if (formValues.criminal_record === 'yes') {
+        if (formValues.criminal_record === 'כן') {
           fields.push('criminal_record_details')
         }
         return fields
@@ -2050,9 +2050,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                         >
                           <option value="">בחר</option>
-                          <option value="yes">כן</option>
-                          <option value="no">לא</option>
-                          <option value="unknown">לא ידוע</option>
+                          <option value="כן">כן</option>
+                          <option value="לא">לא</option>
+                          <option value="לא ידוע">לא ידוע</option>
                         </select>
                       </FieldWrapper>
                       {errors.known_to_welfare && (
@@ -2062,7 +2062,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         </p>
                       )}
 
-                      {watch('known_to_welfare') === 'yes' && (
+                      {watch('known_to_welfare') === 'כן' && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 animate-fadeIn">
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -2111,9 +2111,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                         >
                           <option value="">בחר</option>
-                          <option value="yes">כן</option>
-                          <option value="no">לא</option>
-                          <option value="unknown">לא ידוע</option>
+                          <option value="כן">כן</option>
+                          <option value="לא">לא</option>
+                          <option value="לא ידוע">לא ידוע</option>
                         </select>
                       </FieldWrapper>
                       {errors.youth_promotion && (
@@ -2123,7 +2123,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         </p>
                       )}
                       
-                      {watch('youth_promotion') === 'yes' && (
+                      {watch('youth_promotion') === 'כן' && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 animate-fadeIn">
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -2181,9 +2181,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                         >
                           <option value="">בחר</option>
-                          <option value="yes">כן</option>
-                          <option value="no">לא</option>
-                          <option value="unknown">לא ידוע</option>
+                          <option value="כן">כן</option>
+                          <option value="לא">לא</option>
+                          <option value="לא ידוע">לא ידוע</option>
                         </select>
                       </FieldWrapper>
                       {errors.behavioral_issues && (
@@ -2205,9 +2205,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                         >
                           <option value="">בחר</option>
-                          <option value="yes">כן</option>
-                          <option value="no">לא</option>
-                          <option value="unknown">לא ידוע</option>
+                          <option value="כן">כן</option>
+                          <option value="לא">לא</option>
+                          <option value="לא ידוע">לא ידוע</option>
                         </select>
                       </FieldWrapper>
                       {errors.has_potential && (
@@ -2220,7 +2220,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   </div>
 
                   {/* Conditional Detail Fields */}
-                  {watch('behavioral_issues') === 'yes' && (
+                  {watch('behavioral_issues') === 'כן' && (
                     <div className="bg-white rounded-xl p-6 border border-gray-200 animate-fadeIn">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         פרט בעיות התנהגות
@@ -2243,7 +2243,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     </div>
                   )}
 
-                  {watch('has_potential') === 'yes' && (
+                  {watch('has_potential') === 'כן' && (
                     <div className="bg-white rounded-xl p-6 border border-gray-200 animate-fadeIn">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         הסבר על הפוטנציאל
@@ -2356,9 +2356,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                       >
                         <option value="">בחר</option>
-                        <option value="yes">כן</option>
-                        <option value="no">לא</option>
-                        <option value="unknown">לא ידוע</option>
+                        <option value="כן">כן</option>
+                        <option value="לא">לא</option>
+                        <option value="לא ידוע">לא ידוע</option>
                       </select>
                     </FieldWrapper>
                     {errors.learning_disability && (
@@ -2368,7 +2368,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       </p>
                     )}
 
-                    {watch('learning_disability') === 'yes' && (
+                    {watch('learning_disability') === 'כן' && (
                       <div className="mt-4 animate-fadeIn space-y-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -2400,9 +2400,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                               className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                             >
                               <option value="">בחר</option>
-                              <option value="yes">כן</option>
-                              <option value="no">לא</option>
-                              <option value="unknown">לא ידוע</option>
+                              <option value="כן">כן</option>
+                              <option value="לא">לא</option>
+                              <option value="לא ידוע">לא ידוע</option>
                             </select>
                           </FieldWrapper>
                         </div>
@@ -2421,9 +2421,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                       >
                         <option value="">בחר</option>
-                        <option value="yes">כן</option>
-                        <option value="no">לא</option>
-                        <option value="unknown">לא ידוע</option>
+                        <option value="כן">כן</option>
+                        <option value="לא">לא</option>
+                        <option value="לא ידוע">לא ידוע</option>
                       </select>
                     </FieldWrapper>
                     {errors.adhd && (
@@ -2433,7 +2433,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       </p>
                     )}
 
-                    {watch('adhd') === 'yes' && (
+                    {watch('adhd') === 'כן' && (
                       <div className="mt-4 animate-fadeIn">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           האם הפרעת הקשב מטופלת? כיצד?
@@ -2484,9 +2484,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                         >
                           <option value="">בחר</option>
-                          <option value="yes">כן</option>
-                          <option value="no">לא</option>
-                          <option value="unknown">לא ידוע</option>
+                          <option value="כן">כן</option>
+                          <option value="לא">לא</option>
+                          <option value="לא ידוע">לא ידוע</option>
                         </select>
                       </FieldWrapper>
                       {errors.assessment_done && (
@@ -2508,9 +2508,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                         >
                           <option value="">בחר</option>
-                          <option value="yes">כן</option>
-                          <option value="no">לא</option>
-                          <option value="unknown">לא ידוע</option>
+                          <option value="כן">כן</option>
+                          <option value="לא">לא</option>
+                          <option value="לא ידוע">לא ידוע</option>
                         </select>
                       </FieldWrapper>
                       {errors.assessment_needed && (
@@ -2522,7 +2522,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     </div>
                   </div>
 
-                  {watch('assessment_done') === 'yes' && (
+                  {watch('assessment_done') === 'כן' && (
                     <div className="animate-fadeIn space-y-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -2566,7 +2566,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     </div>
                     )}
 
-                  {watch('assessment_needed') === 'yes' && watch('assessment_done') !== 'yes' && (
+                  {watch('assessment_needed') === 'כן' && watch('assessment_done') !== 'כן' && (
                     <div className="animate-fadeIn">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         פרטים על האבחון הנדרש
@@ -2618,9 +2618,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                       >
                         <option value="">בחר</option>
-                        <option value="yes">כן</option>
-                        <option value="no">לא</option>
-                        <option value="unknown">לא ידוע</option>
+                        <option value="כן">כן</option>
+                        <option value="לא">לא</option>
+                        <option value="לא ידוע">לא ידוע</option>
                       </select>
                     </FieldWrapper>
                     {errors.criminal_record && (
@@ -2642,9 +2642,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                       >
                         <option value="">בחר</option>
-                        <option value="yes">כן</option>
-                        <option value="no">לא</option>
-                        <option value="unknown">לא ידוע</option>
+                        <option value="כן">כן</option>
+                        <option value="לא">לא</option>
+                        <option value="לא ידוע">לא ידוע</option>
                       </select>
                     </FieldWrapper>
                     {errors.drug_use && (
@@ -2666,9 +2666,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                       >
                         <option value="">בחר</option>
-                        <option value="yes">כן</option>
-                        <option value="no">לא</option>
-                        <option value="unknown">לא ידוע</option>
+                        <option value="כן">כן</option>
+                        <option value="לא">לא</option>
+                        <option value="לא ידוע">לא ידוע</option>
                       </select>
                     </FieldWrapper>
                     {errors.smoking && (
@@ -2680,7 +2680,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   </div>
                 </div>
 
-                {watch('criminal_record') === 'yes' && (
+                {watch('criminal_record') === 'כן' && (
                   <div className="mt-6 animate-fadeIn">
                     <div className="bg-red-50 rounded-xl p-4 border border-red-100">
                       <div className="mb-4">
@@ -2767,9 +2767,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                         >
                           <option value="">בחר</option>
-                          <option value="yes">כן</option>
-                          <option value="no">לא</option>
-                          <option value="unknown">לא ידוע</option>
+                          <option value="כן">כן</option>
+                          <option value="לא">לא</option>
+                          <option value="לא ידוע">לא ידוע</option>
                         </select>
                       </FieldWrapper>
                       {errors.psychological_treatment && (
@@ -2791,9 +2791,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                         >
                           <option value="">בחר</option>
-                          <option value="yes">כן</option>
-                          <option value="no">לא</option>
-                          <option value="unknown">לא ידוע</option>
+                          <option value="כן">כן</option>
+                          <option value="לא">לא</option>
+                          <option value="לא ידוע">לא ידוע</option>
                         </select>
                       </FieldWrapper>
                       {errors.psychiatric_treatment && (
@@ -2816,9 +2816,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                       >
                         <option value="">בחר</option>
-                        <option value="yes">כן</option>
-                        <option value="no">לא</option>
-                        <option value="unknown">לא ידוע</option>
+                        <option value="כן">כן</option>
+                        <option value="לא">לא</option>
+                        <option value="לא ידוע">לא ידוע</option>
                       </select>
                     </FieldWrapper>
                     {errors.takes_medication && (
@@ -2828,7 +2828,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       </p>
                     )}
 
-                    {watch('takes_medication') === 'yes' && (
+                    {watch('takes_medication') === 'כן' && (
                       <div className="mt-4 animate-fadeIn">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           תיאור התרופות והמינונים
@@ -2876,9 +2876,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                       >
                         <option value="">בחר</option>
-                        <option value="yes">כן</option>
-                        <option value="no">לא</option>
-                        <option value="unknown">לא ידוע</option>
+                        <option value="כן">כן</option>
+                        <option value="לא">לא</option>
+                        <option value="לא ידוע">לא ידוע</option>
                       </select>
                     </FieldWrapper>
                     {errors.military_service_potential && (
@@ -2900,9 +2900,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
                       >
                         <option value="">בחר</option>
-                        <option value="yes">כן</option>
-                        <option value="no">לא</option>
-                        <option value="unknown">לא ידוע</option>
+                        <option value="כן">כן</option>
+                        <option value="לא">לא</option>
+                        <option value="לא ידוע">לא ידוע</option>
                       </select>
                     </FieldWrapper>
                     {errors.can_handle_program && (
