@@ -212,6 +212,7 @@ class SalesforceJWTService {
         Name: data.referralNumber,  // Using standard Name field
         Status__c: 'Pending Consent',
         School_Counselor_Name__c: data.counselorName,
+        Counselor_Email__c: data.counselorEmail || '',
         School_Counselor_Phone__c: data.counselorMobile,
         School_Name__c: data.schoolName,
         Warm_Home_Destination__c: data.warmHomeDestination || '',
