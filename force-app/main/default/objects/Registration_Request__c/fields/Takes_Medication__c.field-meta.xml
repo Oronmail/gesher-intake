@@ -2,9 +2,29 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Takes_Medication__c</fullName>
     <label>נטילת תרופות</label>
-    <type>Text</type>
-    <length>10</length>
+    <type>Picklist</type>
     <required>false</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
+    <valueSet>
+        <restricted>false</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>כן</fullName>
+                <default>false</default>
+                <label>כן</label>
+            </value>
+            <value>
+                <fullName>לא</fullName>
+                <default>false</default>
+                <label>לא</label>
+            </value>
+            <value>
+                <fullName>לא ידוע</fullName>
+                <default>false</default>
+                <label>לא ידוע</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
 </CustomField>

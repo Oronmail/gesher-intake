@@ -170,9 +170,6 @@ const formSchema = z.object({
   behavioral_issues_details: z.string().optional(),
   potential_explanation: z.string().min(1, 'נא למלא שדה זה'),
   motivation_level: z.string().min(1, 'נא למלא שדה זה'),
-  motivation_type: z.enum(['internal', 'external'], {
-    message: 'נא לבחור סוג מוטיבציה'
-  }),
   external_motivators: z.string().optional(),
   social_status: z.string().min(1, 'נא להזין מצב חברתי'),
   afternoon_activities: z.string().optional(),
@@ -2157,52 +2154,29 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
             <div className="space-y-6 animate-fadeIn">
               <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-100 shadow-sm">
                 <div className="space-y-6">
-                  {/* Checkboxes Section */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        בעיות התנהגות
-                        <span className="text-red-500 mr-1">*</span>
-                      </label>
-                      <FieldWrapper fieldName="behavioral_issues" completedFields={completedFields}>
-                        <select
-                          {...register('behavioral_issues')}
-                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
-                        >
-                          <option value="">בחר</option>
-                          <option value="כן">כן</option>
-                          <option value="לא">לא</option>
-                          <option value="לא ידוע">לא ידוע</option>
-                        </select>
-                      </FieldWrapper>
-                      {errors.behavioral_issues && (
-                        <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
-                          <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                          נא לבחור אפשרות
-                        </p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        פוטנציאל התלמיד
-                        <span className="text-red-500 mr-1">*</span>
-                      </label>
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
-                        <textarea
-                          {...register('potential_explanation')}
-                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
-                          rows={3}
-                          placeholder="פרט על הפוטנציאל של התלמיד..."
-                        />
-                      </FieldWrapper>
-                      {errors.potential_explanation && (
-                        <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
-                          <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                          {errors.potential_explanation.message}
-                        </p>
-                      )}
-                    </div>
+                  {/* Behavioral Issues Section */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      בעיות התנהגות
+                      <span className="text-red-500 mr-1">*</span>
+                    </label>
+                    <FieldWrapper fieldName="behavioral_issues" completedFields={completedFields}>
+                      <select
+                        {...register('behavioral_issues')}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
+                      >
+                        <option value="">בחר</option>
+                        <option value="כן">כן</option>
+                        <option value="לא">לא</option>
+                        <option value="לא ידוע">לא ידוע</option>
+                      </select>
+                    </FieldWrapper>
+                    {errors.behavioral_issues && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        נא לבחור אפשרות
+                      </p>
+                    )}
                   </div>
 
                   {/* Conditional Detail Fields */}
@@ -2228,6 +2202,28 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       )}
                     </div>
                   )}
+
+                  {/* Student Potential */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      פוטנציאל התלמיד
+                      <span className="text-red-500 mr-1">*</span>
+                    </label>
+                    <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
+                      <textarea
+                        {...register('potential_explanation')}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                        rows={3}
+                        placeholder="פרט על הפוטנציאל של התלמיד..."
+                      />
+                    </FieldWrapper>
+                    {errors.potential_explanation && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        {errors.potential_explanation.message}
+                      </p>
+                    )}
+                  </div>
 
                   {/* Motivation Section */}
                   <div>

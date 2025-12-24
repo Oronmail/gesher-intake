@@ -142,7 +142,6 @@ export async function POST(request: NextRequest) {
       behavioralIssuesDetails: studentData.behavioral_issues_details,
       potentialExplanation: studentData.potential_explanation,
       motivationLevel: studentData.motivation_level,
-      motivationType: studentData.motivation_type,
       externalMotivators: studentData.external_motivators,
       socialStatus: studentData.social_status,
       afternoonActivities: studentData.afternoon_activities,
@@ -159,6 +158,7 @@ export async function POST(request: NextRequest) {
 
       // Risk Assessment
       criminalRecord: studentData.criminal_record,
+      criminalRecordDetails: studentData.criminal_record_details,
       drugUse: studentData.drug_use,
       smoking: studentData.smoking,
       probationOfficer: studentData.probation_officer,

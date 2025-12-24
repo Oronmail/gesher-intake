@@ -91,7 +91,6 @@ export async function GET(
       behavioral_issues_details: sfData.Behavioral_Issues_Details__c || '',
       potential_explanation: sfData.Potential_Explanation__c || '',
       motivation_level: sfData.Motivation_Level__c || '',
-      motivation_type: sfData.Motivation_Type__c?.toLowerCase() || '',
       external_motivators: sfData.External_Motivators__c || '',
       social_status: sfData.Social_Status__c || '',
       afternoon_activities: sfData.Afternoon_Activities__c || '',
@@ -108,6 +107,7 @@ export async function GET(
 
       // Risk Assessment
       criminal_record: sfData.Criminal_Record__c ?? null,
+      criminal_record_details: sfData.Criminal_Record_Details__c || '',
       drug_use: sfData.Drug_Use__c ?? null,
       smoking: sfData.Smoking__c ?? null,
       probation_officer: sfData.Probation_Officer__c || '',

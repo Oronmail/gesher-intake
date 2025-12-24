@@ -693,6 +693,15 @@ NODE_ENV=production
   - [x] Allows counselors to save progress and return later
   - [x] Navigation through completed steps without re-entering data
 
+- [x] **FIELD TYPE CONVERSION & BUG FIXES - December 2025**
+  - [x] Converted 16 Checkbox fields to Picklist type with כן/לא/לא ידוע options
+  - [x] Fields converted: Known_to_Welfare__c, Youth_Promotion__c, Behavioral_Issues__c, Learning_Disability__c, Requires_Remedial_Teaching__c, ADHD__c, Assessment_Done__c, Assessment_Needed__c, Criminal_Record__c, Drug_Use__c, Smoking__c, Psychological_Treatment__c, Psychiatric_Treatment__c, Takes_Medication__c, Military_Service_Potential__c, Can_Handle_Program__c
+  - [x] Removed unused Motivation_Type__c field from all code
+  - [x] Added missing Criminal_Record_Details__c field to salesforce-jwt.ts (createStudentData, SOQL query, updateStudentData)
+  - [x] Added Criminal_Record_Details__c to API routes (get-progress, save-progress, student-data)
+  - [x] All 83 Salesforce fields now properly mapped from form submissions
+  - [x] Deployed field changes to Salesforce sandbox
+
 ### 🚧 Pending Features
 - [ ] Authentication for counselors
 - [ ] Admin dashboard
@@ -961,47 +970,49 @@ SALESFORCE_ACCESS_TOKEN=your_token node test-connection.js
 - `Failing_Subjects__c` - Text(255)
 
 #### Welfare & Social Services
-- `Known_to_Welfare__c` - Checkbox
+- `Known_to_Welfare__c` - Picklist - ['כן', 'לא', 'לא ידוע']
 - `Social_Worker_Name__c` - Text(100)
 - `Social_Worker_Phone__c` - Phone
-- `Youth_Promotion__c` - Checkbox
+- `Youth_Promotion__c` - Picklist - ['כן', 'לא', 'לא ידוע']
 - `Youth_Worker_Name__c` - Text(100)
 - `Youth_Worker_Phone__c` - Phone
 
 #### Assessment
-- `Behavioral_Issues__c` - Checkbox
-- `Has_Potential__c` - Checkbox
-- `Motivation_Level__c` - Picklist - ['Low', 'Medium', 'High']
-- `Motivation_Type__c` - Picklist - ['Internal', 'External']
+- `Behavioral_Issues__c` - Picklist - ['כן', 'לא', 'לא ידוע']
+- `Behavioral_Issues_Details__c` - LongTextArea(4000)
+- `Potential_Explanation__c` - LongTextArea(4000)
+- `Motivation_Level__c` - Text(255)
 - `External_Motivators__c` - Text(255)
 - `Social_Status__c` - Text(255)
 - `Afternoon_Activities__c` - Text(255)
 
 #### Learning & Health
-- `Learning_Disability__c` - Checkbox
-- `Requires_Remedial_Teaching__c` - Checkbox
-- `ADHD__c` - Checkbox
+- `Learning_Disability__c` - Picklist - ['כן', 'לא', 'לא ידוע']
+- `Learning_Disability_Explanation__c` - LongTextArea(4000)
+- `Requires_Remedial_Teaching__c` - Picklist - ['כן', 'לא', 'לא ידוע']
+- `ADHD__c` - Picklist - ['כן', 'לא', 'לא ידוע']
 - `ADHD_Treatment__c` - Text(255)
-- `Assessment_Done__c` - Checkbox
-- `Assessment_Needed__c` - Checkbox
+- `Assessment_Done__c` - Picklist - ['כן', 'לא', 'לא ידוע']
+- `Assessment_Needed__c` - Picklist - ['כן', 'לא', 'לא ידוע']
 - `Assessment_Details__c` - LongTextArea(4000)
 
 #### Risk Assessment
-- `Criminal_Record__c` - Checkbox
-- `Drug_Use__c` - Checkbox
-- `Smoking__c` - Checkbox
+- `Criminal_Record__c` - Picklist - ['כן', 'לא', 'לא ידוע']
+- `Criminal_Record_Details__c` - LongTextArea(4000)
+- `Drug_Use__c` - Picklist - ['כן', 'לא', 'לא ידוע']
+- `Smoking__c` - Picklist - ['כן', 'לא', 'לא ידוע']
 - `Probation_Officer__c` - Text(100)
 - `Youth_Probation_Officer__c` - Text(100)
-- `Psychological_Treatment__c` - Checkbox
-- `Psychiatric_Treatment__c` - Checkbox
-- `Takes_Medication__c` - Checkbox
+- `Psychological_Treatment__c` - Picklist - ['כן', 'לא', 'לא ידוע']
+- `Psychiatric_Treatment__c` - Picklist - ['כן', 'לא', 'לא ידוע']
+- `Takes_Medication__c` - Picklist - ['כן', 'לא', 'לא ידוע']
 - `Medication_Description__c` - Text(255)
 - `Risk_Level__c` - Number(2,0)
 - `Risk_Factors__c` - LongTextArea(4000)
 
 #### Final Assessment
-- `Military_Service_Potential__c` - Checkbox
-- `Can_Handle_Program__c` - Checkbox
+- `Military_Service_Potential__c` - Picklist - ['כן', 'לא', 'לא ידוע']
+- `Can_Handle_Program__c` - Picklist - ['כן', 'לא', 'לא ידוע']
 - `Personal_Opinion__c` - LongTextArea(4000)
 
 ### Deployment Commands
@@ -1346,8 +1357,8 @@ This is a pro bono project developed for Gesher Al HaNoar. For technical questio
 
 ---
 
-*Last Updated: December 2025 (Mandatory Field Validation Overhaul)*
-*Project Status: ✅ Fully Operational in Production with Comprehensive Field Validation*
+*Last Updated: December 2025 (Field Type Conversion & Criminal_Record_Details Fix)*
+*Project Status: ✅ Fully Operational in Production with 16 Picklist Fields & Complete Field Mappings*
 *Live URL: https://gesher-intake.vercel.app*
 *Repository: https://github.com/Oronmail/gesher-intake (Private)*
 *Email Service: Gmail SMTP (gesheryouth@gmail.com)*

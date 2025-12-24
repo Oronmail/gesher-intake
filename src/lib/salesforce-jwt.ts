@@ -397,8 +397,6 @@ class SalesforceJWTService {
         Behavioral_Issues_Details__c: data.behavioralIssuesDetails || '',
         Potential_Explanation__c: data.potentialExplanation || '',
         Motivation_Level__c: data.motivationLevel || '',
-        Motivation_Type__c: data.motivationType ? 
-          (data.motivationType === 'internal' ? 'Internal' : 'External') : '',
         External_Motivators__c: data.externalMotivators || '',
         Social_Status__c: data.socialStatus || '',
         Afternoon_Activities__c: data.afternoonActivities || '',
@@ -415,6 +413,7 @@ class SalesforceJWTService {
         
         // Risk Assessment
         Criminal_Record__c: data.criminalRecord || '',
+        Criminal_Record_Details__c: data.criminalRecordDetails || '',
         Drug_Use__c: data.drugUse || '',
         Smoking__c: data.smoking || '',
         Probation_Officer__c: data.probationOfficer || '',
@@ -755,12 +754,12 @@ class SalesforceJWTService {
            School_Name__c, Grade__c, Homeroom_Teacher__c, Teacher_Phone__c,
            School_Counselor_Name__c, School_Counselor_Phone__c,
            Behavioral_Issues__c, Behavioral_Issues_Details__c,
-           Potential_Explanation__c, Motivation_Level__c, Motivation_Type__c,
+           Potential_Explanation__c, Motivation_Level__c,
            External_Motivators__c, Social_Status__c, Afternoon_Activities__c,
            Learning_Disability__c, Learning_Disability_Explanation__c,
            Requires_Remedial_Teaching__c, ADHD__c, ADHD_Treatment__c,
            Assessment_Done__c, Assessment_Needed__c, Assessment_Details__c,
-           Criminal_Record__c, Drug_Use__c, Smoking__c, Probation_Officer__c,
+           Criminal_Record__c, Criminal_Record_Details__c, Drug_Use__c, Smoking__c, Probation_Officer__c,
            Youth_Probation_Officer__c, Psychological_Treatment__c,
            Psychiatric_Treatment__c, Takes_Medication__c, Medication_Description__c,
            Military_Service_Potential__c, Can_Handle_Program__c, Risk_Level__c,
@@ -884,8 +883,6 @@ class SalesforceJWTService {
       if (data.behavioralIssuesDetails && typeof data.behavioralIssuesDetails === 'string' && data.behavioralIssuesDetails.trim()) updateData.Behavioral_Issues_Details__c = data.behavioralIssuesDetails;
       if (data.potentialExplanation && typeof data.potentialExplanation === 'string' && data.potentialExplanation.trim()) updateData.Potential_Explanation__c = data.potentialExplanation;
       if (data.motivationLevel && typeof data.motivationLevel === 'string' && data.motivationLevel.trim()) updateData.Motivation_Level__c = data.motivationLevel;
-      if (data.motivationType !== undefined) updateData.Motivation_Type__c =
-        data.motivationType === 'internal' ? 'Internal' : 'External';
       if (data.externalMotivators && typeof data.externalMotivators === 'string' && data.externalMotivators.trim()) updateData.External_Motivators__c = data.externalMotivators;
       if (data.socialStatus && typeof data.socialStatus === 'string' && data.socialStatus.trim()) updateData.Social_Status__c = data.socialStatus;
       if (data.afternoonActivities && typeof data.afternoonActivities === 'string' && data.afternoonActivities.trim()) updateData.Afternoon_Activities__c = data.afternoonActivities;
@@ -902,6 +899,7 @@ class SalesforceJWTService {
 
       // Risk assessment
       if (data.criminalRecord !== undefined) updateData.Criminal_Record__c = data.criminalRecord;
+      if (data.criminalRecordDetails && typeof data.criminalRecordDetails === 'string' && data.criminalRecordDetails.trim()) updateData.Criminal_Record_Details__c = data.criminalRecordDetails;
       if (data.drugUse !== undefined) updateData.Drug_Use__c = data.drugUse;
       if (data.smoking !== undefined) updateData.Smoking__c = data.smoking;
       if (data.probationOfficer && typeof data.probationOfficer === 'string' && data.probationOfficer.trim()) updateData.Probation_Officer__c = data.probationOfficer;

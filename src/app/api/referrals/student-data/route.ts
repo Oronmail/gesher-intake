@@ -149,7 +149,6 @@ export async function POST(request: NextRequest) {
       behavioralIssuesDetails: studentData.behavioral_issues_details,
       potentialExplanation: studentData.potential_explanation,
       motivationLevel: studentData.motivation_level,
-      motivationType: studentData.motivation_type,
       externalMotivators: studentData.external_motivators,
       socialStatus: studentData.social_status,
       afternoonActivities: studentData.afternoon_activities,
@@ -166,6 +165,7 @@ export async function POST(request: NextRequest) {
       
       // Risk Assessment (from form)
       criminalRecord: studentData.criminal_record || false,
+      criminalRecordDetails: studentData.criminal_record_details,
       drugUse: studentData.drug_use || false,
       smoking: studentData.smoking || false,
       probationOfficer: studentData.probation_officer,
