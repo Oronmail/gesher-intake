@@ -869,9 +869,11 @@ class SalesforceJWTService {
         data.parentInvolvement === 'promoting' ? 'Promoting' : 'No Involvement';
 
       // Background
-      if (data.economicStatus !== undefined) updateData.Economic_Status__c =
-        data.economicStatus === 'low' ? 'Low' :
-        data.economicStatus === 'medium' ? 'Medium' : 'High';
+      if (data.economicStatus && data.economicStatus !== '') {
+        updateData.Economic_Status__c =
+          data.economicStatus === 'low' ? 'Low' :
+          data.economicStatus === 'medium' ? 'Medium' : 'High';
+      }
       if (data.economicDetails && typeof data.economicDetails === 'string' && data.economicDetails.trim()) updateData.Economic_Details__c = data.economicDetails;
       if (data.familyBackground && typeof data.familyBackground === 'string' && data.familyBackground.trim()) updateData.Family_Background__c = data.familyBackground;
 
