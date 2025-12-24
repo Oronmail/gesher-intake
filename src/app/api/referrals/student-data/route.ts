@@ -99,31 +99,27 @@ export async function POST(request: NextRequest) {
       schoolInfoUsername: studentData.school_info_username,
       schoolInfoPassword: studentData.school_info_password,
       
-      // Parent/Guardian Information (from Supabase consent)
-      parent1Name: referral.parent_names?.split(',')[0]?.trim() || '',
+      // Parent/Guardian Information (form data takes precedence over Supabase consent data)
+      parent1Name: studentData.parent1_name || referral.parent_names?.split(',')[0]?.trim() || '',
       parent1Id: '', // We don't store parent IDs in Supabase currently
       parent1Address: '',
-      parent1Phone: referral.parent_phone,
+      parent1Phone: studentData.parent1_phone || referral.parent_phone || '',
       parent1Signature: referral.signature_image || '',
-      parent2Name: referral.parent_names?.split(',')[1]?.trim(),
+      parent2Name: studentData.parent2_name || referral.parent_names?.split(',')[1]?.trim() || '',
       parent2Id: '',
       parent2Address: '',
-      parent2Phone: '',
+      parent2Phone: studentData.parent2_phone || '',
       parent2Signature: referral.signature_image2,
       parentEmail: referral.parent_email,
-      
+
       // Family Information (from form)
       siblingsCount: studentData.siblings_count || 0,
-      fatherName: studentData.father_name,
-      fatherMobile: studentData.father_mobile,
-      fatherOccupation: studentData.father_occupation,
-      fatherProfession: studentData.father_profession,
-      fatherIncome: studentData.father_income,
-      motherName: studentData.mother_name,
-      motherMobile: studentData.mother_mobile,
-      motherOccupation: studentData.mother_occupation,
-      motherProfession: studentData.mother_profession,
-      motherIncome: studentData.mother_income,
+      parent1Occupation: studentData.parent1_occupation,
+      parent1Profession: studentData.parent1_profession,
+      parent1Income: studentData.parent1_income,
+      parent2Occupation: studentData.parent2_occupation,
+      parent2Profession: studentData.parent2_profession,
+      parent2Income: studentData.parent2_income,
       debtsLoans: studentData.debts_loans,
       parentInvolvement: studentData.parent_involvement,
       economicStatus: studentData.economic_status,

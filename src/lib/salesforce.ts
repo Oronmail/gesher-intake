@@ -50,16 +50,12 @@ export interface RegistrationRequestData {
   
   // Family Information
   siblingsCount: number;
-  fatherName: string;
-  fatherMobile: string;
-  fatherOccupation: string;
-  fatherProfession: string;
-  fatherIncome?: string;
-  motherName: string;
-  motherMobile: string;
-  motherOccupation: string;
-  motherProfession: string;
-  motherIncome?: string;
+  parent1Occupation: string;
+  parent1Profession: string;
+  parent1Income?: string;
+  parent2Occupation?: string;
+  parent2Profession?: string;
+  parent2Income?: string;
   debtsLoans?: string;
   parentInvolvement: 'inhibiting' | 'promoting' | 'no_involvement';
   economicStatus: 'low' | 'medium' | 'high';
@@ -295,16 +291,12 @@ class SalesforceService {
         
         // Family Information
         Siblings_Count__c: data.siblingsCount,
-        Father_Name__c: data.fatherName,
-        Father_Mobile__c: data.fatherMobile,
-        Father_Occupation__c: data.fatherOccupation,
-        Father_Profession__c: data.fatherProfession,
-        Father_Income__c: data.fatherIncome || '',
-        Mother_Name__c: data.motherName,
-        Mother_Mobile__c: data.motherMobile,
-        Mother_Occupation__c: data.motherOccupation,
-        Mother_Profession__c: data.motherProfession,
-        Mother_Income__c: data.motherIncome || '',
+        Parent1_Occupation__c: data.parent1Occupation,
+        Parent1_Profession__c: data.parent1Profession,
+        Parent1_Income__c: data.parent1Income || '',
+        Parent2_Occupation__c: data.parent2Occupation,
+        Parent2_Profession__c: data.parent2Profession,
+        Parent2_Income__c: data.parent2Income || '',
         Debts_Loans__c: data.debtsLoans || '',
         Parent_Involvement__c: 
           data.parentInvolvement === 'inhibiting' ? 'Inhibiting' :
@@ -527,16 +519,12 @@ class SalesforceService {
         
         // Family Information
         Siblings_Count__c: data.siblingsCount,
-        Father_Name__c: data.fatherName,
-        Father_Mobile__c: data.fatherMobile,
-        Father_Occupation__c: data.fatherOccupation,
-        Father_Profession__c: data.fatherProfession,
-        Father_Income__c: data.fatherIncome || '',
-        Mother_Name__c: data.motherName,
-        Mother_Mobile__c: data.motherMobile,
-        Mother_Occupation__c: data.motherOccupation,
-        Mother_Profession__c: data.motherProfession,
-        Mother_Income__c: data.motherIncome || '',
+        Parent1_Occupation__c: data.parent1Occupation,
+        Parent1_Profession__c: data.parent1Profession,
+        Parent1_Income__c: data.parent1Income || '',
+        Parent2_Occupation__c: data.parent2Occupation,
+        Parent2_Profession__c: data.parent2Profession,
+        Parent2_Income__c: data.parent2Income || '',
         Debts_Loans__c: data.debtsLoans || '',
         Parent_Involvement__c: 
           data.parentInvolvement === 'inhibiting' ? 'Inhibiting' :

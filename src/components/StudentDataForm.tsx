@@ -133,16 +133,16 @@ const formSchema = z.object({
   
   // מידע משפחתי
   siblings_count: z.number().min(0).nullable(),
-  father_name: z.string().min(2, 'נא להזין שם הורה 1'),
-  father_mobile: z.string().min(9, 'נא להזין טלפון הורה 1'),
-  father_occupation: z.string().min(2, 'נא להזין עיסוק'),
-  father_profession: z.string().min(2, 'נא להזין מקצוע'),
-  father_income: z.string().optional(),
-  mother_name: z.string().optional(),
-  mother_mobile: z.string().optional(),
-  mother_occupation: z.string().optional(),
-  mother_profession: z.string().optional(),
-  mother_income: z.string().optional(),
+  parent1_name: z.string().min(2, 'נא להזין שם הורה 1'),
+  parent1_phone: z.string().min(9, 'נא להזין טלפון הורה 1'),
+  parent1_occupation: z.string().min(2, 'נא להזין עיסוק'),
+  parent1_profession: z.string().min(2, 'נא להזין מקצוע'),
+  parent1_income: z.string().optional(),
+  parent2_name: z.string().optional(),
+  parent2_phone: z.string().optional(),
+  parent2_occupation: z.string().optional(),
+  parent2_profession: z.string().optional(),
+  parent2_income: z.string().optional(),
   debts_loans: z.string().min(1, 'נא למלא שדה זה'),
   parent_involvement: z.string().min(1, 'נא למלא שדה זה'),
 
@@ -261,36 +261,36 @@ const formSchema = z.object({
   message: 'נא להסביר על הפוטנציאל',
   path: ['potential_explanation']
 }).refine((data) => {
-  // If mother_name is filled, mother_mobile, mother_occupation, and mother_profession must be filled
-  if (data.mother_name && data.mother_name.trim() !== '') {
-    if (!data.mother_mobile || data.mother_mobile.trim() === '') {
+  // If parent2_name is filled, parent2_phone, parent2_occupation, and parent2_profession must be filled
+  if (data.parent2_name && data.parent2_name.trim() !== '') {
+    if (!data.parent2_phone || data.parent2_phone.trim() === '') {
       return false
     }
   }
   return true
 }, {
   message: 'נא להזין נייד הורה 2',
-  path: ['mother_mobile']
+  path: ['parent2_phone']
 }).refine((data) => {
-  if (data.mother_name && data.mother_name.trim() !== '') {
-    if (!data.mother_occupation || data.mother_occupation.trim() === '') {
+  if (data.parent2_name && data.parent2_name.trim() !== '') {
+    if (!data.parent2_occupation || data.parent2_occupation.trim() === '') {
       return false
     }
   }
   return true
 }, {
   message: 'נא להזין עיסוק הורה 2',
-  path: ['mother_occupation']
+  path: ['parent2_occupation']
 }).refine((data) => {
-  if (data.mother_name && data.mother_name.trim() !== '') {
-    if (!data.mother_profession || data.mother_profession.trim() === '') {
+  if (data.parent2_name && data.parent2_name.trim() !== '') {
+    if (!data.parent2_profession || data.parent2_profession.trim() === '') {
       return false
     }
   }
   return true
 }, {
   message: 'נא להזין מקצוע הורה 2',
-  path: ['mother_profession']
+  path: ['parent2_profession']
 }).refine((data) => {
   // If ADHD is 'yes', adhd_treatment must be filled
   if (data.adhd === 'yes' && (!data.adhd_treatment || data.adhd_treatment.trim() === '')) {
@@ -413,18 +413,18 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
           // Prepopulate parent contact info if available
           if (data.parent_phone) {
-            setValue('father_mobile', data.parent_phone)
-            setValue('mother_mobile', data.parent_phone)
+            setValue('parent1_phone', data.parent_phone)
+            setValue('parent2_phone', data.parent_phone)
           }
 
           // If parent names are stored (from consent form)
           if (data.parent_names) {
             const parentNames = data.parent_names.split(', ')
             if (parentNames[0]) {
-              setValue('father_name', parentNames[0])
+              setValue('parent1_name', parentNames[0])
             }
             if (parentNames[1]) {
-              setValue('mother_name', parentNames[1])
+              setValue('parent2_name', parentNames[1])
             }
           }
         }
@@ -496,11 +496,11 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
               // Override parent phone fields with SF values if they exist
               // (Supabase parent_phone was used as initial fallback, but SF values take precedence)
-              if (sfData.father_mobile && sfData.father_mobile.trim()) {
-                setValue('father_mobile', sfData.father_mobile)
+              if (sfData.parent1_phone && sfData.parent1_phone.trim()) {
+                setValue('parent1_phone', sfData.parent1_phone)
               }
-              if (sfData.mother_mobile && sfData.mother_mobile.trim()) {
-                setValue('mother_mobile', sfData.mother_mobile)
+              if (sfData.parent2_phone && sfData.parent2_phone.trim()) {
+                setValue('parent2_phone', sfData.parent2_phone)
               }
 
               setCompletedFields(completedSet)
@@ -726,11 +726,11 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       case 1: return ['student_first_name', 'student_last_name', 'student_id', 'date_of_birth', 'country_of_birth', 'gender', 'address', 'phone', 'student_mobile']
       case 2: {
         // Base fields for step 2 (Parent 1 is always required)
-        const fields = ['father_name', 'father_mobile', 'father_occupation', 'father_profession', 'debts_loans', 'parent_involvement', 'economic_status', 'economic_details', 'family_background']
+        const fields = ['parent1_name', 'parent1_phone', 'parent1_occupation', 'parent1_profession', 'debts_loans', 'parent_involvement', 'economic_status', 'economic_details', 'family_background']
         const formValues = getValues()
-        // If mother_name is filled, add Parent 2 required fields
-        if (formValues.mother_name && formValues.mother_name.trim() !== '') {
-          fields.push('mother_mobile', 'mother_occupation', 'mother_profession')
+        // If parent2_name is filled, add Parent 2 required fields
+        if (formValues.parent2_name && formValues.parent2_name.trim() !== '') {
+          fields.push('parent2_phone', 'parent2_occupation', 'parent2_profession')
         }
         return fields
       }
@@ -1463,20 +1463,20 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           שם
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <FieldWrapper fieldName="father_name" completedFields={completedFields}>
+                        <FieldWrapper fieldName="parent1_name" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                              {...register('father_name')}
+                              {...register('parent1_name')}
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                               placeholder="שם מלא"
                             />
                             <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
                         </FieldWrapper>
-                        {errors.father_name && (
+                        {errors.parent1_name && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                            {errors.father_name.message}
+                            {errors.parent1_name.message}
                           </p>
                         )}
                       </div>
@@ -1486,10 +1486,10 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           נייד
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <FieldWrapper fieldName="father_mobile" completedFields={completedFields}>
+                        <FieldWrapper fieldName="parent1_phone" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                              {...register('father_mobile')}
+                              {...register('parent1_phone')}
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                               placeholder="050-1234567"
                               dir="ltr"
@@ -1497,10 +1497,10 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
                         </FieldWrapper>
-                        {errors.father_mobile && (
+                        {errors.parent1_phone && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                            {errors.father_mobile.message}
+                            {errors.parent1_phone.message}
                           </p>
                         )}
                       </div>
@@ -1510,20 +1510,20 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           עיסוק
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <FieldWrapper fieldName="father_occupation" completedFields={completedFields}>
+                        <FieldWrapper fieldName="parent1_occupation" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                              {...register('father_occupation')}
+                              {...register('parent1_occupation')}
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                               placeholder="עבודה, לא עובד, גמלאי"
                             />
                             <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
                         </FieldWrapper>
-                        {errors.father_occupation && (
+                        {errors.parent1_occupation && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                            {errors.father_occupation.message}
+                            {errors.parent1_occupation.message}
                           </p>
                         )}
                       </div>
@@ -1533,20 +1533,20 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           מקצוע
                           <span className="text-red-500 mr-1">*</span>
                         </label>
-                        <FieldWrapper fieldName="father_profession" completedFields={completedFields}>
+                        <FieldWrapper fieldName="parent1_profession" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                              {...register('father_profession')}
+                              {...register('parent1_profession')}
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                               placeholder="מה המקצוע הספציפי"
                             />
                             <Trophy className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
                         </FieldWrapper>
-                        {errors.father_profession && (
+                        {errors.parent1_profession && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                            {errors.father_profession.message}
+                            {errors.parent1_profession.message}
                           </p>
                         )}
                       </div>
@@ -1555,10 +1555,10 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           הכנסה חודשית
                         </label>
-                        <FieldWrapper fieldName="father_income" completedFields={completedFields}>
+                        <FieldWrapper fieldName="parent1_income" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                              {...register('father_income')}
+                              {...register('parent1_income')}
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                               placeholder="10,000 ₪"
                             />
@@ -1571,8 +1571,8 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                   {/* Parent 2 Information */}
                   {(() => {
-                    const motherNameValue = watch('mother_name')
-                    const isParent2Required = motherNameValue && motherNameValue.trim() !== ''
+                    const parent2NameValue = watch('parent2_name')
+                    const isParent2Required = parent2NameValue && parent2NameValue.trim() !== ''
                     return (
                   <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-2xl p-6 border border-pink-200 shadow-sm">
                     <div className="flex items-center mb-6">
@@ -1587,20 +1587,20 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           שם
                         </label>
-                        <FieldWrapper fieldName="mother_name" completedFields={completedFields}>
+                        <FieldWrapper fieldName="parent2_name" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                              {...register('mother_name')}
+                              {...register('parent2_name')}
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                               placeholder="שם מלא (אופציונלי)"
                             />
                             <Heart className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
                         </FieldWrapper>
-                        {errors.mother_name && (
+                        {errors.parent2_name && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                            {errors.mother_name.message}
+                            {errors.parent2_name.message}
                           </p>
                         )}
                       </div>
@@ -1610,10 +1610,10 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           נייד
                           {isParent2Required && <span className="text-red-500 mr-1">*</span>}
                         </label>
-                        <FieldWrapper fieldName="mother_mobile" completedFields={completedFields}>
+                        <FieldWrapper fieldName="parent2_phone" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                              {...register('mother_mobile')}
+                              {...register('parent2_phone')}
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                               placeholder={isParent2Required ? "050-1234567" : "050-1234567 (אופציונלי)"}
                               dir="ltr"
@@ -1621,10 +1621,10 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
                         </FieldWrapper>
-                        {errors.mother_mobile && (
+                        {errors.parent2_phone && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                            {errors.mother_mobile.message}
+                            {errors.parent2_phone.message}
                           </p>
                         )}
                       </div>
@@ -1634,20 +1634,20 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           עיסוק
                           {isParent2Required && <span className="text-red-500 mr-1">*</span>}
                         </label>
-                        <FieldWrapper fieldName="mother_occupation" completedFields={completedFields}>
+                        <FieldWrapper fieldName="parent2_occupation" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                              {...register('mother_occupation')}
+                              {...register('parent2_occupation')}
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                               placeholder={isParent2Required ? "עבודה, לא עובדת, גמלאית" : "עבודה, לא עובדת, גמלאית (אופציונלי)"}
                             />
                             <Activity className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
                         </FieldWrapper>
-                        {errors.mother_occupation && (
+                        {errors.parent2_occupation && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                            {errors.mother_occupation.message}
+                            {errors.parent2_occupation.message}
                           </p>
                         )}
                       </div>
@@ -1657,20 +1657,20 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                           מקצוע
                           {isParent2Required && <span className="text-red-500 mr-1">*</span>}
                         </label>
-                        <FieldWrapper fieldName="mother_profession" completedFields={completedFields}>
+                        <FieldWrapper fieldName="parent2_profession" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                              {...register('mother_profession')}
+                              {...register('parent2_profession')}
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                               placeholder={isParent2Required ? "מה המקצוע הספציפי" : "מה המקצוע הספציפי (אופציונלי)"}
                             />
                             <Trophy className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
                         </FieldWrapper>
-                        {errors.mother_profession && (
+                        {errors.parent2_profession && (
                           <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                             <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                            {errors.mother_profession.message}
+                            {errors.parent2_profession.message}
                           </p>
                         )}
                       </div>
@@ -1679,10 +1679,10 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           הכנסה חודשית
                         </label>
-                        <FieldWrapper fieldName="mother_income" completedFields={completedFields}>
+                        <FieldWrapper fieldName="parent2_income" completedFields={completedFields}>
                           <div className="relative">
                             <input
-                              {...register('mother_income')}
+                              {...register('parent2_income')}
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
                               placeholder="8,000 ₪"
                             />

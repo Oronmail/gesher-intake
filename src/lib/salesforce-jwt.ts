@@ -355,16 +355,16 @@ class SalesforceJWTService {
         
         // Family Information
         Siblings_Count__c: data.siblingsCount || 0,
-        Father_Name__c: data.fatherName || '',
-        Father_Mobile__c: data.fatherMobile || '',
-        Father_Occupation__c: data.fatherOccupation || '',
-        Father_Profession__c: data.fatherProfession || '',
-        Father_Income__c: data.fatherIncome || '',
-        Mother_Name__c: data.motherName || '',
-        Mother_Mobile__c: data.motherMobile || '',
-        Mother_Occupation__c: data.motherOccupation || '',
-        Mother_Profession__c: data.motherProfession || '',
-        Mother_Income__c: data.motherIncome || '',
+        Parent1_Name__c: data.parent1Name || '',
+        Parent1_Phone__c: data.parent1Phone || '',
+        Parent1_Occupation__c: data.parent1Occupation || '',
+        Parent1_Profession__c: data.parent1Profession || '',
+        Parent1_Income__c: data.parent1Income || '',
+        Parent2_Name__c: data.parent2Name || '',
+        Parent2_Phone__c: data.parent2Phone || '',
+        Parent2_Occupation__c: data.parent2Occupation || '',
+        Parent2_Profession__c: data.parent2Profession || '',
+        Parent2_Income__c: data.parent2Income || '',
         Debts_Loans__c: data.debtsLoans || '',
         Parent_Involvement__c: data.parentInvolvement ? 
           (data.parentInvolvement === 'inhibiting' ? 'Inhibiting' : 
@@ -752,9 +752,9 @@ class SalesforceJWTService {
            School_Info_Username__c, School_Info_Password__c,
            Known_to_Welfare__c, Social_Worker_Name__c, Social_Worker_Phone__c,
            Youth_Promotion__c, Youth_Worker_Name__c, Youth_Worker_Phone__c,
-           Siblings_Count__c, Father_Name__c, Father_Mobile__c, Father_Occupation__c,
-           Father_Profession__c, Father_Income__c, Mother_Name__c, Mother_Mobile__c,
-           Mother_Occupation__c, Mother_Profession__c, Mother_Income__c, Debts_Loans__c,
+           Siblings_Count__c, Parent1_Name__c, Parent1_Phone__c, Parent1_Occupation__c,
+           Parent1_Profession__c, Parent1_Income__c, Parent2_Name__c, Parent2_Phone__c,
+           Parent2_Occupation__c, Parent2_Profession__c, Parent2_Income__c, Debts_Loans__c,
            Parent_Involvement__c, Economic_Status__c, Economic_Details__c, Family_Background__c,
            School_Name__c, Grade__c, Homeroom_Teacher__c, Teacher_Phone__c,
            School_Counselor_Name__c, School_Counselor_Phone__c,
@@ -853,16 +853,16 @@ class SalesforceJWTService {
 
       // Family fields - only update if has value
       if (data.siblingsCount !== undefined && data.siblingsCount !== null) updateData.Siblings_Count__c = data.siblingsCount;
-      if (data.fatherName && typeof data.fatherName === 'string' && data.fatherName.trim()) updateData.Father_Name__c = data.fatherName;
-      if (data.fatherMobile && typeof data.fatherMobile === 'string' && data.fatherMobile.trim()) updateData.Father_Mobile__c = data.fatherMobile;
-      if (data.fatherOccupation && typeof data.fatherOccupation === 'string' && data.fatherOccupation.trim()) updateData.Father_Occupation__c = data.fatherOccupation;
-      if (data.fatherProfession && typeof data.fatherProfession === 'string' && data.fatherProfession.trim()) updateData.Father_Profession__c = data.fatherProfession;
-      if (data.fatherIncome && typeof data.fatherIncome === 'string' && data.fatherIncome.trim()) updateData.Father_Income__c = data.fatherIncome;
-      if (data.motherName && typeof data.motherName === 'string' && data.motherName.trim()) updateData.Mother_Name__c = data.motherName;
-      if (data.motherMobile && typeof data.motherMobile === 'string' && data.motherMobile.trim()) updateData.Mother_Mobile__c = data.motherMobile;
-      if (data.motherOccupation && typeof data.motherOccupation === 'string' && data.motherOccupation.trim()) updateData.Mother_Occupation__c = data.motherOccupation;
-      if (data.motherProfession && typeof data.motherProfession === 'string' && data.motherProfession.trim()) updateData.Mother_Profession__c = data.motherProfession;
-      if (data.motherIncome && typeof data.motherIncome === 'string' && data.motherIncome.trim()) updateData.Mother_Income__c = data.motherIncome;
+      if (data.parent1Name && typeof data.parent1Name === 'string' && data.parent1Name.trim()) updateData.Parent1_Name__c = data.parent1Name;
+      if (data.parent1Phone && typeof data.parent1Phone === 'string' && data.parent1Phone.trim()) updateData.Parent1_Phone__c = data.parent1Phone;
+      if (data.parent1Occupation && typeof data.parent1Occupation === 'string' && data.parent1Occupation.trim()) updateData.Parent1_Occupation__c = data.parent1Occupation;
+      if (data.parent1Profession && typeof data.parent1Profession === 'string' && data.parent1Profession.trim()) updateData.Parent1_Profession__c = data.parent1Profession;
+      if (data.parent1Income && typeof data.parent1Income === 'string' && data.parent1Income.trim()) updateData.Parent1_Income__c = data.parent1Income;
+      if (data.parent2Name && typeof data.parent2Name === 'string' && data.parent2Name.trim()) updateData.Parent2_Name__c = data.parent2Name;
+      if (data.parent2Phone && typeof data.parent2Phone === 'string' && data.parent2Phone.trim()) updateData.Parent2_Phone__c = data.parent2Phone;
+      if (data.parent2Occupation && typeof data.parent2Occupation === 'string' && data.parent2Occupation.trim()) updateData.Parent2_Occupation__c = data.parent2Occupation;
+      if (data.parent2Profession && typeof data.parent2Profession === 'string' && data.parent2Profession.trim()) updateData.Parent2_Profession__c = data.parent2Profession;
+      if (data.parent2Income && typeof data.parent2Income === 'string' && data.parent2Income.trim()) updateData.Parent2_Income__c = data.parent2Income;
       if (data.debtsLoans && typeof data.debtsLoans === 'string' && data.debtsLoans.trim()) updateData.Debts_Loans__c = data.debtsLoans;
       if (data.parentInvolvement !== undefined) updateData.Parent_Involvement__c =
         data.parentInvolvement === 'inhibiting' ? 'Inhibiting' :
