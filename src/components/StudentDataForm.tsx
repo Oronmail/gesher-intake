@@ -461,9 +461,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 let isCompleted = false
 
                 if (isDropdownField) {
-                  // For dropdown: any non-empty value ('yes', 'no', 'unknown') means completed
-                  // Map old boolean values: true -> 'yes', false -> 'no'
-                  if (value === true || value === 'yes' || value === 'no' || value === 'unknown') {
+                  // For dropdown: only 'yes', 'no', 'unknown' are valid completed values
+                  // Empty string, null, or legacy 'false'/'true' strings from old saves should NOT be considered completed
+                  if (value === 'yes' || value === 'no' || value === 'unknown') {
                     isCompleted = true
                   }
                 } else if (isNumericField) {

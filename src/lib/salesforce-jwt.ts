@@ -386,17 +386,17 @@ class SalesforceJWTService {
         Failing_Subjects_Details__c: data.failingSubjectsDetails || '',
         
         // Welfare & Social Services
-        Known_to_Welfare__c: data.knownToWelfare || false,
+        Known_to_Welfare__c: data.knownToWelfare || '',
         Social_Worker_Name__c: data.socialWorkerName || '',
         Social_Worker_Phone__c: data.socialWorkerPhone || '',
-        Youth_Promotion__c: data.youthPromotion || false,
+        Youth_Promotion__c: data.youthPromotion || '',
         Youth_Worker_Name__c: data.youthWorkerName || '',
         Youth_Worker_Phone__c: data.youthWorkerPhone || '',
         
         // Assessment
-        Behavioral_Issues__c: data.behavioralIssues || false,
+        Behavioral_Issues__c: data.behavioralIssues || '',
         Behavioral_Issues_Details__c: data.behavioralIssuesDetails || '',
-        Has_Potential__c: data.hasPotential || false,
+        Has_Potential__c: data.hasPotential || '',
         Potential_Explanation__c: data.potentialExplanation || '',
         Motivation_Level__c: data.motivationLevel ? 
           (data.motivationLevel === 'low' ? 'Low' : 
@@ -408,31 +408,31 @@ class SalesforceJWTService {
         Afternoon_Activities__c: data.afternoonActivities || '',
         
         // Learning & Health
-        Learning_Disability__c: data.learningDisability || false,
+        Learning_Disability__c: data.learningDisability || '',
         Learning_Disability_Explanation__c: data.learningDisabilityExplanation || '',
-        Requires_Remedial_Teaching__c: data.requiresRemedialTeaching || false,
-        ADHD__c: data.adhd || false,
+        Requires_Remedial_Teaching__c: data.requiresRemedialTeaching || '',
+        ADHD__c: data.adhd || '',
         ADHD_Treatment__c: data.adhdTreatment || '',
-        Assessment_Done__c: data.assessmentDone || false,
-        Assessment_Needed__c: data.assessmentNeeded || false,
+        Assessment_Done__c: data.assessmentDone || '',
+        Assessment_Needed__c: data.assessmentNeeded || '',
         Assessment_Details__c: data.assessmentDetails || '',
         
         // Risk Assessment
-        Criminal_Record__c: data.criminalRecord || false,
-        Drug_Use__c: data.drugUse || false,
-        Smoking__c: data.smoking || false,
+        Criminal_Record__c: data.criminalRecord || '',
+        Drug_Use__c: data.drugUse || '',
+        Smoking__c: data.smoking || '',
         Probation_Officer__c: data.probationOfficer || '',
         Youth_Probation_Officer__c: data.youthProbationOfficer || '',
-        Psychological_Treatment__c: data.psychologicalTreatment || false,
-        Psychiatric_Treatment__c: data.psychiatricTreatment || false,
-        Takes_Medication__c: data.takesMedication || false,
+        Psychological_Treatment__c: data.psychologicalTreatment || '',
+        Psychiatric_Treatment__c: data.psychiatricTreatment || '',
+        Takes_Medication__c: data.takesMedication || '',
         Medication_Description__c: data.medicationDescription || '',
         Risk_Level__c: data.riskLevel || 1,
         Risk_Factors__c: data.riskFactors || '',
         
         // Final Assessment
-        Military_Service_Potential__c: data.militaryServicePotential || false,
-        Can_Handle_Program__c: data.canHandleProgram || false,
+        Military_Service_Potential__c: data.militaryServicePotential || '',
+        Can_Handle_Program__c: data.canHandleProgram || '',
         Personal_Opinion__c: data.personalOpinion || ''
       };
 
