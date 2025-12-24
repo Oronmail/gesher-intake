@@ -461,11 +461,8 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 let isCompleted = false
 
                 if (isDropdownField) {
-                  // For dropdown: only 'yes', 'no', 'unknown' are valid completed values
-                  // Empty string, null, or legacy 'false'/'true' strings from old saves should NOT be considered completed
-                  if (value === 'כן' || value === 'לא' || value === 'לא ידוע') {
-                    isCompleted = true
-                  }
+                  // For dropdown: any non-empty value means completed
+                  isCompleted = (value !== null && value !== '' && value !== undefined)
                 } else if (isNumericField) {
                   // For numeric: any number including 0 (but not null) means completed
                   isCompleted = (typeof value === 'number')
@@ -678,9 +675,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
           const isNumericField = numericFields.has(key)
           const isFileField = fileFields.has(key)
 
-          // Dropdown fields: mark as completed if yes/no/unknown selected
+          // Dropdown fields: mark as completed if any non-empty value
           if (isDropdownField) {
-            if (value === 'כן' || value === 'לא' || value === 'לא ידוע') {
+            if (value !== null && value !== '' && value !== undefined) {
               newCompleted.add(key)
             }
           }
