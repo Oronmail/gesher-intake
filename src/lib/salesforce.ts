@@ -274,7 +274,7 @@ class SalesforceService {
         Student_Apartment__c: data.studentApartment || '',
         Student_Phone__c: data.studentPhone,
         Student_Mobile__c: data.studentMobile || '',
-        School_System_Password__c: data.schoolSystemPassword || '',
+        School_Info_Password__c: data.schoolInfoPassword || '',
         
         // Parent/Guardian Information
         Parent1_Name__c: data.parent1Name,
@@ -516,7 +516,7 @@ class SalesforceService {
         Student_Apartment__c: data.studentApartment || '',
         Student_Phone__c: data.studentPhone,
         Student_Mobile__c: data.studentMobile || '',
-        School_System_Password__c: data.schoolSystemPassword || '',
+        School_Info_Password__c: data.schoolInfoPassword || '',
         
         // Family Information
         Siblings_Count__c: data.siblingsCount,
