@@ -33,8 +33,8 @@ export interface RegistrationRequestData {
   studentApartment?: string;
   studentPhone: string;
   studentMobile?: string;
-  schoolSystemPassword?: string;
-  
+  schoolInfoPassword?: string;
+
   // Parent/Guardian Information
   parent1Name: string;
   parent1Id: string;
@@ -81,7 +81,6 @@ export interface RegistrationRequestData {
 
   // Assessment
   behavioralIssues: '' | 'yes' | 'no' | 'unknown';
-  hasPotential: '' | 'yes' | 'no' | 'unknown';
   motivationLevel: string;
   motivationType: 'internal' | 'external';
   externalMotivators?: string;
@@ -324,7 +323,6 @@ class SalesforceService {
         
         // Assessment (storing as text: '', 'yes', 'no', 'unknown')
         Behavioral_Issues__c: data.behavioralIssues,
-        Has_Potential__c: data.hasPotential,
         Motivation_Level__c: data.motivationLevel || '',
         Motivation_Type__c: 
           data.motivationType === 'internal' ? 'Internal' : 'External',
@@ -549,7 +547,6 @@ class SalesforceService {
         
         // Assessment (storing as text: '', 'yes', 'no', 'unknown')
         Behavioral_Issues__c: data.behavioralIssues,
-        Has_Potential__c: data.hasPotential,
         Motivation_Level__c: data.motivationLevel || '',
         Motivation_Type__c: 
           data.motivationType === 'internal' ? 'Internal' : 'External',

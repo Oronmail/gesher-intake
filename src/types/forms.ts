@@ -76,7 +76,6 @@ export interface StudentDataForm {
   // Intake Assessment
   behavioral_issues: '' | 'yes' | 'no' | 'unknown'
   behavioral_issues_details?: string
-  has_potential: '' | 'yes' | 'no' | 'unknown'
   potential_explanation?: string
   motivation_level: string
   motivation_type: 'internal' | 'external'

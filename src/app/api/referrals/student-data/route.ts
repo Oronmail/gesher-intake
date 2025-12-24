@@ -147,7 +147,6 @@ export async function POST(request: NextRequest) {
       // Assessment (from form)
       behavioralIssues: studentData.behavioral_issues || false,
       behavioralIssuesDetails: studentData.behavioral_issues_details,
-      hasPotential: studentData.has_potential || false,
       potentialExplanation: studentData.potential_explanation,
       motivationLevel: studentData.motivation_level,
       motivationType: studentData.motivation_type,

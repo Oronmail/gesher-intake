@@ -168,10 +168,7 @@ const formSchema = z.object({
     message: 'נא לבחור אפשרות'
   }),
   behavioral_issues_details: z.string().optional(),
-  has_potential: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
-    message: 'נא לבחור אפשרות'
-  }),
-  potential_explanation: z.string().optional(),
+  potential_explanation: z.string().min(1, 'נא למלא שדה זה'),
   motivation_level: z.string().min(1, 'נא למלא שדה זה'),
   motivation_type: z.enum(['internal', 'external'], {
     message: 'נא לבחור סוג מוטיבציה'
@@ -251,15 +248,6 @@ const formSchema = z.object({
 }, {
   message: 'נא לפרט את בעיות ההתנהגות',
   path: ['behavioral_issues_details']
-}).refine((data) => {
-  // If has_potential is 'yes', potential_explanation must be filled
-  if (data.has_potential === 'כן' && (!data.potential_explanation || data.potential_explanation.trim() === '')) {
-    return false
-  }
-  return true
-}, {
-  message: 'נא להסביר על הפוטנציאל',
-  path: ['potential_explanation']
 }).refine((data) => {
   // If parent2_name is filled, parent2_phone, parent2_occupation, and parent2_profession must be filled
   if (data.parent2_name && data.parent2_name.trim() !== '') {
@@ -373,7 +361,6 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       known_to_welfare: '',
       youth_promotion: '',
       behavioral_issues: '',
-      has_potential: '',
       learning_disability: '',
       requires_remedial_teaching: '',
       adhd: '',
@@ -437,7 +424,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
               // Define all dropdown fields (former boolean checkboxes) with yes/no/unknown options
               const dropdownFields = new Set([
-                'behavioral_issues', 'has_potential', 'learning_disability',
+                'behavioral_issues', 'learning_disability',
                 'requires_remedial_teaching', 'adhd', 'assessment_done', 'assessment_needed',
                 'criminal_record', 'drug_use', 'smoking',
                 'psychological_treatment', 'psychiatric_treatment', 'takes_medication',
@@ -543,13 +530,6 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       if (formValues.behavioral_issues === 'כן' &&
           (!formValues.behavioral_issues_details || formValues.behavioral_issues_details.trim() === '')) {
         setError('behavioral_issues_details', { type: 'manual', message: 'נא למלא שדה זה' })
-        conditionalValid = false
-      }
-
-      // Check potential_explanation if has_potential is 'yes'
-      if (formValues.has_potential === 'כן' &&
-          (!formValues.potential_explanation || formValues.potential_explanation.trim() === '')) {
-        setError('potential_explanation', { type: 'manual', message: 'נא למלא שדה זה' })
         conditionalValid = false
       }
 
@@ -674,7 +654,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
         // Define field types for proper completion detection
         const dropdownFields = new Set([
-          'behavioral_issues', 'has_potential', 'learning_disability',
+          'behavioral_issues', 'learning_disability',
           'requires_remedial_teaching', 'adhd', 'assessment_done', 'assessment_needed',
           'criminal_record', 'drug_use', 'smoking',
           'psychological_treatment', 'psychiatric_treatment', 'takes_medication',
@@ -746,15 +726,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       case 3: return ['school_name', 'grade', 'homeroom_teacher', 'teacher_phone', 'counselor_name', 'counselor_phone', 'known_to_welfare', 'youth_promotion']
       // Step 4: Require dropdown fields + conditional fields if answered 'yes'
       case 4: {
-        // Base mandatory fields: behavioral_issues, has_potential, motivation_level, social_status, learning fields
-        const fields: string[] = ['behavioral_issues', 'has_potential', 'motivation_level', 'social_status', 'learning_disability', 'adhd', 'assessment_done', 'assessment_needed']
+        // Base mandatory fields: behavioral_issues, potential_explanation, motivation_level, social_status, learning fields
+        const fields: string[] = ['behavioral_issues', 'potential_explanation', 'motivation_level', 'social_status', 'learning_disability', 'adhd', 'assessment_done', 'assessment_needed']
         const formValues = getValues()
         // Add conditional required fields if answered 'yes'
         if (formValues.behavioral_issues === 'כן') {
           fields.push('behavioral_issues_details')
-        }
-        if (formValues.has_potential === 'כן') {
-          fields.push('potential_explanation')
         }
         if (formValues.learning_disability === 'כן') {
           fields.push('learning_disability_explanation')
@@ -2208,24 +2185,21 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        פוטנציאל
+                        פוטנציאל התלמיד
                         <span className="text-red-500 mr-1">*</span>
                       </label>
-                      <FieldWrapper fieldName="has_potential" completedFields={completedFields}>
-                        <select
-                          {...register('has_potential')}
-                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 appearance-none"
-                        >
-                          <option value="">בחר</option>
-                          <option value="כן">כן</option>
-                          <option value="לא">לא</option>
-                          <option value="לא ידוע">לא ידוע</option>
-                        </select>
+                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
+                        <textarea
+                          {...register('potential_explanation')}
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                          rows={3}
+                          placeholder="פרט על הפוטנציאל של התלמיד..."
+                        />
                       </FieldWrapper>
-                      {errors.has_potential && (
+                      {errors.potential_explanation && (
                         <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                           <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                          נא לבחור אפשרות
+                          {errors.potential_explanation.message}
                         </p>
                       )}
                     </div>
@@ -2250,29 +2224,6 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
                           <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
                           {errors.behavioral_issues_details.message}
-                        </p>
-                      )}
-                    </div>
-                  )}
-
-                  {watch('has_potential') === 'כן' && (
-                    <div className="bg-white rounded-xl p-6 border border-gray-200 animate-fadeIn">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        הסבר על הפוטנציאל
-                        <span className="text-red-500 mr-1">*</span>
-                      </label>
-                      <FieldWrapper fieldName="potential_explanation" completedFields={completedFields}>
-                        <textarea
-                          {...register('potential_explanation')}
-                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
-                          rows={3}
-                          placeholder="פרט על הפוטנציאל של התלמיד..."
-                        />
-                      </FieldWrapper>
-                      {errors.potential_explanation && (
-                        <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
-                          <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                          {errors.potential_explanation.message}
                         </p>
                       )}
                     </div>

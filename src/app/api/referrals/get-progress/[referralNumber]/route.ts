@@ -89,7 +89,6 @@ export async function GET(
       // Intake Assessment
       behavioral_issues: sfData.Behavioral_Issues__c ?? null,
       behavioral_issues_details: sfData.Behavioral_Issues_Details__c || '',
-      has_potential: sfData.Has_Potential__c ?? null,
       potential_explanation: sfData.Potential_Explanation__c || '',
       motivation_level: sfData.Motivation_Level__c || '',
       motivation_type: sfData.Motivation_Type__c?.toLowerCase() || '',

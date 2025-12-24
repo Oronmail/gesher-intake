@@ -395,7 +395,6 @@ class SalesforceJWTService {
         // Assessment
         Behavioral_Issues__c: data.behavioralIssues || '',
         Behavioral_Issues_Details__c: data.behavioralIssuesDetails || '',
-        Has_Potential__c: data.hasPotential || '',
         Potential_Explanation__c: data.potentialExplanation || '',
         Motivation_Level__c: data.motivationLevel || '',
         Motivation_Type__c: data.motivationType ? 
@@ -755,7 +754,7 @@ class SalesforceJWTService {
            Parent_Involvement__c, Economic_Status__c, Economic_Details__c, Family_Background__c,
            School_Name__c, Grade__c, Homeroom_Teacher__c, Teacher_Phone__c,
            School_Counselor_Name__c, School_Counselor_Phone__c,
-           Behavioral_Issues__c, Behavioral_Issues_Details__c, Has_Potential__c,
+           Behavioral_Issues__c, Behavioral_Issues_Details__c,
            Potential_Explanation__c, Motivation_Level__c, Motivation_Type__c,
            External_Motivators__c, Social_Status__c, Afternoon_Activities__c,
            Learning_Disability__c, Learning_Disability_Explanation__c,
@@ -883,7 +882,6 @@ class SalesforceJWTService {
       // Intake assessment
       if (data.behavioralIssues !== undefined) updateData.Behavioral_Issues__c = data.behavioralIssues;
       if (data.behavioralIssuesDetails && typeof data.behavioralIssuesDetails === 'string' && data.behavioralIssuesDetails.trim()) updateData.Behavioral_Issues_Details__c = data.behavioralIssuesDetails;
-      if (data.hasPotential !== undefined) updateData.Has_Potential__c = data.hasPotential;
       if (data.potentialExplanation && typeof data.potentialExplanation === 'string' && data.potentialExplanation.trim()) updateData.Potential_Explanation__c = data.potentialExplanation;
       if (data.motivationLevel && typeof data.motivationLevel === 'string' && data.motivationLevel.trim()) updateData.Motivation_Level__c = data.motivationLevel;
       if (data.motivationType !== undefined) updateData.Motivation_Type__c =

@@ -140,7 +140,6 @@ export async function POST(request: NextRequest) {
       // Intake Assessment
       behavioralIssues: studentData.behavioral_issues,
       behavioralIssuesDetails: studentData.behavioral_issues_details,
-      hasPotential: studentData.has_potential,
       potentialExplanation: studentData.potential_explanation,
       motivationLevel: studentData.motivation_level,
       motivationType: studentData.motivation_type,
