@@ -82,7 +82,7 @@ export interface RegistrationRequestData {
   // Assessment
   behavioralIssues: '' | 'yes' | 'no' | 'unknown';
   hasPotential: '' | 'yes' | 'no' | 'unknown';
-  motivationLevel: 'low' | 'medium' | 'high';
+  motivationLevel: string;
   motivationType: 'internal' | 'external';
   externalMotivators?: string;
   socialStatus?: string;
@@ -325,9 +325,7 @@ class SalesforceService {
         // Assessment (storing as text: '', 'yes', 'no', 'unknown')
         Behavioral_Issues__c: data.behavioralIssues,
         Has_Potential__c: data.hasPotential,
-        Motivation_Level__c: 
-          data.motivationLevel === 'low' ? 'Low' :
-          data.motivationLevel === 'medium' ? 'Medium' : 'High',
+        Motivation_Level__c: data.motivationLevel || '',
         Motivation_Type__c: 
           data.motivationType === 'internal' ? 'Internal' : 'External',
         External_Motivators__c: data.externalMotivators || '',
@@ -552,9 +550,7 @@ class SalesforceService {
         // Assessment (storing as text: '', 'yes', 'no', 'unknown')
         Behavioral_Issues__c: data.behavioralIssues,
         Has_Potential__c: data.hasPotential,
-        Motivation_Level__c: 
-          data.motivationLevel === 'low' ? 'Low' :
-          data.motivationLevel === 'medium' ? 'Medium' : 'High',
+        Motivation_Level__c: data.motivationLevel || '',
         Motivation_Type__c: 
           data.motivationType === 'internal' ? 'Internal' : 'External',
         External_Motivators__c: data.externalMotivators || '',
