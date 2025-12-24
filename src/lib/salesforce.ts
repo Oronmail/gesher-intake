@@ -256,8 +256,7 @@ class SalesforceService {
         Submission_Date__c: data.submissionDate,
         Consent_Date__c: data.consentDate,
         
-        // Counselor & School
-        Counselor_Name__c: data.counselorName,
+        // Counselor & School (School_Counselor_Name__c is set in School & Academic section)
         Counselor_Email__c: data.counselorEmail,
         School_Name__c: data.schoolName,
         
@@ -405,7 +404,7 @@ class SalesforceService {
       const initialRequest = {
         Name: data.referralNumber,  // Using standard Name field
         Status__c: 'Pending Consent',
-        Counselor_Name__c: data.counselorName,
+        School_Counselor_Name__c: data.counselorName,
         Counselor_Email__c: data.counselorEmail,
         School_Name__c: data.schoolName,
         Parent_Email__c: data.parentEmail || '',
