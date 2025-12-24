@@ -122,6 +122,7 @@ export interface InitialRegistrationData {
   referralNumber: string;
   counselorName: string;
   counselorEmail: string;
+  counselorMobile?: string;
   schoolName: string;
   parentEmail?: string;
   parentPhone: string;
@@ -406,6 +407,7 @@ class SalesforceService {
         Status__c: 'Pending Consent',
         School_Counselor_Name__c: data.counselorName,
         Counselor_Email__c: data.counselorEmail,
+        School_Counselor_Phone__c: data.counselorMobile || '',
         School_Name__c: data.schoolName,
         Parent_Email__c: data.parentEmail || '',
         Parent1_Phone__c: data.parentPhone,
