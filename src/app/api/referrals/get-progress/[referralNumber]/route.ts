@@ -91,7 +91,6 @@ export async function GET(
       behavioral_issues_details: sfData.Behavioral_Issues_Details__c || '',
       potential_explanation: sfData.Potential_Explanation__c || '',
       motivation_level: sfData.Motivation_Level__c || '',
-      external_motivators: sfData.External_Motivators__c || '',
       social_status: sfData.Social_Status__c || '',
       afternoon_activities: sfData.Afternoon_Activities__c || '',
 

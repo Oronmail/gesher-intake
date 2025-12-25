@@ -82,7 +82,6 @@ export interface RegistrationRequestData {
   // Assessment
   behavioralIssues: '' | 'yes' | 'no' | 'unknown';
   motivationLevel: string;
-  externalMotivators?: string;
   socialStatus?: string;
   afternoonActivities?: string;
 
@@ -323,7 +322,6 @@ class SalesforceService {
         // Assessment (storing as text: '', 'yes', 'no', 'unknown')
         Behavioral_Issues__c: data.behavioralIssues,
         Motivation_Level__c: data.motivationLevel || '',
-        External_Motivators__c: data.externalMotivators || '',
         Social_Status__c: data.socialStatus || '',
         Afternoon_Activities__c: data.afternoonActivities || '',
         
@@ -545,7 +543,6 @@ class SalesforceService {
         // Assessment (storing as text: '', 'yes', 'no', 'unknown')
         Behavioral_Issues__c: data.behavioralIssues,
         Motivation_Level__c: data.motivationLevel || '',
-        External_Motivators__c: data.externalMotivators || '',
         Social_Status__c: data.socialStatus || '',
         Afternoon_Activities__c: data.afternoonActivities || '',
         

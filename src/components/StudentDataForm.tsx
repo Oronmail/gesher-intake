@@ -170,7 +170,6 @@ const formSchema = z.object({
   behavioral_issues_details: z.string().optional(),
   potential_explanation: z.string().min(1, 'נא למלא שדה זה'),
   motivation_level: z.string().min(1, 'נא למלא שדה זה'),
-  external_motivators: z.string().optional(),
   social_status: z.string().min(1, 'נא להזין מצב חברתי'),
   afternoon_activities: z.string().optional(),
 

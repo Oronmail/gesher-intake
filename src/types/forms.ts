@@ -78,7 +78,6 @@ export interface StudentDataForm {
   behavioral_issues_details?: string
   potential_explanation?: string
   motivation_level: string
-  external_motivators?: string
   social_status?: string
   afternoon_activities?: string
 

@@ -397,7 +397,6 @@ class SalesforceJWTService {
         Behavioral_Issues_Details__c: data.behavioralIssuesDetails || '',
         Potential_Explanation__c: data.potentialExplanation || '',
         Motivation_Level__c: data.motivationLevel || '',
-        External_Motivators__c: data.externalMotivators || '',
         Social_Status__c: data.socialStatus || '',
         Afternoon_Activities__c: data.afternoonActivities || '',
         
@@ -755,7 +754,7 @@ class SalesforceJWTService {
            School_Counselor_Name__c, School_Counselor_Phone__c,
            Behavioral_Issues__c, Behavioral_Issues_Details__c,
            Potential_Explanation__c, Motivation_Level__c,
-           External_Motivators__c, Social_Status__c, Afternoon_Activities__c,
+           Social_Status__c, Afternoon_Activities__c,
            Learning_Disability__c, Learning_Disability_Explanation__c,
            Requires_Remedial_Teaching__c, ADHD__c, ADHD_Treatment__c,
            Assessment_Done__c, Assessment_Needed__c, Assessment_Details__c,
@@ -887,7 +886,6 @@ class SalesforceJWTService {
       if (data.behavioralIssuesDetails && typeof data.behavioralIssuesDetails === 'string' && data.behavioralIssuesDetails.trim()) updateData.Behavioral_Issues_Details__c = data.behavioralIssuesDetails;
       if (data.potentialExplanation && typeof data.potentialExplanation === 'string' && data.potentialExplanation.trim()) updateData.Potential_Explanation__c = data.potentialExplanation;
       if (data.motivationLevel && typeof data.motivationLevel === 'string' && data.motivationLevel.trim()) updateData.Motivation_Level__c = data.motivationLevel;
-      if (data.externalMotivators && typeof data.externalMotivators === 'string' && data.externalMotivators.trim()) updateData.External_Motivators__c = data.externalMotivators;
       if (data.socialStatus && typeof data.socialStatus === 'string' && data.socialStatus.trim()) updateData.Social_Status__c = data.socialStatus;
       if (data.afternoonActivities && typeof data.afternoonActivities === 'string' && data.afternoonActivities.trim()) updateData.Afternoon_Activities__c = data.afternoonActivities;
 

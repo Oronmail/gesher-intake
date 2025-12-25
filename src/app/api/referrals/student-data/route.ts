@@ -149,7 +149,6 @@ export async function POST(request: NextRequest) {
       behavioralIssuesDetails: studentData.behavioral_issues_details,
       potentialExplanation: studentData.potential_explanation,
       motivationLevel: studentData.motivation_level,
-      externalMotivators: studentData.external_motivators,
       socialStatus: studentData.social_status,
       afternoonActivities: studentData.afternoon_activities,
       
