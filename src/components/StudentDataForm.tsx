@@ -132,7 +132,7 @@ const formSchema = z.object({
   youth_worker_phone: z.string().optional(),
   
   // מידע משפחתי
-  siblings_count: z.number().min(0).nullable().refine((val) => val !== null, {
+  siblings_count: z.number({ error: 'נא להזין מספר תקין' }).min(0, 'מספר אחים חייב להיות 0 או יותר').nullable().refine((val) => val !== null, {
     message: 'נא להזין מספר אחים'
   }),
   parent1_name: z.string().min(2, 'נא להזין שם הורה 1'),
@@ -225,14 +225,14 @@ const formSchema = z.object({
   can_handle_program: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
-  risk_level: z.number().min(1, 'נא לבחור רמת סיכון').max(10, 'רמת סיכון מקסימלית היא 10').nullable().refine((val) => val !== null, {
+  risk_level: z.number({ error: 'נא להזין מספר תקין' }).min(1, 'נא לבחור רמת סיכון').max(10, 'רמת סיכון מקסימלית היא 10').nullable().refine((val) => val !== null, {
     message: 'נא לבחור רמת סיכון'
   }),
   risk_factors: z.string().min(1, 'נא להזין גורמי סיכון'),
   personal_opinion: z.string().min(1, 'נא להזין חוות דעת אישית'),
 
   // ביצועים אקדמיים
-  failing_grades_count: z.number().min(0),
+  failing_grades_count: z.number({ error: 'נא להזין מספר תקין' }).min(0, 'מספר חייב להיות 0 או יותר'),
   failing_subjects: z.array(z.object({
     subject: z.string().min(1, 'נא להזין מקצוע'),
     grade: z.string().min(1, 'נא להזין ציון'),
