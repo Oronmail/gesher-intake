@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -350,6 +350,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
   const [saveSuccess, setSaveSuccess] = useState(false)
   const [completedFields, setCompletedFields] = useState<Set<string>>(new Set())
   const [riskLevelTouched, setRiskLevelTouched] = useState(false)
+  const formContainerRef = useRef<HTMLDivElement>(null)
 
   const totalSteps = 6
   const branding = getBrandingFromDestination(warmHomeDestination || null)
@@ -509,6 +510,24 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
     fetchReferralData()
   }, [referralNumber, setValue])
+
+  // Focus on first input field when step changes
+  useEffect(() => {
+    if (formContainerRef.current) {
+      // Scroll to top of form
+      formContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+      // Find first focusable input in the form
+      setTimeout(() => {
+        const firstInput = formContainerRef.current?.querySelector(
+          'input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled])'
+        ) as HTMLElement
+        if (firstInput) {
+          firstInput.focus()
+        }
+      }, 100)
+    }
+  }, [currentStep])
 
   const nextStep = async () => {
     const fieldsToValidate = getFieldsForStep(currentStep)
@@ -1104,7 +1123,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
             </div>
           </div>
 
-          <div className="p-8">
+          <div className="p-8" ref={formContainerRef}>
             <form
               onSubmit={async (e) => {
                 e.preventDefault()
