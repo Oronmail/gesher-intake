@@ -343,6 +343,7 @@ class SalesforceJWTService {
       const studentUpdate: Record<string, any> = {
         Id: recordId,
         Status__c: 'Data Submitted',
+        StudentData_submission_Time__c: new Date().toISOString(),
 
         // Student Personal Information (Step 1 fields - only update if has content to prevent overwriting)
         ...(hasContent(data.studentFirstName) && { Student_First_Name__c: data.studentFirstName }),
