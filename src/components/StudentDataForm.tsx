@@ -236,7 +236,16 @@ const formSchema = z.object({
     grade: z.string().min(1, 'נא להזין ציון'),
     reason: z.string().min(1, 'נא להזין סיבה')
   })).optional(),
-  grade_sheet: z.any().optional(),
+  grade_sheet: z.any().refine((val) => {
+    // If no value, validation fails (unless skipped by completedFields)
+    if (!val) return false
+    // If FileList, check it has files
+    if (val instanceof FileList) return val.length > 0
+    // Otherwise assume valid (e.g., already uploaded)
+    return true
+  }, {
+    message: 'נא להעלות גליון ציונים'
+  }),
 }).refine((data) => {
   // If behavioral_issues is 'yes', behavioral_issues_details must be filled
   if (data.behavioral_issues === 'כן' && (!data.behavioral_issues_details || data.behavioral_issues_details.trim() === '')) {
@@ -756,7 +765,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
         return fields
       }
       // Step 6: Include all mandatory fields (failing_subjects added dynamically in submit handler)
-      case 6: return ['military_service_potential', 'can_handle_program', 'risk_level', 'risk_factors', 'personal_opinion']
+      case 6: return ['military_service_potential', 'can_handle_program', 'risk_level', 'risk_factors', 'personal_opinion', 'grade_sheet']
       default: return []
     }
   }
