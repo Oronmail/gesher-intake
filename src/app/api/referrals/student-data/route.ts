@@ -133,7 +133,6 @@ export async function POST(request: NextRequest) {
       schoolCounselorName: studentData.counselor_name,
       schoolCounselorPhone: studentData.counselor_phone,
       failingGradesCount: studentData.failing_grades_count || 0,
-      failingSubjects: '', // Legacy field, keeping for backward compatibility
       failingSubjectsDetails: studentData.failing_subjects ? JSON.stringify(studentData.failing_subjects) : '',
       
       // Welfare & Social Services (from form)

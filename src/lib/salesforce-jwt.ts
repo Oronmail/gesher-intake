@@ -386,7 +386,6 @@ class SalesforceJWTService {
         ...(hasContent(data.schoolCounselorName) && { School_Counselor_Name__c: data.schoolCounselorName }),
         ...(hasContent(data.schoolCounselorPhone) && { School_Counselor_Phone__c: data.schoolCounselorPhone }),
         ...(data.failingGradesCount !== undefined && data.failingGradesCount !== null && { Failing_Grades_Count__c: data.failingGradesCount }),
-        ...(hasContent(data.failingSubjects) && { Failing_Subjects__c: data.failingSubjects }),
         ...(hasContent(data.failingSubjectsDetails) && { Failing_Subjects_Details__c: data.failingSubjectsDetails }),
 
         // Welfare & Social Services - picklist fields use isValidPicklist

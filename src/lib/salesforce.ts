@@ -69,8 +69,7 @@ export interface RegistrationRequestData {
   schoolCounselorName: string;
   schoolCounselorPhone: string;
   failingGradesCount: number;
-  failingSubjects?: string;
-  
+
   // Welfare & Social Services
   knownToWelfare: '' | 'yes' | 'no' | 'unknown';
   socialWorkerName?: string;
@@ -308,8 +307,7 @@ class SalesforceService {
         School_Counselor_Name__c: data.schoolCounselorName,
         School_Counselor_Phone__c: data.schoolCounselorPhone,
         Failing_Grades_Count__c: data.failingGradesCount,
-        Failing_Subjects__c: data.failingSubjects || '',
-        
+
         // Welfare & Social Services (storing as text: '', 'yes', 'no', 'unknown')
         Known_to_Welfare__c: data.knownToWelfare,
         Social_Worker_Name__c: data.socialWorkerName || '',
@@ -528,8 +526,7 @@ class SalesforceService {
         School_Counselor_Name__c: data.schoolCounselorName,
         School_Counselor_Phone__c: data.schoolCounselorPhone,
         Failing_Grades_Count__c: data.failingGradesCount,
-        Failing_Subjects__c: data.failingSubjects || '',
-        
+
         // Welfare & Social Services (storing as text: '', 'yes', 'no', 'unknown')
         Known_to_Welfare__c: data.knownToWelfare,
         Social_Worker_Name__c: data.socialWorkerName || '',
