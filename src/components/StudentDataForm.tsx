@@ -106,7 +106,7 @@ const formSchema = z.object({
   // פרטים אישיים
   student_first_name: z.string().min(2, 'נא להזין שם פרטי'),
   student_last_name: z.string().min(2, 'נא להזין שם משפחה'),
-  student_id: z.string().min(9, 'נא להזין תעודת זהות תקינה').max(9),
+  student_id: z.string().min(9, 'תעודת זהות חייבת להיות 9 ספרות').max(9, 'תעודת זהות חייבת להיות 9 ספרות'),
   date_of_birth: z.string().min(1, 'נא להזין תאריך לידה'),
   country_of_birth: z.string().min(2, 'נא להזין ארץ לידה'),
   immigration_year: z.string().optional(),
@@ -225,7 +225,7 @@ const formSchema = z.object({
   can_handle_program: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
-  risk_level: z.number().min(1, 'נא לבחור רמת סיכון').max(10).nullable().refine((val) => val !== null, {
+  risk_level: z.number().min(1, 'נא לבחור רמת סיכון').max(10, 'רמת סיכון מקסימלית היא 10').nullable().refine((val) => val !== null, {
     message: 'נא לבחור רמת סיכון'
   }),
   risk_factors: z.string().min(1, 'נא להזין גורמי סיכון'),
