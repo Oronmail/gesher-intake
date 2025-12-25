@@ -132,7 +132,9 @@ const formSchema = z.object({
   youth_worker_phone: z.string().optional(),
   
   // מידע משפחתי
-  siblings_count: z.number().min(0).nullable(),
+  siblings_count: z.number().min(0).nullable().refine((val) => val !== null, {
+    message: 'נא להזין מספר אחים'
+  }),
   parent1_name: z.string().min(2, 'נא להזין שם הורה 1'),
   parent1_phone: z.string().min(9, 'נא להזין טלפון הורה 1'),
   parent1_occupation: z.string().min(2, 'נא להזין עיסוק'),
@@ -726,7 +728,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       case 1: return ['student_first_name', 'student_last_name', 'student_id', 'date_of_birth', 'country_of_birth', 'gender', 'address', 'phone', 'student_mobile']
       case 2: {
         // Base fields for step 2 (Parent 1 is always required)
-        const fields = ['parent1_name', 'parent1_phone', 'parent1_occupation', 'parent1_profession', 'debts_loans', 'parent_involvement', 'economic_status', 'economic_details', 'family_background']
+        const fields = ['siblings_count', 'parent1_name', 'parent1_phone', 'parent1_occupation', 'parent1_profession', 'debts_loans', 'parent_involvement', 'economic_status', 'economic_details', 'family_background']
         const formValues = getValues()
         // If parent2_name is filled, add Parent 2 required fields
         if (formValues.parent2_name && formValues.parent2_name.trim() !== '') {
@@ -1435,6 +1437,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           מספר אחים
+                          <span className="text-red-500 mr-1">*</span>
                         </label>
                         <FieldWrapper fieldName="siblings_count" completedFields={completedFields}>
                           <div className="relative">
@@ -1443,11 +1446,17 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                               type="number"
                               min="0"
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                              placeholder="0"
+                              placeholder="הזן מספר"
                             />
                             <Users className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
                         </FieldWrapper>
+                        {errors.siblings_count && (
+                          <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                            {errors.siblings_count.message}
+                          </p>
+                        )}
                       </div>
 
                     </div>

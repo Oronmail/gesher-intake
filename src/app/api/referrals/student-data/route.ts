@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
       parentEmail: referral.parent_email,
 
       // Family Information (from form)
-      siblingsCount: studentData.siblings_count || 0,
+      siblingsCount: studentData.siblings_count,  // Keep null, don't convert to 0
       parent1Occupation: studentData.parent1_occupation,
       parent1Profession: studentData.parent1_profession,
       parent1Income: studentData.parent1_income,
@@ -133,7 +133,11 @@ export async function POST(request: NextRequest) {
       schoolCounselorName: studentData.counselor_name,
       schoolCounselorPhone: studentData.counselor_phone,
       failingGradesCount: studentData.failing_grades_count || 0,
-      failingSubjectsDetails: studentData.failing_subjects ? JSON.stringify(studentData.failing_subjects) : '',
+      failingSubjectsDetails: Array.isArray(studentData.failing_subjects) && studentData.failing_subjects.length > 0
+        ? (studentData.failing_subjects as Array<{subject: string, grade: string, reason: string}>)
+            .map((item) => `${item.subject}, ציון ${item.grade}, ${item.reason}`)
+            .join('\n')
+        : '',
       
       // Welfare & Social Services (from form)
       knownToWelfare: studentData.known_to_welfare || false,
