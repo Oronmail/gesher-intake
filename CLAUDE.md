@@ -903,7 +903,6 @@ SALESFORCE_ACCESS_TOKEN=your_token node test-connection.js
 #### Metadata Fields
 - `Name` - Text(80) - Unique referral ID (standard field, stores REF-YYYYMM-XXXX)
 - `Status__c` - Picklist - ['Pending Consent', 'Consent Signed', 'Data Submitted', 'Pending Review', 'In Review', 'Approved', 'Rejected']
-- `Priority__c` - Picklist - ['High', 'Medium', 'Low']
 - `Submission_Date__c` - DateTime
 - `Consent_Date__c` - DateTime
 
@@ -981,8 +980,7 @@ SALESFORCE_ACCESS_TOKEN=your_token node test-connection.js
 - `Behavioral_Issues__c` - Picklist - ['כן', 'לא', 'לא ידוע']
 - `Behavioral_Issues_Details__c` - LongTextArea(4000)
 - `Potential_Explanation__c` - LongTextArea(4000)
-- `Motivation_Level__c` - Text(255)
-- `External_Motivators__c` - Text(255)
+- `Motivation_Level__c` - LongTextArea(131000)
 - `Social_Status__c` - Text(255)
 - `Afternoon_Activities__c` - Text(255)
 

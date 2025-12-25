@@ -335,7 +335,6 @@ class SalesforceJWTService {
       const studentUpdate: Record<string, any> = {
         Id: recordId,
         Status__c: 'Data Submitted',
-        Priority__c: data.riskLevel >= 7 ? 'High' : data.riskLevel >= 4 ? 'Medium' : 'Low',
 
         // Student Personal Information
         Student_First_Name__c: data.studentFirstName,

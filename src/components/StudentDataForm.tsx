@@ -223,16 +223,18 @@ const formSchema = z.object({
   can_handle_program: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
     message: 'נא לבחור אפשרות'
   }),
-  risk_level: z.number().min(1, 'נא לבחור רמת סיכון').max(10).nullable(),
+  risk_level: z.number().min(1, 'נא לבחור רמת סיכון').max(10).nullable().refine((val) => val !== null, {
+    message: 'נא לבחור רמת סיכון'
+  }),
   risk_factors: z.string().min(1, 'נא להזין גורמי סיכון'),
   personal_opinion: z.string().min(1, 'נא להזין חוות דעת אישית'),
-  
+
   // ביצועים אקדמיים
   failing_grades_count: z.number().min(0),
   failing_subjects: z.array(z.object({
-    subject: z.string(),
-    grade: z.string(),
-    reason: z.string()
+    subject: z.string().min(1, 'נא להזין מקצוע'),
+    grade: z.string().min(1, 'נא להזין ציון'),
+    reason: z.string().min(1, 'נא להזין סיבה')
   })).optional(),
   grade_sheet: z.any().optional(),
 }).refine((data) => {
