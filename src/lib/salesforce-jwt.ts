@@ -344,15 +344,15 @@ class SalesforceJWTService {
         Id: recordId,
         Status__c: 'Data Submitted',
 
-        // Student Personal Information (Step 1 mandatory fields - always set)
-        Student_First_Name__c: data.studentFirstName,
-        Student_Last_Name__c: data.studentLastName,
-        Student_ID__c: data.studentId,
+        // Student Personal Information (Step 1 fields - only update if has content to prevent overwriting)
+        ...(hasContent(data.studentFirstName) && { Student_First_Name__c: data.studentFirstName }),
+        ...(hasContent(data.studentLastName) && { Student_Last_Name__c: data.studentLastName }),
+        ...(hasContent(data.studentId) && { Student_ID__c: data.studentId }),
         ...(formattedDOB && { Date_of_Birth__c: formattedDOB }),
-        Gender__c: data.gender === 'male' ? 'Male' : 'Female',
-        Country_of_Birth__c: data.countryOfBirth,
-        Student_Address__c: data.studentAddress,
-        Student_Phone__c: data.studentPhone,
+        ...(data.gender && { Gender__c: data.gender === 'male' ? 'Male' : 'Female' }),
+        ...(hasContent(data.countryOfBirth) && { Country_of_Birth__c: data.countryOfBirth }),
+        ...(hasContent(data.studentAddress) && { Student_Address__c: data.studentAddress }),
+        ...(hasContent(data.studentPhone) && { Student_Phone__c: data.studentPhone }),
         // Optional Step 1 fields - only update if has content
         ...(hasContent(data.immigrationYear) && { Immigration_Year__c: data.immigrationYear }),
         ...(hasContent(data.studentFloor) && { Student_Floor__c: data.studentFloor }),
@@ -921,7 +921,7 @@ class SalesforceJWTService {
       if (data.riskLevel && typeof data.riskLevel === 'string' && data.riskLevel.trim()) updateData.Risk_Level__c = data.riskLevel;
       if (data.riskFactors && typeof data.riskFactors === 'string' && data.riskFactors.trim()) updateData.Risk_Factors__c = data.riskFactors;
       if (data.personalOpinion && typeof data.personalOpinion === 'string' && data.personalOpinion.trim()) updateData.Personal_Opinion__c = data.personalOpinion;
-      if (data.failingGradesCount !== undefined) updateData.Failing_Grades_Count__c = data.failingGradesCount || 0;
+      if (data.failingGradesCount !== undefined && data.failingGradesCount !== null) updateData.Failing_Grades_Count__c = data.failingGradesCount;
 
       // File upload tracking
       if (data.assessmentFileUploaded !== undefined) updateData.Assessment_File_Uploaded__c = data.assessmentFileUploaded;

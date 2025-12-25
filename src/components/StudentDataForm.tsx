@@ -238,7 +238,7 @@ const formSchema = z.object({
   personal_opinion: z.string().min(1, 'נא להזין חוות דעת אישית'),
 
   // ביצועים אקדמיים
-  failing_grades_count: z.number({ error: 'נא להזין מספר תקין' }).min(0, 'מספר חייב להיות 0 או יותר'),
+  failing_grades_count: z.number({ error: 'נא להזין מספר תקין' }).min(0, 'מספר חייב להיות 0 או יותר').nullable(),
   failing_subjects: z.array(z.object({
     subject: z.string().min(1, 'נא להזין מקצוע'),
     grade: z.string().min(1, 'נא להזין ציון'),
@@ -391,7 +391,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       military_service_potential: '',
       can_handle_program: '',
       siblings_count: null,
-      failing_grades_count: 0,
+      failing_grades_count: null,
       risk_level: null,
     }
   })
@@ -558,7 +558,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       const formValues = getValues()
 
       // Clear previous conditional errors
-      clearErrors(['behavioral_issues_details', 'potential_explanation', 'learning_disability_explanation', 'adhd_treatment', 'assessment_file'])
+      clearErrors(['behavioral_issues_details', 'learning_disability_explanation', 'adhd_treatment', 'assessment_file'])
 
       // Check behavioral_issues_details if behavioral_issues is 'yes' AND not already completed
       if (formValues.behavioral_issues === 'כן' &&
@@ -1126,6 +1126,14 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   </div>
                 )
               })}
+            </div>
+          </div>
+
+          {/* Save Progress Info Banner */}
+          <div className="bg-amber-50 border-b border-amber-200 px-6 py-3">
+            <div className="flex items-center justify-center gap-2 text-amber-700 text-sm">
+              <Save className="h-4 w-4 flex-shrink-0" />
+              <span>בכל שלב ניתן לעצור ולהמשיך במועד מאוחר יותר, על ידי לחיצה על כפתור ״שמור התקדמות״</span>
             </div>
           </div>
 
@@ -3121,7 +3129,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     </FieldWrapper>
                   </div>
 
-                  {watch('failing_grades_count') > 0 && (
+                  {(watch('failing_grades_count') ?? 0) > 0 && (
                     <div className="animate-fadeIn space-y-4">
                       <h4 className="text-sm font-medium text-gray-700">
                         פרט על הציונים השליליים:

@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
       teacherPhone: studentData.teacher_phone,
       schoolCounselorName: studentData.counselor_name,
       schoolCounselorPhone: studentData.counselor_phone,
-      failingGradesCount: studentData.failing_grades_count || 0,
+      failingGradesCount: studentData.failing_grades_count,
       failingSubjectsDetails: Array.isArray(studentData.failing_subjects) && studentData.failing_subjects.length > 0
         ? (studentData.failing_subjects as Array<{subject: string, grade: string, reason: string}>)
             .map((item) => `${item.subject}, ציון ${item.grade}, ${item.reason}`)
@@ -298,33 +298,21 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Privacy-focused cleanup: Remove all personal data from Supabase after successful Salesforce submission
-    // Keep only minimal record (referral_number, status, timestamps) to prevent link reuse
-    const { error: updateError } = await supabase
+    // Update Supabase status to 'completed' after successful Salesforce submission
+    const { data: updateData, error: updateError } = await supabase
       .from('referrals')
-      .update({ 
+      .update({
         status: 'completed',
-        updated_at: new Date().toISOString(),
-        // Clear all personal/sensitive data for privacy
-        school_id: null,
-        school_name: null,
-        counselor_name: null,
-        counselor_email: null,
-        parent_email: null,
-        parent_phone: null,
-        signature_image: null,
-        signature_image2: null,
-        parent_names: null,
-        // Keep only the SF reference and status
-        // referral_number, created_at, and salesforce_contact_id are preserved
+        updated_at: new Date().toISOString()
       })
       .eq('referral_number', referral_number)
+      .select()
+      .single()
 
     if (updateError) {
       console.error('Error updating referral status:', updateError)
-      // Continue anyway - data is in Salesforce, privacy cleanup is secondary
     } else {
-      console.log(`Privacy cleanup completed for referral ${referral_number} - personal data removed from Supabase`)
+      console.log(`Referral ${referral_number} status updated to completed`)
     }
 
     return NextResponse.json({
