@@ -838,11 +838,15 @@ class SalesforceJWTService {
       if (data.schoolInfoUsername && typeof data.schoolInfoUsername === 'string' && data.schoolInfoUsername.trim()) updateData.School_Info_Username__c = data.schoolInfoUsername;
       if (data.schoolInfoPassword && typeof data.schoolInfoPassword === 'string' && data.schoolInfoPassword.trim()) updateData.School_Info_Password__c = data.schoolInfoPassword;
 
-      // Welfare & Social Services - boolean fields
-      if (data.knownToWelfare !== undefined) updateData.Known_to_Welfare__c = data.knownToWelfare;
+      // Helper to check valid picklist values
+      const isValidPicklist = (val: unknown): boolean =>
+        typeof val === 'string' && ['כן', 'לא', 'לא ידוע'].includes(val);
+
+      // Welfare & Social Services - picklist fields
+      if (isValidPicklist(data.knownToWelfare)) updateData.Known_to_Welfare__c = data.knownToWelfare as string;
       if (data.socialWorkerName && typeof data.socialWorkerName === 'string' && data.socialWorkerName.trim()) updateData.Social_Worker_Name__c = data.socialWorkerName;
       if (data.socialWorkerPhone && typeof data.socialWorkerPhone === 'string' && data.socialWorkerPhone.trim()) updateData.Social_Worker_Phone__c = data.socialWorkerPhone;
-      if (data.youthPromotion !== undefined) updateData.Youth_Promotion__c = data.youthPromotion;
+      if (isValidPicklist(data.youthPromotion)) updateData.Youth_Promotion__c = data.youthPromotion as string;
       if (data.youthWorkerName && typeof data.youthWorkerName === 'string' && data.youthWorkerName.trim()) updateData.Youth_Worker_Name__c = data.youthWorkerName;
       if (data.youthWorkerPhone && typeof data.youthWorkerPhone === 'string' && data.youthWorkerPhone.trim()) updateData.Youth_Worker_Phone__c = data.youthWorkerPhone;
 
@@ -879,7 +883,7 @@ class SalesforceJWTService {
       if (data.schoolCounselorPhone && typeof data.schoolCounselorPhone === 'string' && data.schoolCounselorPhone.trim()) updateData.School_Counselor_Phone__c = data.schoolCounselorPhone;
 
       // Intake assessment
-      if (data.behavioralIssues !== undefined) updateData.Behavioral_Issues__c = data.behavioralIssues;
+      if (isValidPicklist(data.behavioralIssues)) updateData.Behavioral_Issues__c = data.behavioralIssues as string;
       if (data.behavioralIssuesDetails && typeof data.behavioralIssuesDetails === 'string' && data.behavioralIssuesDetails.trim()) updateData.Behavioral_Issues_Details__c = data.behavioralIssuesDetails;
       if (data.potentialExplanation && typeof data.potentialExplanation === 'string' && data.potentialExplanation.trim()) updateData.Potential_Explanation__c = data.potentialExplanation;
       if (data.motivationLevel && typeof data.motivationLevel === 'string' && data.motivationLevel.trim()) updateData.Motivation_Level__c = data.motivationLevel;
@@ -888,30 +892,30 @@ class SalesforceJWTService {
       if (data.afternoonActivities && typeof data.afternoonActivities === 'string' && data.afternoonActivities.trim()) updateData.Afternoon_Activities__c = data.afternoonActivities;
 
       // Learning assessment
-      if (data.learningDisability !== undefined) updateData.Learning_Disability__c = data.learningDisability;
+      if (isValidPicklist(data.learningDisability)) updateData.Learning_Disability__c = data.learningDisability as string;
       if (data.learningDisabilityExplanation && typeof data.learningDisabilityExplanation === 'string' && data.learningDisabilityExplanation.trim()) updateData.Learning_Disability_Explanation__c = data.learningDisabilityExplanation;
-      if (data.requiresRemedialTeaching !== undefined) updateData.Requires_Remedial_Teaching__c = data.requiresRemedialTeaching;
-      if (data.adhd !== undefined) updateData.ADHD__c = data.adhd;
+      if (isValidPicklist(data.requiresRemedialTeaching)) updateData.Requires_Remedial_Teaching__c = data.requiresRemedialTeaching as string;
+      if (isValidPicklist(data.adhd)) updateData.ADHD__c = data.adhd as string;
       if (data.adhdTreatment && typeof data.adhdTreatment === 'string' && data.adhdTreatment.trim()) updateData.ADHD_Treatment__c = data.adhdTreatment;
-      if (data.assessmentDone !== undefined) updateData.Assessment_Done__c = data.assessmentDone;
-      if (data.assessmentNeeded !== undefined) updateData.Assessment_Needed__c = data.assessmentNeeded;
+      if (isValidPicklist(data.assessmentDone)) updateData.Assessment_Done__c = data.assessmentDone as string;
+      if (isValidPicklist(data.assessmentNeeded)) updateData.Assessment_Needed__c = data.assessmentNeeded as string;
       if (data.assessmentDetails && typeof data.assessmentDetails === 'string' && data.assessmentDetails.trim()) updateData.Assessment_Details__c = data.assessmentDetails;
 
       // Risk assessment
-      if (data.criminalRecord !== undefined) updateData.Criminal_Record__c = data.criminalRecord;
+      if (isValidPicklist(data.criminalRecord)) updateData.Criminal_Record__c = data.criminalRecord as string;
       if (data.criminalRecordDetails && typeof data.criminalRecordDetails === 'string' && data.criminalRecordDetails.trim()) updateData.Criminal_Record_Details__c = data.criminalRecordDetails;
-      if (data.drugUse !== undefined) updateData.Drug_Use__c = data.drugUse;
-      if (data.smoking !== undefined) updateData.Smoking__c = data.smoking;
+      if (isValidPicklist(data.drugUse)) updateData.Drug_Use__c = data.drugUse as string;
+      if (isValidPicklist(data.smoking)) updateData.Smoking__c = data.smoking as string;
       if (data.probationOfficer && typeof data.probationOfficer === 'string' && data.probationOfficer.trim()) updateData.Probation_Officer__c = data.probationOfficer;
       if (data.youthProbationOfficer && typeof data.youthProbationOfficer === 'string' && data.youthProbationOfficer.trim()) updateData.Youth_Probation_Officer__c = data.youthProbationOfficer;
-      if (data.psychologicalTreatment !== undefined) updateData.Psychological_Treatment__c = data.psychologicalTreatment;
-      if (data.psychiatricTreatment !== undefined) updateData.Psychiatric_Treatment__c = data.psychiatricTreatment;
-      if (data.takesMedication !== undefined) updateData.Takes_Medication__c = data.takesMedication;
+      if (isValidPicklist(data.psychologicalTreatment)) updateData.Psychological_Treatment__c = data.psychologicalTreatment as string;
+      if (isValidPicklist(data.psychiatricTreatment)) updateData.Psychiatric_Treatment__c = data.psychiatricTreatment as string;
+      if (isValidPicklist(data.takesMedication)) updateData.Takes_Medication__c = data.takesMedication as string;
       if (data.medicationDescription && typeof data.medicationDescription === 'string' && data.medicationDescription.trim()) updateData.Medication_Description__c = data.medicationDescription;
 
       // Final assessment
-      if (data.militaryServicePotential !== undefined) updateData.Military_Service_Potential__c = data.militaryServicePotential;
-      if (data.canHandleProgram !== undefined) updateData.Can_Handle_Program__c = data.canHandleProgram;
+      if (isValidPicklist(data.militaryServicePotential)) updateData.Military_Service_Potential__c = data.militaryServicePotential as string;
+      if (isValidPicklist(data.canHandleProgram)) updateData.Can_Handle_Program__c = data.canHandleProgram as string;
       if (data.riskLevel && typeof data.riskLevel === 'string' && data.riskLevel.trim()) updateData.Risk_Level__c = data.riskLevel;
       if (data.riskFactors && typeof data.riskFactors === 'string' && data.riskFactors.trim()) updateData.Risk_Factors__c = data.riskFactors;
       if (data.personalOpinion && typeof data.personalOpinion === 'string' && data.personalOpinion.trim()) updateData.Personal_Opinion__c = data.personalOpinion;
