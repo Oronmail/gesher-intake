@@ -3107,6 +3107,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                                 className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                                 placeholder="שם המקצוע"
                               />
+                              {errors.failing_subjects?.[index]?.subject && (
+                                <p className="mt-1 text-xs text-red-600 flex items-center animate-fadeIn">
+                                  <span className="inline-block w-1 h-1 bg-red-600 rounded-full ml-1"></span>
+                                  {errors.failing_subjects[index]?.subject?.message || 'נא להזין מקצוע'}
+                                </p>
+                              )}
                             </div>
                             <div>
                               <label className="block text-xs font-medium text-gray-600 mb-1">
@@ -3119,6 +3125,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                                 className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                                 placeholder="הציון"
                               />
+                              {errors.failing_subjects?.[index]?.grade && (
+                                <p className="mt-1 text-xs text-red-600 flex items-center animate-fadeIn">
+                                  <span className="inline-block w-1 h-1 bg-red-600 rounded-full ml-1"></span>
+                                  {errors.failing_subjects[index]?.grade?.message || 'נא להזין ציון'}
+                                </p>
+                              )}
                             </div>
                             <div>
                               <label className="block text-xs font-medium text-gray-600 mb-1">
@@ -3131,6 +3143,12 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                                 className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                                 placeholder="הסיבה לכישלון"
                               />
+                              {errors.failing_subjects?.[index]?.reason && (
+                                <p className="mt-1 text-xs text-red-600 flex items-center animate-fadeIn">
+                                  <span className="inline-block w-1 h-1 bg-red-600 rounded-full ml-1"></span>
+                                  {errors.failing_subjects[index]?.reason?.message || 'נא להזין סיבה'}
+                                </p>
+                              )}
                             </div>
                           </div>
                         </div>
