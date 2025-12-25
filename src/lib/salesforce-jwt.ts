@@ -331,102 +331,108 @@ class SalesforceJWTService {
         }
       }
 
+      // Helper to check if a string has content
+      const hasContent = (val: unknown): boolean =>
+        typeof val === 'string' && val.trim() !== '';
+
+      // Helper to check valid picklist values (כן, לא, לא ידוע)
+      const isValidPicklist = (val: unknown): boolean =>
+        typeof val === 'string' && ['כן', 'לא', 'לא ידוע'].includes(val);
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const studentUpdate: Record<string, any> = {
         Id: recordId,
         Status__c: 'Data Submitted',
 
-        // Student Personal Information
+        // Student Personal Information (Step 1 mandatory fields - always set)
         Student_First_Name__c: data.studentFirstName,
         Student_Last_Name__c: data.studentLastName,
         Student_ID__c: data.studentId,
-        // Only include Date_of_Birth__c if we have a valid formatted date - don't overwrite existing value with null
         ...(formattedDOB && { Date_of_Birth__c: formattedDOB }),
         Gender__c: data.gender === 'male' ? 'Male' : 'Female',
         Country_of_Birth__c: data.countryOfBirth,
-        Immigration_Year__c: data.immigrationYear || '',
         Student_Address__c: data.studentAddress,
-        Student_Floor__c: data.studentFloor || '',
-        Student_Apartment__c: data.studentApartment || '',
         Student_Phone__c: data.studentPhone,
-        Student_Mobile__c: data.studentMobile || '',
-        School_Info_Username__c: data.schoolInfoUsername || '',
-        School_Info_Password__c: data.schoolInfoPassword || '',
-        
-        // Family Information
-        Siblings_Count__c: data.siblingsCount || 0,
-        Parent1_Name__c: data.parent1Name || '',
-        Parent1_Phone__c: data.parent1Phone || '',
-        Parent1_Occupation__c: data.parent1Occupation || '',
-        Parent1_Profession__c: data.parent1Profession || '',
-        Parent1_Income__c: data.parent1Income || '',
-        Parent2_Name__c: data.parent2Name || '',
-        Parent2_Phone__c: data.parent2Phone || '',
-        Parent2_Occupation__c: data.parent2Occupation || '',
-        Parent2_Profession__c: data.parent2Profession || '',
-        Parent2_Income__c: data.parent2Income || '',
-        Debts_Loans__c: data.debtsLoans || '',
-        Parent_Involvement__c: data.parentInvolvement || '',
-        Economic_Status__c: data.economicStatus ? 
-          (data.economicStatus === 'low' ? 'Low' : 
-           data.economicStatus === 'medium' ? 'Medium' : 'High') : '',
-        Economic_Details__c: data.economicDetails || '',
-        Family_Background__c: data.familyBackground || '',
-        
-        // School & Academic Information
-        Grade__c: data.grade || '',
-        Homeroom_Teacher__c: data.homeroomTeacher || '',
-        Teacher_Phone__c: data.teacherPhone || '',
-        School_Counselor_Name__c: data.schoolCounselorName || '',
-        School_Counselor_Phone__c: data.schoolCounselorPhone || '',
-        Failing_Grades_Count__c: data.failingGradesCount || 0,
-        Failing_Subjects__c: data.failingSubjects || '',
-        Failing_Subjects_Details__c: data.failingSubjectsDetails || '',
-        
-        // Welfare & Social Services
-        Known_to_Welfare__c: data.knownToWelfare || '',
-        Social_Worker_Name__c: data.socialWorkerName || '',
-        Social_Worker_Phone__c: data.socialWorkerPhone || '',
-        Youth_Promotion__c: data.youthPromotion || '',
-        Youth_Worker_Name__c: data.youthWorkerName || '',
-        Youth_Worker_Phone__c: data.youthWorkerPhone || '',
-        
-        // Assessment
-        Behavioral_Issues__c: data.behavioralIssues || '',
-        Behavioral_Issues_Details__c: data.behavioralIssuesDetails || '',
-        Potential_Explanation__c: data.potentialExplanation || '',
-        Motivation_Level__c: data.motivationLevel || '',
-        Social_Status__c: data.socialStatus || '',
-        Afternoon_Activities__c: data.afternoonActivities || '',
-        
-        // Learning & Health
-        Learning_Disability__c: data.learningDisability || '',
-        Learning_Disability_Explanation__c: data.learningDisabilityExplanation || '',
-        Requires_Remedial_Teaching__c: data.requiresRemedialTeaching || '',
-        ADHD__c: data.adhd || '',
-        ADHD_Treatment__c: data.adhdTreatment || '',
-        Assessment_Done__c: data.assessmentDone || '',
-        Assessment_Needed__c: data.assessmentNeeded || '',
-        Assessment_Details__c: data.assessmentDetails || '',
-        
-        // Risk Assessment
-        Criminal_Record__c: data.criminalRecord || '',
-        Criminal_Record_Details__c: data.criminalRecordDetails || '',
-        Drug_Use__c: data.drugUse || '',
-        Smoking__c: data.smoking || '',
-        Probation_Officer__c: data.probationOfficer || '',
-        Youth_Probation_Officer__c: data.youthProbationOfficer || '',
-        Psychological_Treatment__c: data.psychologicalTreatment || '',
-        Psychiatric_Treatment__c: data.psychiatricTreatment || '',
-        Takes_Medication__c: data.takesMedication || '',
-        Medication_Description__c: data.medicationDescription || '',
-        Risk_Level__c: data.riskLevel || 1,
-        Risk_Factors__c: data.riskFactors || '',
-        
-        // Final Assessment
-        Military_Service_Potential__c: data.militaryServicePotential || '',
-        Can_Handle_Program__c: data.canHandleProgram || '',
-        Personal_Opinion__c: data.personalOpinion || ''
+        // Optional Step 1 fields - only update if has content
+        ...(hasContent(data.immigrationYear) && { Immigration_Year__c: data.immigrationYear }),
+        ...(hasContent(data.studentFloor) && { Student_Floor__c: data.studentFloor }),
+        ...(hasContent(data.studentApartment) && { Student_Apartment__c: data.studentApartment }),
+        ...(hasContent(data.studentMobile) && { Student_Mobile__c: data.studentMobile }),
+        ...(hasContent(data.schoolInfoUsername) && { School_Info_Username__c: data.schoolInfoUsername }),
+        ...(hasContent(data.schoolInfoPassword) && { School_Info_Password__c: data.schoolInfoPassword }),
+
+        // Family Information - only update if has content
+        ...(data.siblingsCount !== undefined && data.siblingsCount !== null && { Siblings_Count__c: data.siblingsCount }),
+        ...(hasContent(data.parent1Name) && { Parent1_Name__c: data.parent1Name }),
+        ...(hasContent(data.parent1Phone) && { Parent1_Phone__c: data.parent1Phone }),
+        ...(hasContent(data.parent1Occupation) && { Parent1_Occupation__c: data.parent1Occupation }),
+        ...(hasContent(data.parent1Profession) && { Parent1_Profession__c: data.parent1Profession }),
+        ...(hasContent(data.parent1Income) && { Parent1_Income__c: data.parent1Income }),
+        ...(hasContent(data.parent2Name) && { Parent2_Name__c: data.parent2Name }),
+        ...(hasContent(data.parent2Phone) && { Parent2_Phone__c: data.parent2Phone }),
+        ...(hasContent(data.parent2Occupation) && { Parent2_Occupation__c: data.parent2Occupation }),
+        ...(hasContent(data.parent2Profession) && { Parent2_Profession__c: data.parent2Profession }),
+        ...(hasContent(data.parent2Income) && { Parent2_Income__c: data.parent2Income }),
+        ...(hasContent(data.debtsLoans) && { Debts_Loans__c: data.debtsLoans }),
+        ...(hasContent(data.parentInvolvement) && { Parent_Involvement__c: data.parentInvolvement }),
+        ...(data.economicStatus && { Economic_Status__c: data.economicStatus === 'low' ? 'Low' : data.economicStatus === 'medium' ? 'Medium' : 'High' }),
+        ...(hasContent(data.economicDetails) && { Economic_Details__c: data.economicDetails }),
+        ...(hasContent(data.familyBackground) && { Family_Background__c: data.familyBackground }),
+
+        // School & Academic Information - only update if has content
+        ...(hasContent(data.grade) && { Grade__c: data.grade }),
+        ...(hasContent(data.homeroomTeacher) && { Homeroom_Teacher__c: data.homeroomTeacher }),
+        ...(hasContent(data.teacherPhone) && { Teacher_Phone__c: data.teacherPhone }),
+        ...(hasContent(data.schoolCounselorName) && { School_Counselor_Name__c: data.schoolCounselorName }),
+        ...(hasContent(data.schoolCounselorPhone) && { School_Counselor_Phone__c: data.schoolCounselorPhone }),
+        ...(data.failingGradesCount !== undefined && data.failingGradesCount !== null && { Failing_Grades_Count__c: data.failingGradesCount }),
+        ...(hasContent(data.failingSubjects) && { Failing_Subjects__c: data.failingSubjects }),
+        ...(hasContent(data.failingSubjectsDetails) && { Failing_Subjects_Details__c: data.failingSubjectsDetails }),
+
+        // Welfare & Social Services - picklist fields use isValidPicklist
+        ...(isValidPicklist(data.knownToWelfare) && { Known_to_Welfare__c: data.knownToWelfare }),
+        ...(hasContent(data.socialWorkerName) && { Social_Worker_Name__c: data.socialWorkerName }),
+        ...(hasContent(data.socialWorkerPhone) && { Social_Worker_Phone__c: data.socialWorkerPhone }),
+        ...(isValidPicklist(data.youthPromotion) && { Youth_Promotion__c: data.youthPromotion }),
+        ...(hasContent(data.youthWorkerName) && { Youth_Worker_Name__c: data.youthWorkerName }),
+        ...(hasContent(data.youthWorkerPhone) && { Youth_Worker_Phone__c: data.youthWorkerPhone }),
+
+        // Assessment - picklist fields use isValidPicklist
+        ...(isValidPicklist(data.behavioralIssues) && { Behavioral_Issues__c: data.behavioralIssues }),
+        ...(hasContent(data.behavioralIssuesDetails) && { Behavioral_Issues_Details__c: data.behavioralIssuesDetails }),
+        ...(hasContent(data.potentialExplanation) && { Potential_Explanation__c: data.potentialExplanation }),
+        ...(hasContent(data.motivationLevel) && { Motivation_Level__c: data.motivationLevel }),
+        ...(hasContent(data.socialStatus) && { Social_Status__c: data.socialStatus }),
+        ...(hasContent(data.afternoonActivities) && { Afternoon_Activities__c: data.afternoonActivities }),
+
+        // Learning & Health - picklist fields use isValidPicklist
+        ...(isValidPicklist(data.learningDisability) && { Learning_Disability__c: data.learningDisability }),
+        ...(hasContent(data.learningDisabilityExplanation) && { Learning_Disability_Explanation__c: data.learningDisabilityExplanation }),
+        ...(isValidPicklist(data.requiresRemedialTeaching) && { Requires_Remedial_Teaching__c: data.requiresRemedialTeaching }),
+        ...(isValidPicklist(data.adhd) && { ADHD__c: data.adhd }),
+        ...(hasContent(data.adhdTreatment) && { ADHD_Treatment__c: data.adhdTreatment }),
+        ...(isValidPicklist(data.assessmentDone) && { Assessment_Done__c: data.assessmentDone }),
+        ...(isValidPicklist(data.assessmentNeeded) && { Assessment_Needed__c: data.assessmentNeeded }),
+        ...(hasContent(data.assessmentDetails) && { Assessment_Details__c: data.assessmentDetails }),
+
+        // Risk Assessment - picklist fields use isValidPicklist
+        ...(isValidPicklist(data.criminalRecord) && { Criminal_Record__c: data.criminalRecord }),
+        ...(hasContent(data.criminalRecordDetails) && { Criminal_Record_Details__c: data.criminalRecordDetails }),
+        ...(isValidPicklist(data.drugUse) && { Drug_Use__c: data.drugUse }),
+        ...(isValidPicklist(data.smoking) && { Smoking__c: data.smoking }),
+        ...(hasContent(data.probationOfficer) && { Probation_Officer__c: data.probationOfficer }),
+        ...(hasContent(data.youthProbationOfficer) && { Youth_Probation_Officer__c: data.youthProbationOfficer }),
+        ...(isValidPicklist(data.psychologicalTreatment) && { Psychological_Treatment__c: data.psychologicalTreatment }),
+        ...(isValidPicklist(data.psychiatricTreatment) && { Psychiatric_Treatment__c: data.psychiatricTreatment }),
+        ...(isValidPicklist(data.takesMedication) && { Takes_Medication__c: data.takesMedication }),
+        ...(hasContent(data.medicationDescription) && { Medication_Description__c: data.medicationDescription }),
+        ...(data.riskLevel !== undefined && data.riskLevel !== null && { Risk_Level__c: data.riskLevel }),
+        ...(hasContent(data.riskFactors) && { Risk_Factors__c: data.riskFactors }),
+
+        // Final Assessment - picklist fields use isValidPicklist
+        ...(isValidPicklist(data.militaryServicePotential) && { Military_Service_Potential__c: data.militaryServicePotential }),
+        ...(isValidPicklist(data.canHandleProgram) && { Can_Handle_Program__c: data.canHandleProgram }),
+        ...(hasContent(data.personalOpinion) && { Personal_Opinion__c: data.personalOpinion })
       };
 
       console.log('Updating Registration Request with student data...');
