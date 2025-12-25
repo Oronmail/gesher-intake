@@ -702,6 +702,16 @@ NODE_ENV=production
   - [x] All 83 Salesforce fields now properly mapped from form submissions
   - [x] Deployed field changes to Salesforce sandbox
 
+- [x] **VALIDATION & CLEANUP FIXES - December 2025**
+  - [x] Removed unused Priority__c field from salesforce.ts, salesforce-jwt.ts, and layout XML
+  - [x] Removed unused External_Motivators__c field from all code
+  - [x] Fixed risk_level validation: added .refine() to require non-null value on Step 6
+  - [x] Fixed failing_subjects validation: added .min(1) to subject, grade, reason fields
+  - [x] Fixed grade_sheet validation: added to getFieldsForStep(6) and Zod validation
+  - [x] Fixed picklist field overwrite: added isValidPicklist() helper to prevent empty values overwriting
+  - [x] Fixed conditional field validation: added completedFields check to behavioral_issues_details, learning_disability_explanation, adhd_treatment, criminal_record_details
+  - [x] Synced 10 field metadata files from Salesforce (Afternoon_Activities, Assessment_File_Uploaded, Behavioral_Issues_Details, Failing_Subjects, Grade_Sheet_Uploaded, Learning_Disability_Explanation, Potential_Explanation, School_Info_Password, School_Info_Username, Social_Status)
+
 ### 🚧 Pending Features
 - [ ] Authentication for counselors
 - [ ] Admin dashboard
@@ -1355,8 +1365,8 @@ This is a pro bono project developed for Gesher Al HaNoar. For technical questio
 
 ---
 
-*Last Updated: December 2025 (Field Type Conversion & Criminal_Record_Details Fix)*
-*Project Status: ✅ Fully Operational in Production with 16 Picklist Fields & Complete Field Mappings*
+*Last Updated: December 2025 (Validation & Cleanup Fixes)*
+*Project Status: ✅ Fully Operational in Production with Complete Validation & Field Mappings*
 *Live URL: https://gesher-intake.vercel.app*
 *Repository: https://github.com/Oronmail/gesher-intake (Private)*
 *Email Service: Gmail SMTP (gesheryouth@gmail.com)*
