@@ -755,7 +755,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
         return fields
       }
       // Step 6: Include all mandatory fields (failing_subjects added dynamically in submit handler)
-      case 6: return ['risk_level', 'risk_factors', 'personal_opinion']
+      case 6: return ['military_service_potential', 'can_handle_program', 'risk_level', 'risk_factors', 'personal_opinion']
       default: return []
     }
   }
@@ -1113,7 +1113,15 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                     }
                   }
 
-                  const isValid = await trigger(step6Fields as (keyof FormData)[])
+                  // Filter out fields that are already completed (have green checkmark)
+                  const fieldsNeedingValidation = step6Fields.filter(field => !completedFields.has(field))
+                  console.log('📋 Fields needing validation (excluding completed):', fieldsNeedingValidation)
+
+                  // If all fields are completed, allow submission
+                  let isValid = true
+                  if (fieldsNeedingValidation.length > 0) {
+                    isValid = await trigger(fieldsNeedingValidation as (keyof FormData)[])
+                  }
                   console.log('✅ Step 6 validation result:', isValid)
 
                   if (!isValid) {
