@@ -3,6 +3,7 @@ import html2canvas from 'html2canvas'
 interface ConsentFormData {
   referralNumber: string
   studentName: string
+  studentId: string
   parent1Name: string
   parent1Id: string
   parent1Address?: string
@@ -111,9 +112,13 @@ const generateConsentHTML = (data: ConsentFormData): string => {
           <div style="font-weight: bold; color: #374151;">מספר הפניה:</div>
           <div style="color: #111827; font-family: monospace;">${data.referralNumber}</div>
         </div>
-        <div style="display: flex; justify-content: space-between;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
           <div style="font-weight: bold; color: #374151;">שם התלמיד/ה:</div>
           <div style="color: #111827; font-size: 18px; font-weight: bold;">${data.studentName}</div>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <div style="font-weight: bold; color: #374151;">ת.ז. התלמיד/ה:</div>
+          <div style="color: #111827; font-family: monospace; font-size: 16px;">${data.studentId}</div>
         </div>
       </div>
       

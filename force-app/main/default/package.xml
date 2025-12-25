@@ -4,5 +4,21 @@
         <members>Registration_Request__c</members>
         <name>CustomObject</name>
     </types>
-    <version>59.0</version>
+    <types>
+        <members>Registration_Request__c-Registration Request Layout</members>
+        <name>Layout</name>
+    </types>
+    <types>
+        <members>Registration_Request_Record_Page</members>
+        <name>FlexiPage</name>
+    </types>
+    <types>
+        <members>registrationRequestView</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <types>
+        <members>Registration_Request_Fields</members>
+        <name>PermissionSet</name>
+    </types>
+    <version>64.0</version>
 </Package>

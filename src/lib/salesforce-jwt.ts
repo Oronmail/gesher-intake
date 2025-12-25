@@ -260,6 +260,7 @@ class SalesforceJWTService {
       const consentUpdate = {
         Id: recordId,
         Status__c: 'Consent Signed',
+        ...(data.studentId && { Student_ID__c: data.studentId }),
         Parent1_Name__c: data.parent1Name,
         Parent1_ID__c: data.parent1Id,
         Parent1_Address__c: data.parent1Address || '',

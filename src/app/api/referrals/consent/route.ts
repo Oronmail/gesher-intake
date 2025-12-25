@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
       signature,
       signature2,
       student_name,
+      student_id,
       consent_image_base64,
       consent_image_filename,
       consent_html,
@@ -64,6 +65,7 @@ export async function POST(request: NextRequest) {
     // Update Salesforce record with consent data
     if (data.salesforce_contact_id) {
       const consentData = {
+        studentId: student_id,
         parent1Name: parent1_name,
         parent1Id: parent1_id,
         parent1Address: parent1_address,

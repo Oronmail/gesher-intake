@@ -500,6 +500,11 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 setValue('parent2_phone', sfData.parent2_phone)
               }
 
+              // Prepopulate student_id from Salesforce (set in consent form)
+              if (sfData.student_id && sfData.student_id.trim()) {
+                setValue('student_id', sfData.student_id)
+              }
+
               setCompletedFields(completedSet)
               console.log('Loaded completion markers from Salesforce (values hidden for privacy)')
             }

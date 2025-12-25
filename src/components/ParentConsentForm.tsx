@@ -22,6 +22,10 @@ const formSchema = z.object({
   parent2_address: z.string().optional(),
   parent2_phone: z.string().optional(),
   student_name: z.string().min(2, 'נא להזין שם התלמיד/ה'),
+  student_id: z.string()
+    .min(9, 'מספר תעודת זהות חייב להכיל 9 ספרות')
+    .max(9, 'מספר תעודת זהות חייב להכיל 9 ספרות')
+    .regex(/^\d{9}$/, 'מספר תעודת זהות חייב להכיל 9 ספרות בלבד'),
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -75,6 +79,7 @@ export default function ParentConsentForm({ referralNumber, warmHomeDestination 
         const formData = {
           referralNumber,
           studentName: data.student_name,
+          studentId: data.student_id,
           parent1Name: data.parent1_name,
           parent1Id: data.parent1_id,
           parent1Address: data.parent1_address,
@@ -214,7 +219,7 @@ export default function ParentConsentForm({ referralNumber, warmHomeDestination 
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-8">
-            {/* Student Name */}
+            {/* Student Details */}
             <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-6 border border-gray-200">
               <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
                 <div className="bg-blue-100 p-2 rounded-lg ml-3">
@@ -222,25 +227,49 @@ export default function ParentConsentForm({ referralNumber, warmHomeDestination 
                 </div>
                 פרטי התלמיד/ה
               </h2>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  שם מלא
-                  <span className="text-red-500 mr-1">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    {...register('student_name')}
-                    className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
-                    placeholder="שם פרטי ומשפחה"
-                  />
-                  <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    שם מלא
+                    <span className="text-red-500 mr-1">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      {...register('student_name')}
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                      placeholder="שם פרטי ומשפחה"
+                    />
+                    <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                  </div>
+                  {errors.student_name && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                      <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                      {errors.student_name.message}
+                    </p>
+                  )}
                 </div>
-                {errors.student_name && (
-                  <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
-                    <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                    {errors.student_name.message}
-                  </p>
-                )}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    מספר תעודת זהות
+                    <span className="text-red-500 mr-1">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      {...register('student_id')}
+                      maxLength={9}
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                      placeholder="הזן 9 ספרות"
+                      dir="ltr"
+                    />
+                    <CreditCard className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                  </div>
+                  {errors.student_id && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                      <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                      {errors.student_id.message}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
 
