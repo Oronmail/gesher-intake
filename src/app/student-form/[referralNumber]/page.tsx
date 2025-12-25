@@ -3,7 +3,7 @@
 import { use, useEffect, useState } from 'react'
 import StudentDataForm from '@/components/StudentDataForm'
 import { supabase } from '@/lib/supabase'
-import { CheckCircle } from 'lucide-react'
+import { CheckCircle, GraduationCap, Shield } from 'lucide-react'
 import Logo from '@/components/Logo'
 
 export default function StudentFormPage({
@@ -51,25 +51,40 @@ export default function StudentFormPage({
 
   if (alreadySubmitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="container mx-auto py-12">
-          <div className="max-w-2xl mx-auto p-6">
-            <div className="bg-white rounded-lg shadow-lg p-8">
-              <div className="flex flex-col items-center text-center space-y-6">
-                <Logo warmHomeDestination={warmHomeDestination} />
-                <CheckCircle className="h-16 w-16 text-green-500" />
-                <h1 className="text-2xl font-bold text-gray-800">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-6">
+        <div className="max-w-2xl w-full">
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-2"></div>
+            <div className="p-12">
+              <div className="flex flex-col items-center text-center space-y-8">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-green-100 rounded-full blur-xl animate-pulse"></div>
+                  <CheckCircle className="h-24 w-24 text-green-500 relative z-10" />
+                </div>
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent">
                   הטופס כבר הוגש
                 </h1>
-                <div className="bg-green-50 border border-green-200 rounded-lg p-6 max-w-lg w-full">
-                  <p className="text-green-800 text-lg mb-4">
-                    טופס נתוני התלמיד עבור הפניה מספר {resolvedParams.referralNumber} הוגש בהצלחה
+                <p className="text-xl text-gray-600 leading-relaxed">
+                  טופס נתוני התלמיד עבור הפניה מספר {resolvedParams.referralNumber} הוגש בהצלחה
+                </p>
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-8 w-full shadow-sm">
+                  <div className="flex items-center justify-center mb-4">
+                    <div className="bg-green-100 p-2 rounded-lg ml-3">
+                      <GraduationCap className="w-6 h-6 text-green-600" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-green-800">מערכת גשר אל הנוער</h3>
+                  </div>
+                  <p className="text-green-800 text-lg">
+                    פרטי התלמיד/ה נקלטו במערכת ויועברו לצוות המקצועי לבחינה ואישור
                   </p>
                 </div>
-                <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                  <p className="text-blue-800">
-                    הנתונים נשמרו במערכת ונמצאים בטיפול
-                  </p>
+                <div className="mt-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl w-full border border-blue-200">
+                  <div className="flex items-center justify-center">
+                    <Shield className="w-6 h-6 text-blue-600 ml-2" />
+                    <p className="text-blue-800 font-medium">
+                      הנתונים נשמרו במערכת ונמצאים בטיפול
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
