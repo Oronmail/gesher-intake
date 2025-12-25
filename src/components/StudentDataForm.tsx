@@ -523,23 +523,26 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       // Clear previous conditional errors
       clearErrors(['behavioral_issues_details', 'potential_explanation', 'learning_disability_explanation', 'adhd_treatment', 'assessment_file'])
 
-      // Check behavioral_issues_details if behavioral_issues is 'yes'
+      // Check behavioral_issues_details if behavioral_issues is 'yes' AND not already completed
       if (formValues.behavioral_issues === 'כן' &&
-          (!formValues.behavioral_issues_details || formValues.behavioral_issues_details.trim() === '')) {
+          (!formValues.behavioral_issues_details || formValues.behavioral_issues_details.trim() === '') &&
+          !completedFields.has('behavioral_issues_details')) {
         setError('behavioral_issues_details', { type: 'manual', message: 'נא למלא שדה זה' })
         conditionalValid = false
       }
 
-      // Check learning_disability_explanation if learning_disability is 'yes'
+      // Check learning_disability_explanation if learning_disability is 'yes' AND not already completed
       if (formValues.learning_disability === 'כן' &&
-          (!formValues.learning_disability_explanation || formValues.learning_disability_explanation.trim() === '')) {
+          (!formValues.learning_disability_explanation || formValues.learning_disability_explanation.trim() === '') &&
+          !completedFields.has('learning_disability_explanation')) {
         setError('learning_disability_explanation', { type: 'manual', message: 'נא למלא שדה זה' })
         conditionalValid = false
       }
 
-      // Check adhd_treatment if adhd is 'yes'
+      // Check adhd_treatment if adhd is 'yes' AND not already completed
       if (formValues.adhd === 'כן' &&
-          (!formValues.adhd_treatment || formValues.adhd_treatment.trim() === '')) {
+          (!formValues.adhd_treatment || formValues.adhd_treatment.trim() === '') &&
+          !completedFields.has('adhd_treatment')) {
         setError('adhd_treatment', { type: 'manual', message: 'נא למלא שדה זה' })
         conditionalValid = false
       }
@@ -561,9 +564,10 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       // Clear previous conditional errors
       clearErrors(['criminal_record_details'])
 
-      // Check criminal_record_details only if criminal_record is 'כן'
+      // Check criminal_record_details only if criminal_record is 'כן' AND not already completed
       if (formValues.criminal_record === 'כן' &&
-          (!formValues.criminal_record_details || formValues.criminal_record_details.trim() === '')) {
+          (!formValues.criminal_record_details || formValues.criminal_record_details.trim() === '') &&
+          !completedFields.has('criminal_record_details')) {
         setError('criminal_record_details', { type: 'manual', message: 'נא למלא פרטי עבר פלילי' })
         conditionalValid = false
       }
