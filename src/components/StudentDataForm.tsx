@@ -110,10 +110,9 @@ const formSchema = z.object({
   date_of_birth: z.string().min(1, 'נא להזין תאריך לידה').refine((val) => {
     const date = new Date(val);
     const year = date.getFullYear();
-    const currentYear = new Date().getFullYear();
-    return !isNaN(date.getTime()) && year >= 1950 && year <= currentYear;
+    return !isNaN(date.getTime()) && year >= 2000 && year <= 2022;
   }, {
-    message: 'תאריך לידה לא תקין (שנה חייבת להיות בין 1950 לשנה הנוכחית)'
+    message: 'תאריך לידה לא תקין'
   }),
   country_of_birth: z.string().min(2, 'נא להזין ארץ לידה'),
   immigration_year: z.string().optional(),
