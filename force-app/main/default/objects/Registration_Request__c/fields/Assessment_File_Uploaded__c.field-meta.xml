@@ -3,7 +3,7 @@
     <fullName>Assessment_File_Uploaded__c</fullName>
     <defaultValue>false</defaultValue>
     <description>Indicates whether an assessment file has been uploaded for this registration request</description>
-    <label>Assessment File Uploaded</label>
+    <label>צירוף קובץ אבחון</label>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>

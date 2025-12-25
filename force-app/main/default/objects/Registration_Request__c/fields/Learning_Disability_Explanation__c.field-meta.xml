@@ -2,8 +2,8 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Learning_Disability_Explanation__c</fullName>
     <description>Explanation of the student&apos;s learning disability</description>
-    <label>Learning Disability Explanation</label>
-    <length>4000</length>
+    <label>פירוט לקויות למידה</label>
+    <length>100000</length>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>LongTextArea</type>
