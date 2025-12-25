@@ -712,6 +712,17 @@ NODE_ENV=production
   - [x] Fixed conditional field validation: added completedFields check to behavioral_issues_details, learning_disability_explanation, adhd_treatment, criminal_record_details
   - [x] Synced 10 field metadata files from Salesforce (Afternoon_Activities, Assessment_File_Uploaded, Behavioral_Issues_Details, Failing_Subjects, Grade_Sheet_Uploaded, Learning_Disability_Explanation, Potential_Explanation, School_Info_Password, School_Info_Username, Social_Status)
 
+- [x] **FORM PROTECTION & DATA FIXES - December 2025**
+  - [x] Added "Already Submitted" blocking screen to student form (matches consent form design)
+  - [x] Student form now checks Supabase status='completed' and shows blocking message
+  - [x] Removed unused Failing_Subjects__c legacy field (data goes to Failing_Subjects_Details__c)
+  - [x] Changed Failing_Subjects_Details__c format from JSON array to comma-separated with "ציון" prefix
+  - [x] Example format: "חשבון, ציון 40, חוסר בתרגול" (multiple subjects on separate lines)
+  - [x] Fixed siblings_count default value bug: removed || 0 that was incorrectly saving 0 to SF
+  - [x] Added siblings_count Zod .refine() validation to reject null (mandatory field)
+  - [x] Added siblings_count to getFieldsForStep(2) for proper Step 2 validation
+  - [x] Added error message display and red asterisk for siblings_count field
+
 ### 🚧 Pending Features
 - [ ] Authentication for counselors
 - [ ] Admin dashboard
@@ -976,7 +987,7 @@ SALESFORCE_ACCESS_TOKEN=your_token node test-connection.js
 - `School_Counselor_Name__c` - Text(100)
 - `School_Counselor_Phone__c` - Phone
 - `Failing_Grades_Count__c` - Number(2,0)
-- `Failing_Subjects__c` - Text(255)
+- `Failing_Subjects_Details__c` - LongTextArea(131000) - Comma-separated format: "מקצוע, ציון XX, סיבה"
 
 #### Welfare & Social Services
 - `Known_to_Welfare__c` - Picklist - ['כן', 'לא', 'לא ידוע']
@@ -1365,7 +1376,7 @@ This is a pro bono project developed for Gesher Al HaNoar. For technical questio
 
 ---
 
-*Last Updated: December 2025 (Validation & Cleanup Fixes)*
+*Last Updated: December 2025 (Form Protection & Data Fixes)*
 *Project Status: ✅ Fully Operational in Production with Complete Validation & Field Mappings*
 *Live URL: https://gesher-intake.vercel.app*
 *Repository: https://github.com/Oronmail/gesher-intake (Private)*
