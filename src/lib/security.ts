@@ -190,18 +190,33 @@ export const secureFormSchemas = {
     counselor_mobile: z.string().min(9).max(20),  // Phone validation
     school_name: z.string().min(2).max(200).transform(sanitizeInput),
     warm_home_destination: z.string().min(1).max(100).transform(sanitizeInput),
+    consent_method: z.enum(['digital', 'manual']),  // NEW: Consent method selection
     parent_email: z.string().email().optional().or(z.literal('')),  // Allow empty string
     parent_phone: z.string().optional().or(z.literal('')).refine(
       val => !val || isValidPhone(val),
       'Invalid phone format'
     ),
-  }).refine(
-    (data) => data.parent_email || data.parent_phone,
-    {
-      message: "At least one parent contact method is required (email or phone)",
-      path: ["parent_phone"],
+    manual_consent_confirmed: z.boolean().optional(),  // NEW: Confirmation for manual consent
+  }).superRefine((data, ctx) => {
+    // Only require parent contact when digital consent is selected
+    if (data.consent_method === 'digital') {
+      if (!data.parent_email && !data.parent_phone) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "At least one parent contact method is required (email or phone)",
+          path: ["parent_phone"],
+        })
+      }
     }
-  ),
+    // Require confirmation checkbox when manual consent is selected
+    if (data.consent_method === 'manual' && !data.manual_consent_confirmed) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Manual consent confirmation is required",
+        path: ["manual_consent_confirmed"],
+      })
+    }
+  }),
   
   parentConsent: z.object({
     parent1_name: z.string().min(2).max(100).transform(sanitizeInput),

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Consent_Method__c</fullName>
+    <label>אופן הסכמה</label>
+    <description>Method of obtaining parental consent - Digital (online signature) or Manual (paper form)</description>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Digital</fullName>
+                <default>true</default>
+                <label>דיגיטלי</label>
+            </value>
+            <value>
+                <fullName>Manual (Paper)</fullName>
+                <default>false</default>
+                <label>ידני (נייר)</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

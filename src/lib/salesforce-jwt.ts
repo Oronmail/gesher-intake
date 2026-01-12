@@ -208,9 +208,14 @@ class SalesforceJWTService {
   }> {
     try {
       // IMPORTANT: Using Name field for referral number
-      const initialRequest = {
+      // Determine Salesforce status based on consent method
+      const sfStatus = data.status === 'consent_signed' ? 'Consent Signed' : 'Pending Consent';
+      const sfConsentMethod = data.consentMethod === 'manual' ? 'Manual (Paper)' : 'Digital';
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const initialRequest: Record<string, any> = {
         Name: data.referralNumber,  // Using standard Name field
-        Status__c: 'Pending Consent',
+        Status__c: sfStatus,
         School_Counselor_Name__c: data.counselorName,
         Counselor_Email__c: data.counselorEmail || '',
         School_Counselor_Phone__c: data.counselorMobile,
@@ -219,7 +224,13 @@ class SalesforceJWTService {
         Parent_Email__c: data.parentEmail || '',
         Parent1_Phone__c: data.parentPhone,
         Submission_Date__c: new Date().toISOString(),
+        Consent_Method__c: sfConsentMethod,
       };
+
+      // For manual consent, set consent date immediately
+      if (data.consentMethod === 'manual') {
+        initialRequest.Consent_Date__c = new Date().toISOString();
+      }
 
       console.log('Creating initial Registration Request in Salesforce...');
       
@@ -285,8 +296,11 @@ class SalesforceJWTService {
       const result = await this.executeWithRetry(async (conn) => {
         return await conn.sobject('Registration_Request__c').update(consentUpdate);
       });
-      
-      if (result.success) {
+
+      // Handle both single result and array (jsforce returns array for batch updates)
+      const updateResult = Array.isArray(result) ? result[0] : result;
+
+      if (updateResult?.success) {
         console.log('Registration Request updated with consent');
         return { success: true };
       } else {

@@ -39,9 +39,13 @@ export async function POST(request: NextRequest) {
       counselor_mobile,
       school_name,
       warm_home_destination,
+      consent_method,
       parent_email,
       parent_phone,
     } = validationResult.data
+
+    // Determine initial status based on consent method
+    const initialStatus = consent_method === 'manual' ? 'consent_signed' : 'pending_consent'
 
     // Generate unique referral number
     const referral_number = generateReferralNumber()
@@ -56,6 +60,8 @@ export async function POST(request: NextRequest) {
       warmHomeDestination: warm_home_destination,
       parentEmail: parent_email,
       parentPhone: parent_phone,
+      consentMethod: consent_method,
+      status: initialStatus,
     }
     
     const sfResult = await salesforceJWT.createInitialRegistration(initialData)
@@ -81,9 +87,15 @@ export async function POST(request: NextRequest) {
         counselor_email,
         counselor_mobile,
         parent_email: parent_email || null,
-        parent_phone,
-        status: 'pending_consent',
+        parent_phone: parent_phone || null,
+        status: initialStatus,
+        consent_method: consent_method,
         salesforce_contact_id: salesforceRecordId, // Store SF record ID
+        // For manual consent, set consent_timestamp immediately
+        ...(consent_method === 'manual' && {
+          consent_timestamp: new Date().toISOString(),
+          parent_names: 'הסכמה ידנית (טופס נייר)',
+        }),
       })
       .select()
       .single()
@@ -96,11 +108,30 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Send notifications to parent with consent form link
+    // Handle different flows based on consent method
+    if (consent_method === 'manual') {
+      // For manual consent, return student form URL directly (skip notifications)
+      const studentFormUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/student-form/${referral_number}`
+
+      console.log('====================================')
+      console.log('MANUAL CONSENT - Direct to student form')
+      console.log('Student form URL:', studentFormUrl)
+      console.log('====================================')
+
+      return NextResponse.json({
+        success: true,
+        referral_number,
+        consent_method: 'manual',
+        student_form_url: studentFormUrl,
+        data,
+      })
+    }
+
+    // Digital consent flow - send notifications to parent
     const consentUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/consent/${referral_number}`
-    
+
     console.log('Consent URL:', consentUrl)
-    
+
     // Track notification results
     const notifications = {
       email: false,
@@ -121,7 +152,7 @@ export async function POST(request: NextRequest) {
         consentUrl: consentUrl,
         organizationName: branding.organizationName,
       })
-      
+
       if (emailResult.success) {
         console.log('Consent email sent to parent:', parent_email)
         notifications.email = true
@@ -129,7 +160,7 @@ export async function POST(request: NextRequest) {
         console.log('Failed to send email, but referral created:', emailResult.error)
       }
     }
-    
+
     // Send SMS if parent phone is provided
     if (parent_phone) {
       const smsResult = await sendConsentSMS({
@@ -137,7 +168,7 @@ export async function POST(request: NextRequest) {
         referralNumber: referral_number,
         consentUrl: consentUrl,
       })
-      
+
       if (smsResult.success) {
         console.log('Consent SMS sent to parent:', parent_phone)
         notifications.sms = true
@@ -146,13 +177,14 @@ export async function POST(request: NextRequest) {
         // SMS failure is not critical - continue anyway
       }
     }
-    
+
     // Log notification summary
     console.log('Notifications sent:', notifications)
 
     return NextResponse.json({
       success: true,
       referral_number,
+      consent_method: 'digital',
       consent_url: consentUrl,
       data,
     })

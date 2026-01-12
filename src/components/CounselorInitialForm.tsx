@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Loader2, CheckCircle, User, School, Mail, Phone, Send, ArrowRight, UserPlus } from 'lucide-react'
+import { Loader2, CheckCircle, User, School, Mail, Phone, ArrowRight, UserPlus, FileCheck, CheckSquare } from 'lucide-react'
 import Logo from './Logo'
 
 const formSchema = z.object({
@@ -13,30 +13,62 @@ const formSchema = z.object({
   counselor_mobile: z.string().min(9, 'נא להזין טלפון נייד').regex(/^[\d\-\+\(\)\s]*$/, 'מספר טלפון לא תקין'),
   school_name: z.string().min(2, 'נא להזין שם בית ספר'),
   warm_home_destination: z.string().min(1, 'נא לבחור בית חם'),
+  consent_method: z.enum(['digital', 'manual']),
   parent_email: z.string().email('כתובת אימייל לא תקינה').optional().or(z.literal('')),
   parent_phone: z.string().regex(/^[\d\-\+\(\)\s]*$/, 'מספר טלפון לא תקין').optional().or(z.literal('')),
-}).refine(
-  (data) => data.parent_email || data.parent_phone,
-  {
-    message: "חובה להזין לפחות אמצעי קשר אחד (טלפון או אימייל)",
-    path: ["parent_phone"], // Show error on phone field
+  manual_consent_confirmed: z.boolean().optional(),
+}).superRefine((data, ctx) => {
+  // Only require parent contact when digital consent is selected
+  if (data.consent_method === 'digital') {
+    if (!data.parent_email && !data.parent_phone) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "חובה להזין לפחות אמצעי קשר אחד (טלפון או אימייל)",
+        path: ["parent_phone"],
+      })
+    }
   }
-)
+  // Require confirmation checkbox when manual consent is selected
+  if (data.consent_method === 'manual' && !data.manual_consent_confirmed) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "נא לאשר שיש בידך טופס הסכמה חתום",
+      path: ["manual_consent_confirmed"],
+    })
+  }
+})
 
 type FormData = z.infer<typeof formSchema>
 
 export default function CounselorInitialForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string } | null>(null)
+  const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string; studentFormUrl?: string } | null>(null)
+  const [consentMethod, setConsentMethod] = useState<'digital' | 'manual'>('digital')
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      consent_method: 'digital',
+    },
   })
+
+  // Keep form state in sync with local state
+  const handleConsentMethodChange = (method: 'digital' | 'manual') => {
+    setConsentMethod(method)
+    setValue('consent_method', method)
+    // Clear validation errors when switching
+    if (method === 'manual') {
+      setValue('parent_email', '')
+      setValue('parent_phone', '')
+    }
+    setValue('manual_consent_confirmed', false)
+  }
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true)
@@ -52,11 +84,20 @@ export default function CounselorInitialForm() {
       const result = await response.json()
 
       if (response.ok) {
-        setSubmitResult({
-          success: true,
-          message: `בקשה לחתימה על טופס ויתור סודיות נשלחה להורים. לאחר חתימתם תישלח התראה ל-${data.counselor_email} להמשך מילוי נתוני התלמיד`,
-        })
+        if (result.consent_method === 'manual') {
+          setSubmitResult({
+            success: true,
+            message: 'הבקשה נוצרה בהצלחה! כעת ניתן למלא את נתוני התלמיד/ה',
+            studentFormUrl: result.student_form_url,
+          })
+        } else {
+          setSubmitResult({
+            success: true,
+            message: `בקשה לחתימה על טופס ויתור סודיות נשלחה להורים. לאחר חתימתם תישלח התראה ל-${data.counselor_email} להמשך מילוי נתוני התלמיד`,
+          })
+        }
         reset()
+        setConsentMethod('digital')
       } else {
         setSubmitResult({
           success: false,
@@ -94,12 +135,25 @@ export default function CounselorInitialForm() {
                     {submitResult.message}
                   </p>
                 </div>
+
+                {/* Show button to continue to student form for manual consent */}
+                {submitResult.studentFormUrl && (
+                  <a
+                    href={submitResult.studentFormUrl}
+                    className="mt-6 px-8 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-medium hover:from-green-600 hover:to-green-700 transform transition-all duration-200 hover:scale-105 shadow-lg flex items-center"
+                  >
+                    <ArrowRight className="h-5 w-5 ml-2" />
+                    המשך למילוי נתוני תלמיד
+                  </a>
+                )}
+
                 <button
                   onClick={() => {
                     setSubmitResult(null)
                     reset()
+                    setConsentMethod('digital')
                   }}
-                  className="mt-6 px-8 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transform transition-all duration-200 hover:scale-105 shadow-lg flex items-center"
+                  className="mt-4 px-8 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transform transition-all duration-200 hover:scale-105 shadow-lg flex items-center"
                 >
                   <UserPlus className="h-5 w-5 ml-2" />
                   יצירת הפניה נוספת
@@ -263,64 +317,142 @@ export default function CounselorInitialForm() {
               </div>
             </div>
 
-            {/* Parent Contact Section */}
-            <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100 shadow-sm">
-              <h2 className="text-xl font-semibold text-gray-800 mb-3 flex items-center">
-                <div className="bg-indigo-100 p-2 rounded-lg ml-3">
-                  <Phone className="w-5 h-5 text-indigo-600" />
+            {/* Consent Method Selection */}
+            <div className="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-2xl p-6 border border-amber-100 shadow-sm">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <div className="bg-amber-100 p-2 rounded-lg ml-3">
+                  <FileCheck className="w-5 h-5 text-amber-600" />
                 </div>
-                פרטי התקשרות להורה
+                אופן קבלת הסכמת הורים
               </h2>
-              <p className="text-sm text-gray-600 mb-6 mr-11">
-                נא להזין לפחות אמצעי קשר אחד - טלפון או אימייל
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="parent_email" className="block text-sm font-medium text-gray-700 mb-2">
-                    אימייל הורה
-                  </label>
-                  <div className="relative">
-                    <input
-                      {...register('parent_email')}
-                      type="email"
-                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
-                      placeholder="parent@example.com"
-                      dir="ltr"
-                    />
-                    <Mail className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                  </div>
-                  {errors.parent_email && (
-                    <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
-                      <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                      {errors.parent_email.message}
-                    </p>
-                  )}
-                </div>
 
-                <div>
-                  <label htmlFor="parent_phone" className="block text-sm font-medium text-gray-700 mb-2">
-                    טלפון הורה
-                  </label>
-                  <div className="relative">
-                    <input
-                      {...register('parent_phone')}
-                      type="tel"
-                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
-                      placeholder="050-1234567"
-                      dir="ltr"
-                    />
-                    <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+              <div className="space-y-4">
+                <label
+                  className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 hover:border-amber-300 ${
+                    consentMethod === 'digital' ? 'border-amber-500 bg-amber-50' : 'border-gray-200 bg-white'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    value="digital"
+                    checked={consentMethod === 'digital'}
+                    onChange={() => handleConsentMethodChange('digital')}
+                    className="h-5 w-5 text-amber-600 focus:ring-amber-500"
+                  />
+                  <div className="mr-4">
+                    <p className="font-medium text-gray-800">שליחת הסכמה להורים לחתימה</p>
+                    <p className="text-sm text-gray-600">יישלח טופס דיגיטלי להורים בדוא&quot;ל או SMS</p>
                   </div>
-                  {errors.parent_phone && (
-                    <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
-                      <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                      {errors.parent_phone.message}
-                    </p>
-                  )}
-                </div>
+                </label>
+
+                <label
+                  className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 hover:border-amber-300 ${
+                    consentMethod === 'manual' ? 'border-amber-500 bg-amber-50' : 'border-gray-200 bg-white'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    value="manual"
+                    checked={consentMethod === 'manual'}
+                    onChange={() => handleConsentMethodChange('manual')}
+                    className="h-5 w-5 text-amber-600 focus:ring-amber-500"
+                  />
+                  <div className="mr-4">
+                    <p className="font-medium text-gray-800">יש בידי טופס הסכמה חתום</p>
+                    <p className="text-sm text-gray-600">כבר קיבלת הסכמה על נייר מההורים</p>
+                  </div>
+                </label>
               </div>
             </div>
+
+            {/* Parent Contact Section - Only show for digital consent */}
+            {consentMethod === 'digital' && (
+              <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100 shadow-sm">
+                <h2 className="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                  <div className="bg-indigo-100 p-2 rounded-lg ml-3">
+                    <Phone className="w-5 h-5 text-indigo-600" />
+                  </div>
+                  פרטי התקשרות להורה
+                </h2>
+                <p className="text-sm text-gray-600 mb-6 mr-11">
+                  נא להזין לפחות אמצעי קשר אחד - טלפון או אימייל
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="parent_email" className="block text-sm font-medium text-gray-700 mb-2">
+                      אימייל הורה
+                    </label>
+                    <div className="relative">
+                      <input
+                        {...register('parent_email')}
+                        type="email"
+                        className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                        placeholder="parent@example.com"
+                        dir="ltr"
+                      />
+                      <Mail className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                    </div>
+                    {errors.parent_email && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        {errors.parent_email.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label htmlFor="parent_phone" className="block text-sm font-medium text-gray-700 mb-2">
+                      טלפון הורה
+                    </label>
+                    <div className="relative">
+                      <input
+                        {...register('parent_phone')}
+                        type="tel"
+                        className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                        placeholder="050-1234567"
+                        dir="ltr"
+                      />
+                      <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                    </div>
+                    {errors.parent_phone && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        {errors.parent_phone.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Manual Consent Confirmation - Only show for manual consent */}
+            {consentMethod === 'manual' && (
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-100 shadow-sm">
+                <label className="flex items-start cursor-pointer">
+                  <input
+                    type="checkbox"
+                    {...register('manual_consent_confirmed')}
+                    className="mt-1 h-5 w-5 text-green-600 rounded border-gray-300 focus:ring-green-500"
+                  />
+                  <span className="mr-3 text-gray-800">
+                    <span className="font-medium flex items-center">
+                      <CheckSquare className="h-5 w-5 ml-2 text-green-600" />
+                      אני מאשר/ת שיש בידי טופס הסכמה חתום על ידי ההורים
+                    </span>
+                    <span className="block text-sm text-gray-600 mt-1 mr-7">
+                      טופס ההסכמה הפיזי ימסר למנהל/ת בית החם בעת ביקור הבית
+                    </span>
+                  </span>
+                </label>
+                {errors.manual_consent_confirmed && (
+                  <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn mr-8">
+                    <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                    {errors.manual_consent_confirmed.message}
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Error Message */}
             {submitResult && !submitResult.success && (
@@ -337,7 +469,11 @@ export default function CounselorInitialForm() {
             {/* Process Explanation */}
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200 shadow-sm">
               <p className="text-gray-700 leading-relaxed text-sm">
-                לאחר הגשת הטופס, יישלח להורים (באמצעי הקשר שהזנתם) טופס ויתור סודיות דיגיטלי לחתימה. כשההורים יאשרו, תקבל/י התראה במייל/סמס עם קישור למילוי נתוני התלמיד/ה והשלמת הגשת הבקשה
+                {consentMethod === 'digital' ? (
+                  'לאחר הגשת הטופס, יישלח להורים (באמצעי הקשר שהזנתם) טופס ויתור סודיות דיגיטלי לחתימה. כשההורים יאשרו, תקבל/י התראה במייל/סמס עם קישור למילוי נתוני התלמיד/ה והשלמת הגשת הבקשה'
+                ) : (
+                  'לאחר הגשת הטופס, תועבר/י ישירות לטופס מילוי נתוני התלמיד/ה. טופס ההסכמה הפיזי החתום ימסר למנהל/ת בית החם.'
+                )}
               </p>
             </div>
 
