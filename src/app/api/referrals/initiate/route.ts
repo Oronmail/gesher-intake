@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
         counselor_email,
         counselor_mobile,
         parent_email: parent_email || null,
-        parent_phone: parent_phone || null,
+        parent_phone: parent_phone || '',  // Use empty string instead of null (NOT NULL constraint)
         status: initialStatus,
         consent_method: consent_method,
         salesforce_contact_id: salesforceRecordId, // Store SF record ID
