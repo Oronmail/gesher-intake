@@ -252,11 +252,20 @@ The system now includes enterprise-grade security measures to protect sensitive 
 
 #### Stage 1: Initiation (Counselor)
 - **URL**: `/` (main page)
-- **Data Collected**: Parent contact ONLY (no student data)
-- **Storage**: Creates record in temp DB with status `pending_consent`
+- **Data Collected**: Parent contact ONLY (no student data) - unless manual consent selected
+- **Consent Method Selection**:
+  - **Digital (default)**: Sends consent form to parents via email/SMS
+  - **Manual**: Counselor confirms they have paper consent, skips to student form
+- **Storage**: Creates record in temp DB with status `pending_consent` (digital) or `consent_signed` (manual)
 - **Output**: Generates unique referral number (e.g., REF-202412-1234)
 
-#### Stage 2: Parent Consent
+#### Stage 1B: Manual Consent Flow (Alternative)
+- **When**: Counselor selects "יש בידי טופס הסכמה חתום" (I have signed consent)
+- **Confirmation**: Checkbox required: "אני מאשר/ת שיש בידי טופס הסכמה חתום על ידי ההורים"
+- **Result**: Skips Stage 2, goes directly to Stage 3 (student form)
+- **Tracking**: `Consent_Method__c` field in Salesforce tracks "Digital" vs "Manual (Paper)"
+
+#### Stage 2: Parent Consent (Digital Flow Only)
 - **URL**: `/consent/[referralNumber]`
 - **Data Collected**: Parent names, IDs, digital signatures
 - **Storage**: Updates temp DB with signatures, status `consent_signed`
@@ -264,8 +273,8 @@ The system now includes enterprise-grade security measures to protect sensitive 
 
 #### Stage 3: Student Data Collection
 - **URL**: `/student-form/[referralNumber]`
-- **Access**: Only after parent consent confirmed
-- **Data Collected**: Comprehensive 7-step form with all student details
+- **Access**: Only after parent consent confirmed (digital or manual)
+- **Data Collected**: Comprehensive 6-step form with all student details
 - **Storage**: Direct to Salesforce, temp DB marked `completed`
 
 #### Stage 4: House Manager Review
@@ -281,13 +290,22 @@ The system now includes enterprise-grade security measures to protect sensitive 
 ```typescript
 - counselor_name: string
 - counselor_email: string
+- counselor_mobile: string
 - school_name: string
-- parent_email?: string (optional)
-- parent_phone?: string (optional)
+- warm_home_destination: string ('בן יהודה' | 'כפר שלם' | 'נוה שרת')
+- consent_method: 'digital' | 'manual'
+- parent_email?: string (optional - required for digital consent)
+- parent_phone?: string (optional - required for digital consent)
+- manual_consent_confirmed?: boolean (required when consent_method is 'manual')
 ```
-**Important**: At least one contact method (email OR phone) is required. The form validates that either parent_email or parent_phone is provided.
 
-**Success Message**: After successful submission, displays: "בקשה לחתימה על טופס ויתור סודיות נשלחה להורים. לאחר חתימתם תישלח התראה ל-[counselor_email] להמשך מילוי נתוני התלמיד"
+**Consent Method Validation**:
+- **Digital**: At least one contact method (email OR phone) is required
+- **Manual**: Confirmation checkbox must be checked
+
+**Success Messages**:
+- **Digital**: "בקשה לחתימה על טופס ויתור סודיות נשלחה להורים. לאחר חתימתם תישלח התראה ל-[counselor_email] להמשך מילוי נתוני התלמיד"
+- **Manual**: "הבקשה נוצרה בהצלחה! כעת ניתן למלא את נתוני התלמיד/ה" + button to student form
 
 ### 2. Parent Consent Form (ParentConsentForm.tsx)
 ```typescript
@@ -692,6 +710,17 @@ NODE_ENV=production
   - [x] Only validates incomplete fields (without green checkmarks)
   - [x] Allows counselors to save progress and return later
   - [x] Navigation through completed steps without re-entering data
+- [x] **MANUAL CONSENT FLOW - January 2025**
+  - [x] Counselors can select "יש בידי טופס הסכמה חתום" to skip digital consent
+  - [x] Consent method radio buttons in counselor form (Digital/Manual)
+  - [x] Parent contact fields hidden when manual consent selected
+  - [x] Confirmation checkbox required: "אני מאשר/ת שיש בידי טופס הסכמה חתום על ידי ההורים"
+  - [x] Direct redirect to student form (skips email/SMS to parents)
+  - [x] Supabase `consent_method` column added (digital/manual)
+  - [x] Salesforce `Consent_Method__c` picklist field (Digital/Manual Paper)
+  - [x] Status set to `consent_signed` immediately for manual flow
+  - [x] Success screen shows button to continue to student form
+  - [x] Different process explanation text based on consent method
 
 - [x] **FIELD TYPE CONVERSION & BUG FIXES - December 2025**
   - [x] Converted 16 Checkbox fields to Picklist type with כן/לא/לא ידוע options
@@ -1376,7 +1405,7 @@ This is a pro bono project developed for Gesher Al HaNoar. For technical questio
 
 ---
 
-*Last Updated: December 2025 (Form Protection & Data Fixes)*
+*Last Updated: January 2025 (Manual Consent Flow)*
 *Project Status: ✅ Fully Operational in Production with Complete Validation & Field Mappings*
 *Live URL: https://gesher-intake.vercel.app*
 *Repository: https://github.com/Oronmail/gesher-intake (Private)*
