@@ -358,8 +358,8 @@ export default function CounselorInitialForm() {
                     className="h-5 w-5 text-amber-600 focus:ring-amber-500"
                   />
                   <div className="mr-4">
-                    <p className="font-medium text-gray-800">יש בידי טופס הסכמה חתום</p>
-                    <p className="text-sm text-gray-600">כבר קיבלת הסכמה על נייר מההורים</p>
+                    <p className="font-medium text-gray-800">החתמה פיזית על ידי נציג בית הספר</p>
+                    <p className="text-sm text-gray-600">יש לוודא החתמה לפני מילוי פרטי התלמיד</p>
                   </div>
                 </label>
               </div>
@@ -439,9 +439,6 @@ export default function CounselorInitialForm() {
                     <span className="font-medium flex items-center">
                       <CheckSquare className="h-5 w-5 ml-2 text-green-600" />
                       אני מאשר/ת שיש בידי טופס הסכמה חתום על ידי ההורים
-                    </span>
-                    <span className="block text-sm text-gray-600 mt-1 mr-7">
-                      טופס ההסכמה הפיזי ימסר למנהל/ת בית החם בעת ביקור הבית
                     </span>
                   </span>
                 </label>
