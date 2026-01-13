@@ -189,7 +189,7 @@ export default function CounselorInitialForm() {
                 <div className="bg-blue-100 p-2 rounded-lg ml-3">
                   <User className="w-5 h-5 text-blue-600" />
                 </div>
-                פרטי היועץ/ת
+                פרטי נציג/ת בית הספר
               </h2>
               
               <div className="space-y-6">

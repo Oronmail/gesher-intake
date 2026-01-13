@@ -168,8 +168,8 @@ const formSchema = z.object({
   grade: z.string().min(1, 'נא להזין כיתה'),
   homeroom_teacher: z.string().min(2, 'נא להזין שם מחנכת'),
   teacher_phone: z.string().min(9, 'נא להזין טלפון מחנכת'),
-  counselor_name: z.string().min(2, 'נא להזין שם יועצת'),
-  counselor_phone: z.string().min(9, 'נא להזין טלפון יועצת'),
+  counselor_name: z.string().min(2, 'נא להזין שם נציג/ת בית הספר'),
+  counselor_phone: z.string().min(9, 'נא להזין טלפון נציג/ת בית הספר'),
   
   // נתוני קליטה - mandatory dropdown fields
   behavioral_issues: z.enum(['', 'כן', 'לא', 'לא ידוע']).refine((val) => val !== '', {
@@ -1997,7 +1997,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          יועץ/ת
+                          נציג/ת בית הספר
                           <span className="text-red-500 mr-1">*</span>
                         </label>
                         <FieldWrapper fieldName="counselor_name" completedFields={completedFields}>
@@ -2005,7 +2005,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                             <input
                               {...register('counselor_name')}
                               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm"
-                              placeholder="שם מלא של היועץ/ת"
+                              placeholder="שם מלא של נציג/ת בית הספר"
                             />
                             <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                           </div>
@@ -2020,7 +2020,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          טלפון יועץ/ת
+                          טלפון נציג/ת בית הספר
                           <span className="text-red-500 mr-1">*</span>
                         </label>
                         <FieldWrapper fieldName="counselor_phone" completedFields={completedFields}>

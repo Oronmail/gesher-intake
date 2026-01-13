@@ -97,7 +97,7 @@ export default function ConsentPage({
                 </div>
                 <div className="mt-6 p-4 bg-blue-50 rounded-lg">
                   <p className="text-blue-800">
-                    היועצ/ת קיבל/ה הודעה על החתימה וימשיך/תמשיך בתהליך
+                    נציג/ת בית הספר קיבל/ה הודעה על החתימה וימשיך/תמשיך בתהליך
                   </p>
                 </div>
               </div>

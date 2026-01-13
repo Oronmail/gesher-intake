@@ -137,7 +137,7 @@ export default function ParentConsentForm({ referralNumber, warmHomeDestination 
         
         setSubmitResult({
           success: true,
-          message: 'הטופס נשלח בהצלחה! היועצ/ת יקבל/תקבל הודעה להמשך הטיפול.',
+          message: 'הטופס נשלח בהצלחה! נציג/ת בית הספר יקבל/תקבל הודעה להמשך הטיפול.',
         })
       } else {
         setSubmitResult({
