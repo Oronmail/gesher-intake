@@ -240,12 +240,7 @@ export const secureFormSchemas = {
     student_first_name: z.string().min(2).max(100).transform(sanitizeInput),
     student_last_name: z.string().min(2).max(100).transform(sanitizeInput),
     student_id: z.string().min(9).max(9).refine(isValidIsraeliId, 'Invalid ID format'),
-    date_of_birth: z.string().refine(val => {
-      const date = new Date(val)
-      const now = new Date()
-      const age = now.getFullYear() - date.getFullYear()
-      return age >= 10 && age <= 25 // Reasonable age range for the program
-    }, 'Invalid date of birth'),
+    date_of_birth: z.string().min(1, 'Date of birth is required'),
     // Add more fields as needed with proper validation
   })
 }

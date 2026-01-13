@@ -107,13 +107,7 @@ const formSchema = z.object({
   student_first_name: z.string().min(2, 'נא להזין שם פרטי'),
   student_last_name: z.string().min(2, 'נא להזין שם משפחה'),
   student_id: z.string().min(9, 'תעודת זהות חייבת להיות 9 ספרות').max(9, 'תעודת זהות חייבת להיות 9 ספרות'),
-  date_of_birth: z.string().min(1, 'נא להזין תאריך לידה').refine((val) => {
-    const date = new Date(val);
-    const year = date.getFullYear();
-    return !isNaN(date.getTime()) && year >= 2000 && year <= 2022;
-  }, {
-    message: 'תאריך לידה לא תקין'
-  }),
+  date_of_birth: z.string().min(1, 'נא להזין תאריך לידה'),
   country_of_birth: z.string().min(2, 'נא להזין ארץ לידה'),
   immigration_year: z.string().optional(),
   gender: z.enum(['male', 'female'] as const),
