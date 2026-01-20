@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
 
     if (!referral_number) {
       return NextResponse.json(
-        { error: 'Referral number is required' },
+        { error: 'מספר הפניה חסר' },
         { status: 400 }
       )
     }
@@ -69,14 +69,14 @@ export async function POST(request: NextRequest) {
 
     if (referralError || !referral) {
       return NextResponse.json(
-        { error: 'Referral not found' },
+        { error: 'לא נמצאה הפניה במערכת' },
         { status: 404 }
       )
     }
 
     if (!referral.salesforce_contact_id) {
       return NextResponse.json(
-        { error: 'Salesforce record not found' },
+        { error: 'רשומה לא נמצאה במערכת Salesforce' },
         { status: 404 }
       )
     }
@@ -185,7 +185,7 @@ export async function POST(request: NextRequest) {
     if (!sfResult.success) {
       console.error('Failed to save progress to Salesforce:', sfResult.error)
       return NextResponse.json(
-        { error: 'Failed to save progress' },
+        { error: 'שגיאה בשמירת הנתונים. אנא נסה שנית.' },
         { status: 500 }
       )
     }
@@ -270,7 +270,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('API error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'שגיאה פנימית בשרת. אנא נסה שנית.' },
       { status: 500 }
     )
   }

@@ -354,6 +354,10 @@ class SalesforceJWTService {
       const isValidPicklist = (val: unknown): boolean =>
         typeof val === 'string' && ['כן', 'לא', 'לא ידוע'].includes(val);
 
+      // Helper to check valid numeric values (not NaN, not undefined, not null)
+      const isValidNumber = (val: unknown): val is number =>
+        typeof val === 'number' && !Number.isNaN(val);
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const studentUpdate: Record<string, any> = {
         Id: recordId,
@@ -378,7 +382,7 @@ class SalesforceJWTService {
         ...(hasContent(data.schoolInfoPassword) && { School_Info_Password__c: data.schoolInfoPassword }),
 
         // Family Information - only update if has content
-        ...(data.siblingsCount !== undefined && data.siblingsCount !== null && { Siblings_Count__c: data.siblingsCount }),
+        ...(isValidNumber(data.siblingsCount) && { Siblings_Count__c: data.siblingsCount }),
         ...(hasContent(data.parent1Name) && { Parent1_Name__c: data.parent1Name }),
         ...(hasContent(data.parent1Phone) && { Parent1_Phone__c: data.parent1Phone }),
         ...(hasContent(data.parent1Occupation) && { Parent1_Occupation__c: data.parent1Occupation }),
@@ -401,7 +405,7 @@ class SalesforceJWTService {
         ...(hasContent(data.teacherPhone) && { Teacher_Phone__c: data.teacherPhone }),
         ...(hasContent(data.schoolCounselorName) && { School_Counselor_Name__c: data.schoolCounselorName }),
         ...(hasContent(data.schoolCounselorPhone) && { School_Counselor_Phone__c: data.schoolCounselorPhone }),
-        ...(data.failingGradesCount !== undefined && data.failingGradesCount !== null && { Failing_Grades_Count__c: data.failingGradesCount }),
+        ...(isValidNumber(data.failingGradesCount) && { Failing_Grades_Count__c: data.failingGradesCount }),
         ...(hasContent(data.failingSubjectsDetails) && { Failing_Subjects_Details__c: data.failingSubjectsDetails }),
 
         // Welfare & Social Services - picklist fields use isValidPicklist
@@ -441,7 +445,7 @@ class SalesforceJWTService {
         ...(isValidPicklist(data.psychiatricTreatment) && { Psychiatric_Treatment__c: data.psychiatricTreatment }),
         ...(isValidPicklist(data.takesMedication) && { Takes_Medication__c: data.takesMedication }),
         ...(hasContent(data.medicationDescription) && { Medication_Description__c: data.medicationDescription }),
-        ...(data.riskLevel !== undefined && data.riskLevel !== null && { Risk_Level__c: data.riskLevel }),
+        ...(isValidNumber(data.riskLevel) && { Risk_Level__c: data.riskLevel }),
         ...(hasContent(data.riskFactors) && { Risk_Factors__c: data.riskFactors }),
 
         // Final Assessment - picklist fields use isValidPicklist
@@ -869,8 +873,12 @@ class SalesforceJWTService {
       if (data.youthWorkerName && typeof data.youthWorkerName === 'string' && data.youthWorkerName.trim()) updateData.Youth_Worker_Name__c = data.youthWorkerName;
       if (data.youthWorkerPhone && typeof data.youthWorkerPhone === 'string' && data.youthWorkerPhone.trim()) updateData.Youth_Worker_Phone__c = data.youthWorkerPhone;
 
-      // Family fields - only update if has value
-      if (data.siblingsCount !== undefined && data.siblingsCount !== null) updateData.Siblings_Count__c = data.siblingsCount;
+      // Helper to check valid numeric values (not NaN, not undefined, not null)
+      const isValidNumber = (val: unknown): val is number =>
+        typeof val === 'number' && !Number.isNaN(val);
+
+      // Family fields - only update if has valid value
+      if (isValidNumber(data.siblingsCount)) updateData.Siblings_Count__c = data.siblingsCount;
       if (data.parent1Name && typeof data.parent1Name === 'string' && data.parent1Name.trim()) updateData.Parent1_Name__c = data.parent1Name;
       if (data.parent1Phone && typeof data.parent1Phone === 'string' && data.parent1Phone.trim()) updateData.Parent1_Phone__c = data.parent1Phone;
       if (data.parent1Occupation && typeof data.parent1Occupation === 'string' && data.parent1Occupation.trim()) updateData.Parent1_Occupation__c = data.parent1Occupation;
@@ -934,10 +942,10 @@ class SalesforceJWTService {
       // Final assessment
       if (isValidPicklist(data.militaryServicePotential)) updateData.Military_Service_Potential__c = data.militaryServicePotential as string;
       if (isValidPicklist(data.canHandleProgram)) updateData.Can_Handle_Program__c = data.canHandleProgram as string;
-      if (data.riskLevel && typeof data.riskLevel === 'string' && data.riskLevel.trim()) updateData.Risk_Level__c = data.riskLevel;
+      if (isValidNumber(data.riskLevel)) updateData.Risk_Level__c = data.riskLevel;
       if (data.riskFactors && typeof data.riskFactors === 'string' && data.riskFactors.trim()) updateData.Risk_Factors__c = data.riskFactors;
       if (data.personalOpinion && typeof data.personalOpinion === 'string' && data.personalOpinion.trim()) updateData.Personal_Opinion__c = data.personalOpinion;
-      if (data.failingGradesCount !== undefined && data.failingGradesCount !== null) updateData.Failing_Grades_Count__c = data.failingGradesCount;
+      if (isValidNumber(data.failingGradesCount)) updateData.Failing_Grades_Count__c = data.failingGradesCount;
 
       // File upload tracking
       if (data.assessmentFileUploaded !== undefined) updateData.Assessment_File_Uploaded__c = data.assessmentFileUploaded;

@@ -516,7 +516,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 'siblings_count', 'failing_grades_count', 'risk_level'
               ])
 
-              // Track completed fields WITHOUT populating values (for privacy)
+              // Track completed fields - for numeric fields, also populate values to prevent NaN errors
               Object.entries(sfData).forEach(([key, value]) => {
                 const isDropdownField = dropdownFields.has(key)
                 const isNumericField = numericFields.has(key)
@@ -531,15 +531,20 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                   isCompleted = (value !== null && value !== '' && value !== undefined)
                 } else if (isNumericField) {
                   // For numeric: any number including 0 (but not null) means completed
-                  isCompleted = (typeof value === 'number')
+                  isCompleted = (typeof value === 'number' && !Number.isNaN(value))
                 } else {
                   // For text fields: non-empty string means completed
                   isCompleted = (value !== null && value !== '' && value !== false)
                 }
 
                 if (isCompleted) {
-                  // Only add to completed set, do NOT setValue to maintain privacy
                   completedSet.add(key)
+
+                  // For numeric fields, also populate the value to prevent NaN errors on submit
+                  // These fields are not sensitive (just counts/levels) so no privacy concern
+                  if (isNumericField) {
+                    setValue(key as keyof FormData, value as number)
+                  }
                 }
               })
 
@@ -814,7 +819,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
         setTimeout(() => setSaveSuccess(false), 5000)
       } else {
         console.error('Failed to save progress:', result.error)
-        alert('שגיאה בשמירת התקדמות: ' + (result.error || 'Unknown error'))
+        alert(result.error || 'שגיאה בשמירת התקדמות. אנא נסה שנית.')
       }
     } catch (error) {
       console.error('Error saving progress:', error)
