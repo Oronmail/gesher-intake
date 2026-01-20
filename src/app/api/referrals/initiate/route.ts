@@ -43,6 +43,11 @@ export async function POST(request: NextRequest) {
           }
         }
       }
+
+      // If a consent file was uploaded, that satisfies the manual consent requirement
+      if (consentFile && body.consent_method === 'manual') {
+        body.manual_consent_confirmed = true
+      }
     } else {
       // Handle JSON
       body = await request.json()
