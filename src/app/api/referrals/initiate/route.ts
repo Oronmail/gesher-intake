@@ -21,8 +21,33 @@ function generateReferralNumber(): string {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    
+    // Check content type to determine if it's FormData or JSON
+    const contentType = request.headers.get('content-type') || ''
+    let body: Record<string, unknown>
+    let consentFile: File | null = null
+
+    if (contentType.includes('multipart/form-data')) {
+      // Handle FormData (with file upload)
+      const formData = await request.formData()
+      body = {}
+
+      for (const [key, value] of formData.entries()) {
+        if (key === 'consent_file' && value instanceof File) {
+          consentFile = value
+        } else {
+          // Convert string 'true'/'false' to boolean for checkbox
+          if (key === 'manual_consent_confirmed') {
+            body[key] = value === 'true'
+          } else {
+            body[key] = value
+          }
+        }
+      }
+    } else {
+      // Handle JSON
+      body = await request.json()
+    }
+
     // Validate and sanitize input
     const validationResult = secureFormSchemas.counselorInitial.safeParse(body)
     
@@ -110,12 +135,38 @@ export async function POST(request: NextRequest) {
 
     // Handle different flows based on consent method
     if (consent_method === 'manual') {
+      // If a consent file was uploaded, attach it to the Salesforce record
+      if (consentFile && salesforceRecordId) {
+        try {
+          const fileBuffer = Buffer.from(await consentFile.arrayBuffer())
+          const uploadResult = await salesforceJWT.uploadFile(
+            salesforceRecordId,
+            fileBuffer,
+            `consent-form-${referral_number}.${consentFile.name.split('.').pop()}`,
+            consentFile.type,
+            `טופס הסכמה חתום - ${referral_number}`
+          )
+
+          if (uploadResult.success) {
+            console.log('Consent file uploaded to Salesforce:', uploadResult.contentDocumentId)
+          } else {
+            console.error('Failed to upload consent file:', uploadResult.error)
+          }
+        } catch (uploadError) {
+          console.error('Error uploading consent file:', uploadError)
+          // Continue anyway - don't block the process
+        }
+      }
+
       // For manual consent, return student form URL directly (skip notifications)
       const studentFormUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/student-form/${referral_number}`
 
       console.log('====================================')
       console.log('MANUAL CONSENT - Direct to student form')
       console.log('Student form URL:', studentFormUrl)
+      if (consentFile) {
+        console.log('Consent file uploaded:', consentFile.name)
+      }
       console.log('====================================')
 
       return NextResponse.json({

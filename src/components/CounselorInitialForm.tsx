@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Loader2, CheckCircle, User, School, Mail, Phone, ArrowRight, UserPlus, FileCheck, CheckSquare } from 'lucide-react'
+import { Loader2, CheckCircle, User, School, Mail, Phone, ArrowRight, UserPlus, FileCheck, CheckSquare, Upload, X } from 'lucide-react'
 import Logo from './Logo'
 
 const formSchema = z.object({
@@ -28,14 +28,8 @@ const formSchema = z.object({
       })
     }
   }
-  // Require confirmation checkbox when manual consent is selected
-  if (data.consent_method === 'manual' && !data.manual_consent_confirmed) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "נא לאשר שיש בידך טופס הסכמה חתום",
-      path: ["manual_consent_confirmed"],
-    })
-  }
+  // For manual consent: require either file upload OR checkbox confirmation
+  // Note: File validation is handled separately in the component since Zod doesn't handle File objects
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -44,6 +38,8 @@ export default function CounselorInitialForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string; studentFormUrl?: string } | null>(null)
   const [consentMethod, setConsentMethod] = useState<'digital' | 'manual'>('digital')
+  const [consentFile, setConsentFile] = useState<File | null>(null)
+  const [fileError, setFileError] = useState<string | null>(null)
 
   const {
     register,
@@ -68,18 +64,82 @@ export default function CounselorInitialForm() {
       setValue('parent_phone', '')
     }
     setValue('manual_consent_confirmed', false)
+    setConsentFile(null)
+    setFileError(null)
+  }
+
+  // Handle file selection
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    setFileError(null)
+
+    if (file) {
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/heic', 'application/pdf']
+      if (!allowedTypes.includes(file.type)) {
+        setFileError('סוג קובץ לא נתמך. יש להעלות תמונה (JPG, PNG, HEIC) או PDF')
+        setConsentFile(null)
+        return
+      }
+
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        setFileError('גודל הקובץ חורג מ-10MB')
+        setConsentFile(null)
+        return
+      }
+
+      setConsentFile(file)
+      // If file is uploaded, uncheck the confirmation checkbox
+      setValue('manual_consent_confirmed', false)
+    } else {
+      setConsentFile(null)
+    }
+  }
+
+  // Remove uploaded file
+  const removeFile = () => {
+    setConsentFile(null)
+    setFileError(null)
   }
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true)
     setSubmitResult(null)
+    setFileError(null)
+
+    // For manual consent: validate that either file or checkbox is provided
+    if (data.consent_method === 'manual' && !consentFile && !data.manual_consent_confirmed) {
+      setFileError('נא להעלות צילום טופס הסכמה או לאשר שהטופס יימסר למנהל/ת בית החם')
+      setIsSubmitting(false)
+      return
+    }
 
     try {
-      const response = await fetch('/api/referrals/initiate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
+      let response: Response
+
+      // If there's a file, use FormData; otherwise use JSON
+      if (consentFile) {
+        const formData = new window.FormData()
+        formData.append('consent_file', consentFile)
+        // Add all other fields to FormData
+        Object.entries(data).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            formData.append(key, String(value))
+          }
+        })
+
+        response = await fetch('/api/referrals/initiate', {
+          method: 'POST',
+          body: formData,
+        })
+      } else {
+        response = await fetch('/api/referrals/initiate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        })
+      }
 
       const result = await response.json()
 
@@ -98,6 +158,7 @@ export default function CounselorInitialForm() {
         }
         reset()
         setConsentMethod('digital')
+        setConsentFile(null)
       } else {
         setSubmitResult({
           success: false,
@@ -152,6 +213,7 @@ export default function CounselorInitialForm() {
                     setSubmitResult(null)
                     reset()
                     setConsentMethod('digital')
+                    setConsentFile(null)
                   }}
                   className="mt-4 px-8 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transform transition-all duration-200 hover:scale-105 shadow-lg flex items-center"
                 >
@@ -340,7 +402,7 @@ export default function CounselorInitialForm() {
                     className="h-5 w-5 text-amber-600 focus:ring-amber-500"
                   />
                   <div className="mr-4">
-                    <p className="font-medium text-gray-800">שליחת הסכמה להורים לחתימה</p>
+                    <p className="font-medium text-gray-800">שליחת טופס הסכמה להורים לחתימה</p>
                     <p className="text-sm text-gray-600">יישלח טופס דיגיטלי להורים בדוא&quot;ל או SMS</p>
                   </div>
                 </label>
@@ -426,26 +488,88 @@ export default function CounselorInitialForm() {
               </div>
             )}
 
-            {/* Manual Consent Confirmation - Only show for manual consent */}
+            {/* Manual Consent Options - Only show for manual consent */}
             {consentMethod === 'manual' && (
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-100 shadow-sm">
-                <label className="flex items-start cursor-pointer">
-                  <input
-                    type="checkbox"
-                    {...register('manual_consent_confirmed')}
-                    className="mt-1 h-5 w-5 text-green-600 rounded border-gray-300 focus:ring-green-500"
-                  />
-                  <span className="mr-3 text-gray-800">
-                    <span className="font-medium flex items-center">
-                      <CheckSquare className="h-5 w-5 ml-2 text-green-600" />
-                      אני מאשר/ת שיש בידי טופס הסכמה חתום על ידי ההורים
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                  נא לבחור אחת מהאפשרויות הבאות:
+                  <span className="text-red-500 mr-1">*</span>
+                </h3>
+
+                {/* Option 1: Upload consent file */}
+                <div className="mb-6">
+                  <p className="text-sm font-medium text-gray-700 mb-3">אפשרות 1: העלאת צילום טופס הסכמה חתום</p>
+
+                  {!consentFile ? (
+                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-green-300 rounded-xl cursor-pointer bg-white hover:bg-green-50 transition-colors">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <Upload className="w-8 h-8 mb-2 text-green-500" />
+                        <p className="text-sm text-gray-600">
+                          <span className="font-medium text-green-600">לחץ להעלאה</span> או גרור קובץ
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">JPG, PNG, HEIC או PDF (עד 10MB)</p>
+                      </div>
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/jpeg,image/png,image/heic,application/pdf"
+                        onChange={handleFileChange}
+                      />
+                    </label>
+                  ) : (
+                    <div className="flex items-center justify-between p-4 bg-white border-2 border-green-300 rounded-xl">
+                      <div className="flex items-center">
+                        <CheckCircle className="w-6 h-6 text-green-500 ml-3" />
+                        <div>
+                          <p className="text-sm font-medium text-gray-800">{consentFile.name}</p>
+                          <p className="text-xs text-gray-500">{(consentFile.size / 1024).toFixed(1)} KB</p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={removeFile}
+                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Divider */}
+                <div className="flex items-center my-4">
+                  <div className="flex-1 border-t border-gray-300"></div>
+                  <span className="px-4 text-sm text-gray-500">או</span>
+                  <div className="flex-1 border-t border-gray-300"></div>
+                </div>
+
+                {/* Option 2: Checkbox confirmation */}
+                <div>
+                  <p className="text-sm font-medium text-gray-700 mb-3">אפשרות 2: אישור שהטופס יימסר בהמשך</p>
+                  <label className={`flex items-start cursor-pointer p-4 rounded-xl border-2 transition-colors ${consentFile ? 'opacity-50 cursor-not-allowed border-gray-200 bg-gray-50' : 'border-gray-200 bg-white hover:border-green-300'}`}>
+                    <input
+                      type="checkbox"
+                      {...register('manual_consent_confirmed')}
+                      disabled={!!consentFile}
+                      className="mt-1 h-5 w-5 text-green-600 rounded border-gray-300 focus:ring-green-500 disabled:opacity-50"
+                    />
+                    <span className="mr-3 text-gray-800">
+                      <span className="font-medium flex items-center">
+                        <CheckSquare className="h-5 w-5 ml-2 text-green-600" />
+                        אני מאשר/ת שיש בידי טופס הסכמה חתום על ידי ההורים
+                      </span>
+                      <span className="block text-sm text-gray-600 mt-1 mr-7">
+                        הטופס יימסר למנהל/ת בית החם
+                      </span>
                     </span>
-                  </span>
-                </label>
-                {errors.manual_consent_confirmed && (
-                  <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn mr-8">
+                  </label>
+                </div>
+
+                {/* Error message */}
+                {fileError && (
+                  <p className="mt-4 text-sm text-red-600 flex items-center animate-fadeIn">
                     <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
-                    {errors.manual_consent_confirmed.message}
+                    {fileError}
                   </p>
                 )}
               </div>
