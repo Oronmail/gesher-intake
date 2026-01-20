@@ -390,6 +390,75 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
     }
   })
 
+  // Compress image to reduce file size (for Vercel's 4.5MB limit)
+  const compressImage = async (file: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+
+      img.onload = () => {
+        // Calculate new dimensions (max 1600px width/height while maintaining aspect ratio)
+        const maxDim = 1600
+        let { width, height } = img
+
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = (height / width) * maxDim
+            width = maxDim
+          } else {
+            width = (width / height) * maxDim
+            height = maxDim
+          }
+        }
+
+        canvas.width = width
+        canvas.height = height
+        ctx?.drawImage(img, 0, 0, width, height)
+
+        // Convert to JPEG with 0.7 quality
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, '.jpg'), {
+                type: 'image/jpeg',
+                lastModified: Date.now(),
+              })
+              resolve(compressedFile)
+            } else {
+              reject(new Error('Failed to compress image'))
+            }
+          },
+          'image/jpeg',
+          0.7
+        )
+      }
+
+      img.onerror = () => reject(new Error('Failed to load image'))
+      img.src = URL.createObjectURL(file)
+    })
+  }
+
+  // Process file (compress if image and large)
+  const processFile = async (file: File): Promise<File> => {
+    const imageTypes = ['image/jpeg', 'image/png', 'image/heic']
+
+    // PDFs: check size limit only
+    if (file.type === 'application/pdf') {
+      if (file.size > 4 * 1024 * 1024) {
+        throw new Error('PDF file too large (max 4MB)')
+      }
+      return file
+    }
+
+    // Images: compress if larger than 3MB
+    if (imageTypes.includes(file.type) && file.size > 3 * 1024 * 1024) {
+      return await compressImage(file)
+    }
+
+    return file
+  }
+
   // Fetch referral data from Supabase and existing progress from Salesforce
   useEffect(() => {
     const fetchReferralData = async () => {
@@ -651,19 +720,27 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
         const formData = new FormData()
         formData.append('referral_number', referralNumber)
 
-        // Add all form fields
-        Object.entries(currentValues).forEach(([key, value]) => {
+        // Add all form fields (process files with compression)
+        for (const [key, value] of Object.entries(currentValues)) {
           // Handle file inputs (FileList objects)
           if (key === 'assessment_file' || key === 'grade_sheet') {
             if (value && value.length > 0) {
-              formData.append(key, value[0]) // Get first file from FileList
+              try {
+                // Compress image files if needed
+                const processedFile = await processFile(value[0])
+                formData.append(key, processedFile)
+                console.log(`Processed ${key}: ${value[0].size} bytes -> ${processedFile.size} bytes`)
+              } catch (err) {
+                console.error(`Error processing file ${key}:`, err)
+                // Skip this file if processing fails
+              }
             }
           }
           // Handle other values
           else if (value !== null && value !== undefined) {
             formData.append(key, typeof value === 'object' ? JSON.stringify(value) : String(value))
           }
-        })
+        }
 
         response = await fetch('/api/referrals/save-progress', {
           method: 'POST',
@@ -896,12 +973,26 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
         // Add referral number
         formData.append('referral_number', referralNumber)
 
-        // Add files if present
+        // Add files if present (with compression for large images)
         if (data.assessment_file?.length > 0) {
-          formData.append('assessment_file', data.assessment_file[0])
+          try {
+            const processedFile = await processFile(data.assessment_file[0])
+            formData.append('assessment_file', processedFile)
+            console.log(`📎 Assessment file compressed: ${data.assessment_file[0].size} -> ${processedFile.size} bytes`)
+          } catch (err) {
+            console.error('Error processing assessment file:', err)
+            formData.append('assessment_file', data.assessment_file[0])
+          }
         }
         if (data.grade_sheet?.length > 0) {
-          formData.append('grade_sheet', data.grade_sheet[0])
+          try {
+            const processedFile = await processFile(data.grade_sheet[0])
+            formData.append('grade_sheet', processedFile)
+            console.log(`📎 Grade sheet compressed: ${data.grade_sheet[0].size} -> ${processedFile.size} bytes`)
+          } catch (err) {
+            console.error('Error processing grade sheet:', err)
+            formData.append('grade_sheet', data.grade_sheet[0])
+          }
         }
 
         console.log('🔥 [8a/10] Sending FormData to API...')
