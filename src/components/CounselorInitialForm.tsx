@@ -68,8 +68,57 @@ export default function CounselorInitialForm() {
     setFileError(null)
   }
 
+  // Compress image to reduce file size (for Vercel's 4.5MB limit)
+  const compressImage = async (file: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+
+      img.onload = () => {
+        // Calculate new dimensions (max 1600px width/height while maintaining aspect ratio)
+        const maxDim = 1600
+        let { width, height } = img
+
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = (height / width) * maxDim
+            width = maxDim
+          } else {
+            width = (width / height) * maxDim
+            height = maxDim
+          }
+        }
+
+        canvas.width = width
+        canvas.height = height
+        ctx?.drawImage(img, 0, 0, width, height)
+
+        // Convert to JPEG with 0.7 quality
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, '.jpg'), {
+                type: 'image/jpeg',
+                lastModified: Date.now(),
+              })
+              resolve(compressedFile)
+            } else {
+              reject(new Error('Failed to compress image'))
+            }
+          },
+          'image/jpeg',
+          0.7
+        )
+      }
+
+      img.onerror = () => reject(new Error('Failed to load image'))
+      img.src = URL.createObjectURL(file)
+    })
+  }
+
   // Handle file selection
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     setFileError(null)
 
@@ -82,14 +131,31 @@ export default function CounselorInitialForm() {
         return
       }
 
-      // Validate file size (max 10MB)
-      if (file.size > 10 * 1024 * 1024) {
-        setFileError('גודל הקובץ חורג מ-10MB')
-        setConsentFile(null)
-        return
+      // For PDFs, check size limit (4MB for Vercel)
+      if (file.type === 'application/pdf') {
+        if (file.size > 4 * 1024 * 1024) {
+          setFileError('גודל קובץ PDF חורג מ-4MB. נא להקטין את הקובץ')
+          setConsentFile(null)
+          return
+        }
+        setConsentFile(file)
+      } else {
+        // For images, compress if needed
+        try {
+          if (file.size > 3 * 1024 * 1024) {
+            // Compress images larger than 3MB
+            const compressedFile = await compressImage(file)
+            setConsentFile(compressedFile)
+          } else {
+            setConsentFile(file)
+          }
+        } catch {
+          setFileError('שגיאה בעיבוד התמונה. נסה שנית')
+          setConsentFile(null)
+          return
+        }
       }
 
-      setConsentFile(file)
       // If file is uploaded, uncheck the confirmation checkbox
       setValue('manual_consent_confirmed', false)
     } else {
