@@ -195,6 +195,14 @@ export default function CounselorInitialForm() {
           }
         })
 
+        // Debug: log what's being sent
+        console.log('Sending FormData with file:', consentFile.name)
+        for (const [key, value] of formData.entries()) {
+          if (key !== 'consent_file') {
+            console.log(`  ${key}:`, value)
+          }
+        }
+
         response = await fetch('/api/referrals/initiate', {
           method: 'POST',
           body: formData,
@@ -226,6 +234,11 @@ export default function CounselorInitialForm() {
         setConsentMethod('digital')
         setConsentFile(null)
       } else {
+        // Log validation details for debugging
+        console.error('API Error:', result)
+        if (result.details) {
+          console.error('Validation details:', JSON.stringify(result.details, null, 2))
+        }
         setSubmitResult({
           success: false,
           message: result.error || 'שגיאה ביצירת ההפניה',
