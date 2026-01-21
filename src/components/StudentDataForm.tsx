@@ -481,7 +481,8 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
           // Do NOT pre-populate from Supabase parent_phone (which is the consent signer's phone)
 
           // If parent names are stored (from consent form)
-          if (data.parent_names) {
+          // Skip if it's the manual consent placeholder text
+          if (data.parent_names && data.parent_names !== 'הסכמה ידנית (טופס נייר)') {
             const parentNames = data.parent_names.split(', ')
             if (parentNames[0]) {
               setValue('parent1_name', parentNames[0])
@@ -631,7 +632,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
       const formValues = getValues()
 
       // Clear previous conditional errors
-      clearErrors(['behavioral_issues_details', 'learning_disability_explanation', 'adhd_treatment', 'assessment_file'])
+      clearErrors(['behavioral_issues_details', 'learning_disability_explanation', 'adhd_treatment'])
 
       // Check behavioral_issues_details if behavioral_issues is 'yes' AND not already completed
       if (formValues.behavioral_issues === 'כן' &&
@@ -657,14 +658,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
         conditionalValid = false
       }
 
-      // Check assessment_file if assessment_done is 'yes'
-      // Skip validation if file was already uploaded previously (marked in completedFields)
-      if (formValues.assessment_done === 'כן' &&
-          (!formValues.assessment_file || formValues.assessment_file.length === 0) &&
-          !completedFields.has('assessment_file')) {
-        setError('assessment_file', { type: 'manual', message: 'נא להעלות קובץ אבחון' })
-        conditionalValid = false
-      }
+      // Note: assessment_file is no longer mandatory
     }
 
     // For Step 5, validate criminal_record_details only when criminal_record is 'כן'
@@ -858,9 +852,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
         if (formValues.adhd === 'כן') {
           fields.push('adhd_treatment')
         }
-        if (formValues.assessment_done === 'כן') {
-          fields.push('assessment_file')
-        }
+        // Note: assessment_file is no longer mandatory
         return fields
       }
       // Step 5: All dropdown fields are mandatory
@@ -2645,7 +2637,7 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           העלאת קובץ אבחון
-                          <span className="text-red-500 mr-1">*</span>
+                          <span className="text-gray-400 mr-1">(אופציונלי)</span>
                         </label>
                         <FieldWrapper fieldName="assessment_file" completedFields={completedFields}>
                           <input

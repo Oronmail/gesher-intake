@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
-import { sendConsentEmail } from '@/lib/email'
-import { sendConsentSMS } from '@/lib/sms'
+import { sendConsentEmail, sendCounselorNotification } from '@/lib/email'
+import { sendConsentSMS, sendCounselorSMS } from '@/lib/sms'
 import { getBrandingFromDestination } from '@/lib/branding'
 import salesforceJWT from '@/lib/salesforce-jwt'
-import { 
-  secureFormSchemas, 
-  redactSensitiveData 
+import {
+  secureFormSchemas,
+  redactSensitiveData
 } from '@/lib/security'
 import crypto from 'crypto'
 
@@ -163,7 +163,7 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      // For manual consent, return student form URL directly (skip notifications)
+      // For manual consent, send confirmation to counselor and return student form URL
       const studentFormUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/student-form/${referral_number}`
 
       console.log('====================================')
@@ -173,6 +173,53 @@ export async function POST(request: NextRequest) {
         console.log('Consent file uploaded:', consentFile.name)
       }
       console.log('====================================')
+
+      // Get branding for organization name
+      const branding = getBrandingFromDestination(warm_home_destination)
+
+      // Track notification results for manual consent
+      const manualNotifications = {
+        email: false,
+        sms: false,
+      }
+
+      // Send email confirmation to counselor
+      if (counselor_email) {
+        const emailResult = await sendCounselorNotification({
+          counselorEmail: counselor_email,
+          counselorName: counselor_name,
+          parentNames: 'הסכמה ידנית (טופס נייר)',
+          studentName: 'טרם הוזן - יש למלא בטופס נתוני התלמיד',
+          studentFormUrl: studentFormUrl,
+          referralNumber: referral_number,
+          organizationName: branding.organizationName,
+        })
+
+        if (emailResult.success) {
+          console.log('Manual consent confirmation email sent to counselor:', counselor_email)
+          manualNotifications.email = true
+        } else {
+          console.log('Failed to send counselor email:', emailResult.error)
+        }
+      }
+
+      // Send SMS confirmation to counselor
+      if (counselor_mobile) {
+        const smsResult = await sendCounselorSMS({
+          counselorPhone: counselor_mobile,
+          studentName: 'טרם הוזן',
+          formUrl: studentFormUrl,
+        })
+
+        if (smsResult.success) {
+          console.log('Manual consent confirmation SMS sent to counselor:', counselor_mobile)
+          manualNotifications.sms = true
+        } else {
+          console.log('Failed to send counselor SMS:', smsResult.error)
+        }
+      }
+
+      console.log('Manual consent notifications sent:', manualNotifications)
 
       return NextResponse.json({
         success: true,
