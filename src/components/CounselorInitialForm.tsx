@@ -56,7 +56,7 @@ type FormData = z.infer<typeof formSchema>
 
 export default function CounselorInitialForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string; studentFormUrl?: string; studentName?: string } | null>(null)
+  const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string; studentFormUrl?: string; studentName?: string; counselorContact?: string } | null>(null)
   const [consentMethod, setConsentMethod] = useState<'digital' | 'manual'>('digital')
   const [consentFile, setConsentFile] = useState<File | null>(null)
   const [fileError, setFileError] = useState<string | null>(null)
@@ -244,9 +244,13 @@ export default function CounselorInitialForm() {
       if (response.ok) {
         if (result.consent_method === 'manual') {
           const studentFullName = `${data.student_first_name} ${data.student_last_name}`
+          // Build contact info string for the message
+          const contactInfo = data.counselor_email && data.counselor_mobile
+            ? `${data.counselor_email} ו-${data.counselor_mobile}`
+            : data.counselor_email || data.counselor_mobile
           setSubmitResult({
             success: true,
-            message: `הבקשה עבור ${studentFullName} נוצרה בהצלחה! כעת ניתן להשלים את מילוי נתוני התלמיד/ה`,
+            message: `הבקשה עבור ${studentFullName} נוצרה בהצלחה! ניתן להשלים את מילוי נתוני התלמיד/ה גם במועד מאוחר יותר, הלינק נשלח ל-${contactInfo}`,
             studentFormUrl: result.student_form_url,
             studentName: studentFullName,
           })
@@ -302,24 +306,15 @@ export default function CounselorInitialForm() {
                   </p>
                 </div>
 
-                {/* Show student name and button to continue for manual consent */}
+                {/* Show button to continue for manual consent */}
                 {submitResult.studentFormUrl && submitResult.studentName && (
-                  <>
-                    <div className="bg-purple-50 border border-purple-200 rounded-xl p-4 flex items-center">
-                      <User className="h-6 w-6 text-purple-600 ml-3" />
-                      <div>
-                        <p className="text-sm text-purple-600">שם התלמיד/ה</p>
-                        <p className="text-lg font-bold text-purple-800">{submitResult.studentName}</p>
-                      </div>
-                    </div>
-                    <a
-                      href={submitResult.studentFormUrl}
-                      className="mt-6 px-8 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-medium hover:from-green-600 hover:to-green-700 transform transition-all duration-200 hover:scale-105 shadow-lg flex items-center"
-                    >
-                      <ArrowRight className="h-5 w-5 ml-2" />
-                      המשך למילוי נתוני {submitResult.studentName}
-                    </a>
-                  </>
+                  <a
+                    href={submitResult.studentFormUrl}
+                    className="mt-2 px-8 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-medium hover:from-green-600 hover:to-green-700 transform transition-all duration-200 hover:scale-105 shadow-lg flex items-center"
+                  >
+                    <ArrowRight className="h-5 w-5 ml-2" />
+                    המשך למילוי נתוני {submitResult.studentName}
+                  </a>
                 )}
 
                 <button
