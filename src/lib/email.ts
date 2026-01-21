@@ -246,3 +246,169 @@ export async function sendCounselorNotification({
     return { success: false, error: 'Failed to send email' };
   }
 }
+
+interface SendHouseManagerNotificationParams {
+  managerEmail: string;
+  managerName: string;
+  warmHomeDestination: string;
+  studentName: string;
+  schoolName: string;
+  counselorName: string;
+  referralNumber: string;
+  salesforceRecordId: string | null;
+  notificationType: 'new_referral' | 'registration_complete';
+  organizationName?: string;
+}
+
+export async function sendHouseManagerNotification({
+  managerEmail,
+  managerName,
+  warmHomeDestination,
+  studentName,
+  schoolName,
+  counselorName,
+  referralNumber,
+  salesforceRecordId,
+  notificationType,
+  organizationName = 'גשר אל הנוער',
+}: SendHouseManagerNotificationParams) {
+  console.log(`[EMAIL] Attempting to send house manager notification to: ${managerEmail} (type: ${notificationType})`);
+
+  const transporter = createGmailTransporter();
+
+  if (!transporter) {
+    console.log('[EMAIL] Gmail credentials not configured, skipping email');
+    return { success: false, error: 'Email service not configured' };
+  }
+
+  // Generate unique message ID
+  const messageId = `${Date.now()}.${Math.random().toString(36).substr(2, 9)}@gmail.com`;
+
+  // Build Salesforce link
+  const sfBaseUrl = process.env.SALESFORCE_INSTANCE_URL || 'https://geh--partialsb.sandbox.my.salesforce.com';
+  const sfRecordLink = salesforceRecordId
+    ? `${sfBaseUrl}/lightning/r/Registration_Request__c/${salesforceRecordId}/view`
+    : null;
+
+  // Different content based on notification type
+  const isNewReferral = notificationType === 'new_referral';
+
+  const emailSubject = isNewReferral
+    ? `הפניה חדשה התקבלה - ${studentName} (${warmHomeDestination})`
+    : `רישום הושלם - ${studentName} (${warmHomeDestination})`;
+
+  const emailTitle = isNewReferral
+    ? '📋 הפניה חדשה התקבלה'
+    : '✅ רישום תלמיד/ה הושלם';
+
+  const emailDescription = isNewReferral
+    ? `התקבלה הפניה חדשה עבור ${studentName} מבית ספר ${schoolName}.`
+    : `הרישום עבור ${studentName} מבית ספר ${schoolName} הושלם בהצלחה.`;
+
+  const statusText = isNewReferral
+    ? 'ממתין להשלמת נתוני תלמיד/ה'
+    : 'נתוני התלמיד/ה הוזנו במלואם';
+
+  // Plain text version
+  const textContent = `
+    ${emailTitle}
+
+    שלום ${managerName},
+
+    ${emailDescription}
+
+    פרטי ההפניה:
+    - שם התלמיד/ה: ${studentName}
+    - בית ספר: ${schoolName}
+    - נציג/ת בית הספר: ${counselorName}
+    - בית חם: ${warmHomeDestination}
+    - מספר הפניה: ${referralNumber}
+    - סטטוס: ${statusText}
+
+    ${sfRecordLink ? `צפייה ברשומה ב-Salesforce: ${sfRecordLink}` : ''}
+
+    זהו מייל אוטומטי מהמערכת.
+  `.trim();
+
+  try {
+    const result = await transporter.sendMail({
+      from: `${organizationName} <${process.env.GMAIL_USER}>`,
+      to: managerEmail,
+      subject: emailSubject,
+      text: textContent,
+      replyTo: `${organizationName} <${process.env.GMAIL_USER}>`,
+      messageId: messageId,
+      headers: {
+        'X-Priority': '3',
+        'X-Mailer': 'Gesher-Youth-Intake-System',
+        'Importance': 'Normal',
+        'List-Unsubscribe': `<mailto:${process.env.GMAIL_USER}?subject=Unsubscribe>`,
+        'Precedence': 'bulk'
+      },
+      html: `
+        <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="text-align: center; margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, ${isNewReferral ? '#3b82f6' : '#10b981'} 0%, ${isNewReferral ? '#6366f1' : '#059669'} 100%); border-radius: 8px;">
+            <h1 style="color: white; margin: 0; font-size: 24px;">${organizationName}</h1>
+          </div>
+          <h2 style="color: ${isNewReferral ? '#3b82f6' : '#10b981'};">${emailTitle}</h2>
+
+          <p>שלום ${managerName},</p>
+
+          <p>${emailDescription}</p>
+
+          <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="margin-top: 0; color: #374151;">פרטי ההפניה:</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;"><strong>שם התלמיד/ה:</strong></td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${studentName}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;"><strong>בית ספר:</strong></td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${schoolName}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;"><strong>נציג/ת בית הספר:</strong></td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${counselorName}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;"><strong>בית חם:</strong></td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${warmHomeDestination}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;"><strong>מספר הפניה:</strong></td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${referralNumber}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0;"><strong>סטטוס:</strong></td>
+                <td style="padding: 8px 0; color: ${isNewReferral ? '#f59e0b' : '#10b981'}; font-weight: bold;">${statusText}</td>
+              </tr>
+            </table>
+          </div>
+
+          ${sfRecordLink ? `
+          <div style="text-align: center; margin: 20px 0;">
+            <a href="${sfRecordLink}" style="display: inline-block; background: ${isNewReferral ? '#3b82f6' : '#10b981'}; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">
+              צפייה ברשומה ב-Salesforce
+            </a>
+          </div>
+          ` : ''}
+
+          <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;">
+
+          <p style="color: #6b7280; font-size: 14px;">
+            זהו מייל אוטומטי מהמערכת.
+          </p>
+        </div>
+      `
+    });
+
+    console.log(`[EMAIL] ✅ House manager notification sent successfully to ${managerEmail}`);
+    console.log('[EMAIL] Gmail Message ID:', result.messageId);
+    return { success: true, data: result };
+  } catch (error) {
+    console.error(`[EMAIL] Failed to send house manager notification to ${managerEmail}:`, error);
+    console.error('[EMAIL] Exception details:', error instanceof Error ? error.stack : error);
+    return { success: false, error: 'Failed to send email' };
+  }
+}

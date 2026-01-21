@@ -217,6 +217,13 @@ export const SMS_TEMPLATES = {
   // Manual consent - counselor filled the form and needs to complete student data
   MANUAL_CONSENT_NOTIFICATION: (studentName: string, formUrl: string) =>
     `גשר אל הנוער: הבקשה עבור ${studentName} נוצרה בהצלחה. להשלמת הרישום יש למלא את נתוני התלמיד/ה: ${formUrl}\n\nלהסרה מרשימת התפוצה`,
+
+  // House manager notifications
+  HOUSE_MANAGER_NEW_REFERRAL: (studentName: string, schoolName: string, warmHome: string) =>
+    `גשר אל הנוער: הפניה חדשה התקבלה עבור ${studentName} מ${schoolName} ל${warmHome}. פרטים נוספים נשלחו למייל.\n\nלהסרה מרשימת התפוצה`,
+
+  HOUSE_MANAGER_REGISTRATION_COMPLETE: (studentName: string, schoolName: string, warmHome: string) =>
+    `גשר אל הנוער: רישום הושלם עבור ${studentName} מ${schoolName} ל${warmHome}. פרטים מלאים נשלחו למייל.\n\nלהסרה מרשימת התפוצה`,
 };
 
 // Export singleton instance
@@ -258,6 +265,26 @@ export async function sendCounselorSMS(params: {
 
   return smsService.sendSMS({
     phone: params.counselorPhone,
+    message,
+  });
+}
+
+/**
+ * Send notification SMS to house manager
+ */
+export async function sendHouseManagerSMS(params: {
+  managerPhone: string;
+  studentName: string;
+  schoolName: string;
+  warmHomeDestination: string;
+  notificationType: 'new_referral' | 'registration_complete';
+}): Promise<SMSResponse> {
+  const message = params.notificationType === 'new_referral'
+    ? SMS_TEMPLATES.HOUSE_MANAGER_NEW_REFERRAL(params.studentName, params.schoolName, params.warmHomeDestination)
+    : SMS_TEMPLATES.HOUSE_MANAGER_REGISTRATION_COMPLETE(params.studentName, params.schoolName, params.warmHomeDestination);
+
+  return smsService.sendSMS({
+    phone: params.managerPhone,
     message,
   });
 }

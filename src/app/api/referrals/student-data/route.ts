@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import salesforceJWT from '@/lib/salesforce-jwt'
+import { sendHouseManagerNotification } from '@/lib/email'
+import { sendHouseManagerSMS } from '@/lib/sms'
+import { getBrandingFromDestination, getHouseManagerContact } from '@/lib/branding'
 
 export async function POST(request: NextRequest) {
   try {
@@ -313,6 +316,47 @@ export async function POST(request: NextRequest) {
       console.error('Error updating referral status:', updateError)
     } else {
       console.log(`Referral ${referral_number} status updated to completed`)
+    }
+
+    // Send notification to house manager about completed registration
+    const houseManager = getHouseManagerContact(referral.warm_home_destination)
+    const branding = getBrandingFromDestination(referral.warm_home_destination)
+
+    if (houseManager) {
+      // Send email to house manager
+      const managerEmailResult = await sendHouseManagerNotification({
+        managerEmail: houseManager.email,
+        managerName: houseManager.name,
+        warmHomeDestination: referral.warm_home_destination,
+        studentName: studentFullName,
+        schoolName: referral.school_name,
+        counselorName: referral.counselor_name,
+        referralNumber: referral_number,
+        salesforceRecordId: referral.salesforce_contact_id,
+        notificationType: 'registration_complete',
+        organizationName: branding.organizationName,
+      })
+
+      if (managerEmailResult.success) {
+        console.log('House manager email notification sent (registration complete):', houseManager.email)
+      } else {
+        console.log('Failed to send house manager email:', managerEmailResult.error)
+      }
+
+      // Send SMS to house manager
+      const managerSmsResult = await sendHouseManagerSMS({
+        managerPhone: houseManager.phone,
+        studentName: studentFullName,
+        schoolName: referral.school_name,
+        warmHomeDestination: referral.warm_home_destination,
+        notificationType: 'registration_complete',
+      })
+
+      if (managerSmsResult.success) {
+        console.log('House manager SMS notification sent (registration complete):', houseManager.phone)
+      } else {
+        console.log('Failed to send house manager SMS:', managerSmsResult.error)
+      }
     }
 
     return NextResponse.json({

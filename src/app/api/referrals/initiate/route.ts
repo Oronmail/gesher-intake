@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
-import { sendConsentEmail, sendCounselorNotification } from '@/lib/email'
-import { sendConsentSMS, sendCounselorSMS } from '@/lib/sms'
-import { getBrandingFromDestination } from '@/lib/branding'
+import { sendConsentEmail, sendCounselorNotification, sendHouseManagerNotification } from '@/lib/email'
+import { sendConsentSMS, sendCounselorSMS, sendHouseManagerSMS } from '@/lib/sms'
+import { getBrandingFromDestination, getHouseManagerContact } from '@/lib/branding'
 import salesforceJWT from '@/lib/salesforce-jwt'
 import {
   secureFormSchemas,
@@ -235,6 +235,45 @@ export async function POST(request: NextRequest) {
 
       console.log('Manual consent notifications sent:', manualNotifications)
 
+      // Send notification to house manager about new referral
+      const houseManager = getHouseManagerContact(warm_home_destination)
+      if (houseManager && studentFullName) {
+        // Send email to house manager
+        const managerEmailResult = await sendHouseManagerNotification({
+          managerEmail: houseManager.email,
+          managerName: houseManager.name,
+          warmHomeDestination: warm_home_destination,
+          studentName: studentFullName,
+          schoolName: school_name,
+          counselorName: counselor_name,
+          referralNumber: referral_number,
+          salesforceRecordId: salesforceRecordId,
+          notificationType: 'new_referral',
+          organizationName: branding.organizationName,
+        })
+
+        if (managerEmailResult.success) {
+          console.log('House manager email notification sent:', houseManager.email)
+        } else {
+          console.log('Failed to send house manager email:', managerEmailResult.error)
+        }
+
+        // Send SMS to house manager
+        const managerSmsResult = await sendHouseManagerSMS({
+          managerPhone: houseManager.phone,
+          studentName: studentFullName,
+          schoolName: school_name,
+          warmHomeDestination: warm_home_destination,
+          notificationType: 'new_referral',
+        })
+
+        if (managerSmsResult.success) {
+          console.log('House manager SMS notification sent:', houseManager.phone)
+        } else {
+          console.log('Failed to send house manager SMS:', managerSmsResult.error)
+        }
+      }
+
       return NextResponse.json({
         success: true,
         referral_number,
@@ -298,6 +337,45 @@ export async function POST(request: NextRequest) {
 
     // Log notification summary
     console.log('Notifications sent:', notifications)
+
+    // Send notification to house manager about new referral (digital flow - no student name yet)
+    const houseManager = getHouseManagerContact(warm_home_destination)
+    if (houseManager) {
+      // Send email to house manager
+      const managerEmailResult = await sendHouseManagerNotification({
+        managerEmail: houseManager.email,
+        managerName: houseManager.name,
+        warmHomeDestination: warm_home_destination,
+        studentName: 'ממתין לאישור הורים', // Student name not yet available in digital flow
+        schoolName: school_name,
+        counselorName: counselor_name,
+        referralNumber: referral_number,
+        salesforceRecordId: salesforceRecordId,
+        notificationType: 'new_referral',
+        organizationName: branding.organizationName,
+      })
+
+      if (managerEmailResult.success) {
+        console.log('House manager email notification sent (digital):', houseManager.email)
+      } else {
+        console.log('Failed to send house manager email:', managerEmailResult.error)
+      }
+
+      // Send SMS to house manager
+      const managerSmsResult = await sendHouseManagerSMS({
+        managerPhone: houseManager.phone,
+        studentName: 'תלמיד/ה חדש/ה',
+        schoolName: school_name,
+        warmHomeDestination: warm_home_destination,
+        notificationType: 'new_referral',
+      })
+
+      if (managerSmsResult.success) {
+        console.log('House manager SMS notification sent (digital):', houseManager.phone)
+      } else {
+        console.log('Failed to send house manager SMS:', managerSmsResult.error)
+      }
+    }
 
     return NextResponse.json({
       success: true,
