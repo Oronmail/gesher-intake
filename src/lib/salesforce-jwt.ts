@@ -227,9 +227,16 @@ class SalesforceJWTService {
         Consent_Method__c: sfConsentMethod,
       };
 
-      // For manual consent, set consent date immediately
+      // For manual consent, set consent date and student name immediately
       if (data.consentMethod === 'manual') {
         initialRequest.Consent_Date__c = new Date().toISOString();
+        // Add student name if provided (for manual consent flow)
+        if (data.studentFirstName) {
+          initialRequest.Student_First_Name__c = data.studentFirstName;
+        }
+        if (data.studentLastName) {
+          initialRequest.Student_Last_Name__c = data.studentLastName;
+        }
       }
 
       console.log('Creating initial Registration Request in Salesforce...');

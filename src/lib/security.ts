@@ -197,6 +197,9 @@ export const secureFormSchemas = {
       'Invalid phone format'
     ),
     manual_consent_confirmed: z.boolean().optional(),  // NEW: Confirmation for manual consent
+    // Student name fields (required for manual consent)
+    student_first_name: z.string().max(100).optional().or(z.literal('')).transform(val => val ? sanitizeInput(val) : val),
+    student_last_name: z.string().max(100).optional().or(z.literal('')).transform(val => val ? sanitizeInput(val) : val),
   }).superRefine((data, ctx) => {
     // Only require parent contact when digital consent is selected
     if (data.consent_method === 'digital') {
@@ -215,6 +218,23 @@ export const secureFormSchemas = {
         message: "Manual consent confirmation is required",
         path: ["manual_consent_confirmed"],
       })
+    }
+    // Require student name when manual consent is selected
+    if (data.consent_method === 'manual') {
+      if (!data.student_first_name || data.student_first_name.trim().length < 2) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Student first name is required for manual consent",
+          path: ["student_first_name"],
+        })
+      }
+      if (!data.student_last_name || data.student_last_name.trim().length < 2) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Student last name is required for manual consent",
+          path: ["student_last_name"],
+        })
+      }
     }
   }),
   

@@ -574,6 +574,16 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 setValue('student_id', sfData.student_id)
               }
 
+              // Prepopulate student name from Salesforce (set in initial form for manual consent)
+              if (sfData.student_first_name && sfData.student_first_name.trim()) {
+                setValue('student_first_name', sfData.student_first_name)
+                completedSet.add('student_first_name')
+              }
+              if (sfData.student_last_name && sfData.student_last_name.trim()) {
+                setValue('student_last_name', sfData.student_last_name)
+                completedSet.add('student_last_name')
+              }
+
               setCompletedFields(completedSet)
               console.log('Loaded completion markers from Salesforce (values hidden for privacy)')
             }

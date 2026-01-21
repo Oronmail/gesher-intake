@@ -34,6 +34,7 @@ interface SendCounselorNotificationParams {
   studentFormUrl: string;
   referralNumber: string;
   organizationName?: string;
+  isManualConsent?: boolean; // Flag to use different text for manual consent
 }
 
 export async function sendConsentEmail({
@@ -141,11 +142,12 @@ export async function sendCounselorNotification({
   studentFormUrl,
   referralNumber, // eslint-disable-line @typescript-eslint/no-unused-vars
   organizationName = 'גשר אל הנוער',
+  isManualConsent = false,
 }: SendCounselorNotificationParams) {
-  console.log(`[EMAIL] Attempting to send counselor notification to: ${counselorEmail}`);
-  
+  console.log(`[EMAIL] Attempting to send counselor notification to: ${counselorEmail} (manual consent: ${isManualConsent})`);
+
   const transporter = createGmailTransporter();
-  
+
   if (!transporter) {
     console.log('[EMAIL] Gmail credentials not configured, skipping email');
     return { success: false, error: 'Email service not configured' };
@@ -153,20 +155,37 @@ export async function sendCounselorNotification({
 
   // Generate unique message ID using gmail domain to improve trust
   const messageId = `${Date.now()}.${Math.random().toString(36).substr(2, 9)}@gmail.com`;
-  
+
+  // Different text for manual consent vs digital consent
+  const emailSubject = isManualConsent
+    ? `בקשה נוצרה בהצלחה - ${studentName}`
+    : `הסכמת הורים התקבלה - ${studentName}`;
+
+  const emailTitle = isManualConsent
+    ? '✅ הבקשה נוצרה בהצלחה'
+    : '✅ הסכמת הורים התקבלה בהצלחה';
+
+  const emailDescription = isManualConsent
+    ? `הבקשה עבור ${studentName} נוצרה בהצלחה עם טופס הסכמה פיזי.`
+    : `ההורים ${parentNames} חתמו על טופס ההסכמה.`;
+
+  const emailInstruction = isManualConsent
+    ? 'להשלמת הרישום, יש למלא את טופס נתוני התלמיד/ה:'
+    : 'כעת ניתן למלא את טופס נתוני התלמיד/ה:';
+
   // Plain text version for better deliverability
   const textContent = `
-    הסכמת הורים התקבלה בהצלחה
-    
+    ${emailTitle.replace('✅ ', '')}
+
     שלום ${counselorName},
-    
-    ההורים ${parentNames} חתמו על טופס ההסכמה.
-    
+
+    ${emailDescription}
+
     שם התלמיד/ה: ${studentName}
-    
-    כעת ניתן למלא את טופס נתוני התלמיד/ה:
+
+    ${emailInstruction}
     ${studentFormUrl}
-    
+
     זהו מייל אוטומטי מהמערכת.
   `.trim();
 
@@ -174,7 +193,7 @@ export async function sendCounselorNotification({
     const result = await transporter.sendMail({
       from: `${organizationName} <${process.env.GMAIL_USER}>`, // Include Hebrew name to match Gmail settings
       to: counselorEmail,
-      subject: `הסכמת הורים התקבלה - ${studentName}`,
+      subject: emailSubject,
       text: textContent, // Plain text version
       replyTo: `${organizationName} <${process.env.GMAIL_USER}>`,
       messageId: messageId,
@@ -190,34 +209,34 @@ export async function sendCounselorNotification({
           <div style="text-align: center; margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px;">
             <h1 style="color: white; margin: 0; font-size: 24px;">${organizationName}</h1>
           </div>
-          <h2 style="color: #10b981;">✅ הסכמת הורים התקבלה בהצלחה</h2>
-          
+          <h2 style="color: #10b981;">${emailTitle}</h2>
+
           <p>שלום ${counselorName},</p>
-          
-          <p>ההורים ${parentNames} חתמו על טופס ההסכמה.</p>
-          
+
+          <p>${emailDescription}</p>
+
           <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <p><strong>שם התלמיד/ה:</strong> ${studentName}</p>
-            <p>כעת ניתן למלא את טופס נתוני התלמיד/ה:</p>
+            <p>${emailInstruction}</p>
             <a href="${studentFormUrl}" style="display: inline-block; background: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 10px;">
               מילוי נתוני תלמיד/ה
             </a>
           </div>
-          
+
           <p style="margin-top: 20px;">או העתיקו את הקישור:</p>
           <p style="background: #f9fafb; padding: 10px; border-radius: 4px; word-break: break-all;">
             ${studentFormUrl}
           </p>
-          
+
           <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;">
-          
+
           <p style="color: #6b7280; font-size: 14px;">
             זהו מייל אוטומטי מהמערכת.
           </p>
         </div>
       `
     });
-    
+
     console.log(`[EMAIL] ✅ Counselor notification sent successfully via Gmail to ${counselorEmail}`);
     console.log('[EMAIL] Gmail Message ID:', result.messageId);
     return { success: true, data: result };

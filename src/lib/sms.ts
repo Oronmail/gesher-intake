@@ -213,6 +213,10 @@ export const SMS_TEMPLATES = {
 
   COUNSELOR_NOTIFICATION: (studentName: string, formUrl: string) =>
     `גשר אל הנוער: ההורים חתמו על ויתור סודיות עבור ${studentName}. השלם את הרישום: ${formUrl}\n\nלהסרה מרשימת התפוצה`,
+
+  // Manual consent - counselor filled the form and needs to complete student data
+  MANUAL_CONSENT_NOTIFICATION: (studentName: string, formUrl: string) =>
+    `גשר אל הנוער: הבקשה עבור ${studentName} נוצרה בהצלחה. להשלמת הרישום יש למלא את נתוני התלמיד/ה: ${formUrl}\n\nלהסרה מרשימת התפוצה`,
 };
 
 // Export singleton instance
@@ -245,12 +249,13 @@ export async function sendCounselorSMS(params: {
   counselorPhone: string;
   studentName: string;
   formUrl: string;
+  isManualConsent?: boolean; // Flag to use manual consent template
 }): Promise<SMSResponse> {
-  const message = SMS_TEMPLATES.COUNSELOR_NOTIFICATION(
-    params.studentName,
-    params.formUrl
-  );
-  
+  // Use different template for manual consent vs digital consent
+  const message = params.isManualConsent
+    ? SMS_TEMPLATES.MANUAL_CONSENT_NOTIFICATION(params.studentName, params.formUrl)
+    : SMS_TEMPLATES.COUNSELOR_NOTIFICATION(params.studentName, params.formUrl);
+
   return smsService.sendSMS({
     phone: params.counselorPhone,
     message,

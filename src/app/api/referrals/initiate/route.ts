@@ -72,6 +72,8 @@ export async function POST(request: NextRequest) {
       consent_method,
       parent_email,
       parent_phone,
+      student_first_name,
+      student_last_name,
     } = validationResult.data
 
     // Determine initial status based on consent method
@@ -79,6 +81,11 @@ export async function POST(request: NextRequest) {
 
     // Generate unique referral number
     const referral_number = generateReferralNumber()
+
+    // Build student full name for manual consent
+    const studentFullName = consent_method === 'manual' && student_first_name && student_last_name
+      ? `${student_first_name} ${student_last_name}`
+      : null
 
     // Create initial Registration Request in Salesforce using JWT service
     const initialData = {
@@ -92,6 +99,11 @@ export async function POST(request: NextRequest) {
       parentPhone: parent_phone,
       consentMethod: consent_method,
       status: initialStatus,
+      // Include student name for manual consent
+      ...(consent_method === 'manual' && student_first_name && {
+        studentFirstName: student_first_name,
+        studentLastName: student_last_name,
+      }),
     }
     
     const sfResult = await salesforceJWT.createInitialRegistration(initialData)
@@ -184,15 +196,16 @@ export async function POST(request: NextRequest) {
       }
 
       // Send email confirmation to counselor
-      if (counselor_email) {
+      if (counselor_email && studentFullName) {
         const emailResult = await sendCounselorNotification({
           counselorEmail: counselor_email,
           counselorName: counselor_name,
           parentNames: 'הסכמה ידנית (טופס נייר)',
-          studentName: 'טרם הוזן - יש למלא בטופס נתוני התלמיד',
+          studentName: studentFullName,
           studentFormUrl: studentFormUrl,
           referralNumber: referral_number,
           organizationName: branding.organizationName,
+          isManualConsent: true, // Flag to use manual consent template
         })
 
         if (emailResult.success) {
@@ -203,12 +216,13 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      // Send SMS confirmation to counselor
-      if (counselor_mobile) {
+      // Send SMS confirmation to counselor with custom message for manual consent
+      if (counselor_mobile && studentFullName) {
         const smsResult = await sendCounselorSMS({
           counselorPhone: counselor_mobile,
-          studentName: 'טרם הוזן',
+          studentName: studentFullName,
           formUrl: studentFormUrl,
+          isManualConsent: true, // Flag to use different SMS template
         })
 
         if (smsResult.success) {
@@ -226,6 +240,7 @@ export async function POST(request: NextRequest) {
         referral_number,
         consent_method: 'manual',
         student_form_url: studentFormUrl,
+        student_name: studentFullName,
         data,
       })
     }
