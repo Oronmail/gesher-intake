@@ -470,7 +470,7 @@ export default function CounselorInitialForm() {
                         {...register('rep_position')}
                         type="text"
                         className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
-                        placeholder="יועצת, מחנכת, רכזת שכבה..."
+                        placeholder="יועצ/ת, רכז/ת שכבה, מנהל/ת בית ספר"
                       />
                       <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                     </div>
