@@ -251,7 +251,7 @@ export default function CounselorInitialForm() {
             : data.counselor_email || data.counselor_mobile
           setSubmitResult({
             success: true,
-            message: `הבקשה עבור ${studentFullName} נוצרה בהצלחה! ניתן להשלים את מילוי נתוני התלמיד/ה בלינק שנשלח ל-${contactInfo}`,
+            message: `הבקשה עבור ${studentFullName} נוצרה בהצלחה!\nניתן להשלים את מילוי נתוני התלמיד/ה בלינק שנשלח ל-${contactInfo}`,
             studentFormUrl: result.student_form_url,
             studentName: studentFullName,
           })
@@ -302,7 +302,7 @@ export default function CounselorInitialForm() {
                   ההפניה נוצרה בהצלחה!
                 </h1>
                 <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-8 max-w-lg shadow-sm">
-                  <p className="text-green-800 text-lg leading-relaxed">
+                  <p className="text-green-800 text-lg leading-relaxed whitespace-pre-line">
                     {submitResult.message}
                   </p>
                 </div>
