@@ -20,6 +20,11 @@
                 <label>הסכמה נחתמה</label>
             </value>
             <value>
+                <fullName>ויתור סודיות אצל הנציג</fullName>
+                <default>false</default>
+                <label>ויתור סודיות אצל הנציג</label>
+            </value>
+            <value>
                 <fullName>Data Submitted</fullName>
                 <default>false</default>
                 <label>נתונים הוגשו</label>

@@ -11,6 +11,7 @@ const formSchema = z.object({
   counselor_name: z.string().min(2, 'נא להזין שם מלא'),
   counselor_email: z.string().email('כתובת אימייל לא תקינה'),
   counselor_mobile: z.string().min(9, 'נא להזין טלפון נייד').regex(/^[\d\-\+\(\)\s]*$/, 'מספר טלפון לא תקין'),
+  rep_position: z.string().optional().or(z.literal('')),  // Position/role - optional
   school_name: z.string().min(2, 'נא להזין שם בית ספר'),
   warm_home_destination: z.string().min(1, 'נא לבחור בית חם'),
   consent_method: z.enum(['digital', 'manual']),
@@ -250,7 +251,7 @@ export default function CounselorInitialForm() {
             : data.counselor_email || data.counselor_mobile
           setSubmitResult({
             success: true,
-            message: `הבקשה עבור ${studentFullName} נוצרה בהצלחה! ניתן להשלים את מילוי נתוני התלמיד/ה גם במועד מאוחר יותר, הלינק נשלח ל-${contactInfo}`,
+            message: `הבקשה עבור ${studentFullName} נוצרה בהצלחה! ניתן להשלים את מילוי נתוני התלמיד/ה בלינק שנשלח ל-${contactInfo}`,
             studentFormUrl: result.student_form_url,
             studentName: studentFullName,
           })
@@ -457,6 +458,22 @@ export default function CounselorInitialForm() {
                         {errors.counselor_mobile.message}
                       </p>
                     )}
+                  </div>
+
+                  <div>
+                    <label htmlFor="rep_position" className="block text-sm font-medium text-gray-700 mb-2">
+                      תפקיד
+                      <span className="text-gray-400 text-xs mr-2">(אופציונלי)</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        {...register('rep_position')}
+                        type="text"
+                        className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300"
+                        placeholder="יועצת, מחנכת, רכזת שכבה..."
+                      />
+                      <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                    </div>
                   </div>
                 </div>
 

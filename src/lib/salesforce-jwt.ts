@@ -208,8 +208,15 @@ class SalesforceJWTService {
   }> {
     try {
       // IMPORTANT: Using Name field for referral number
-      // Determine Salesforce status based on consent method
-      const sfStatus = data.status === 'consent_signed' ? 'Consent Signed' : 'Pending Consent';
+      // Determine Salesforce status based on consent method and whether form was uploaded
+      let sfStatus: string;
+      if (data.status === 'consent_signed') {
+        sfStatus = 'Consent Signed';
+      } else if (data.status === 'consent_with_rep') {
+        sfStatus = 'ויתור סודיות אצל הנציג';  // Hebrew status for checkbox-only flow
+      } else {
+        sfStatus = 'Pending Consent';
+      }
       const sfConsentMethod = data.consentMethod === 'manual' ? 'Manual (Paper)' : 'Digital';
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -219,18 +226,23 @@ class SalesforceJWTService {
         School_Counselor_Name__c: data.counselorName,
         Counselor_Email__c: data.counselorEmail || '',
         School_Counselor_Phone__c: data.counselorMobile,
+        Rep_Position__c: data.repPosition || '',  // Rep position/role
         School_Name__c: data.schoolName,
         Warm_House__c: data.warmHomeDestination || '',
         Parent_Email__c: data.parentEmail || '',
         Parent1_Phone__c: data.parentPhone,
         Submission_Date__c: new Date().toISOString(),
         Consent_Method__c: sfConsentMethod,
+        Consentform_signed__c: data.consentFormSigned || false,  // Track if consent form was actually received
       };
 
-      // For manual consent, set consent date and student name immediately
-      if (data.consentMethod === 'manual') {
+      // Only set consent date when the consent form is actually signed/uploaded
+      if (data.consentFormSigned) {
         initialRequest.Consent_Date__c = new Date().toISOString();
-        // Add student name if provided (for manual consent flow)
+      }
+
+      // Add student name if provided (for manual consent flow)
+      if (data.consentMethod === 'manual') {
         if (data.studentFirstName) {
           initialRequest.Student_First_Name__c = data.studentFirstName;
         }
@@ -278,6 +290,7 @@ class SalesforceJWTService {
       const consentUpdate = {
         Id: recordId,
         Status__c: 'Consent Signed',
+        Consentform_signed__c: true,  // Mark consent form as received when parents sign online
         ...(data.studentId && { Student_ID__c: data.studentId }),
         Parent1_Name__c: data.parent1Name,
         Parent1_ID__c: data.parent1Id,
@@ -285,7 +298,7 @@ class SalesforceJWTService {
         Parent1_Phone__c: data.parent1Phone || '',
         Parent1_Signature__c: data.parent1Signature,
         // Add HTML-wrapped signature for display in Rich Text field
-        Parent1_Signature_Display__c: data.parent1Signature ? 
+        Parent1_Signature_Display__c: data.parent1Signature ?
           `<img src="${data.parent1Signature}" style="max-width:300px; border:1px solid #ccc; padding:5px; background:white;" alt="חתימת הורה 1"/>` : '',
         Parent2_Name__c: data.parent2Name || '',
         Parent2_ID__c: data.parent2Id || '',
@@ -293,7 +306,7 @@ class SalesforceJWTService {
         Parent2_Phone__c: data.parent2Phone || '',
         Parent2_Signature__c: data.parent2Signature || '',
         // Add HTML-wrapped signature for display in Rich Text field
-        Parent2_Signature_Display__c: data.parent2Signature ? 
+        Parent2_Signature_Display__c: data.parent2Signature ?
           `<img src="${data.parent2Signature}" style="max-width:300px; border:1px solid #ccc; padding:5px; background:white;" alt="חתימת הורה 2"/>` : '',
         Consent_Date__c: data.consentDate,
       };

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>School_Counselor_Name__c</fullName>
+    <fullName>Rep_Position__c</fullName>
+    <description>The position/role of the school representative (e.g., counselor, teacher, coordinator)</description>
     <externalId>false</externalId>
-    <label>נציג/ה בית הספר</label>
+    <inlineHelpText>תפקיד נציג בית הספר</inlineHelpText>
+    <label>תפקיד נציג</label>
     <length>100</length>
     <required>false</required>
     <trackHistory>false</trackHistory>

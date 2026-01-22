@@ -258,6 +258,7 @@ interface SendHouseManagerNotificationParams {
   salesforceRecordId: string | null;
   notificationType: 'new_referral' | 'registration_complete';
   organizationName?: string;
+  consentWarning?: string;  // Warning about missing consent form
 }
 
 export async function sendHouseManagerNotification({
@@ -271,6 +272,7 @@ export async function sendHouseManagerNotification({
   salesforceRecordId,
   notificationType,
   organizationName = 'גשר אל הנוער',
+  consentWarning,
 }: SendHouseManagerNotificationParams) {
   console.log(`[EMAIL] Attempting to send house manager notification to: ${managerEmail} (type: ${notificationType})`);
 
@@ -316,6 +318,7 @@ export async function sendHouseManagerNotification({
     שלום ${managerName},
 
     ${emailDescription}
+    ${consentWarning ? `\n⚠️ ${consentWarning}` : ''}
 
     פרטי ההפניה:
     - שם התלמיד/ה: ${studentName}
@@ -355,6 +358,12 @@ export async function sendHouseManagerNotification({
           <p>שלום ${managerName},</p>
 
           <p>${emailDescription}</p>
+
+          ${consentWarning ? `
+          <div style="background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 8px; margin: 15px 0;">
+            <p style="margin: 0; color: #92400e; font-weight: bold;">⚠️ ${consentWarning}</p>
+          </div>
+          ` : ''}
 
           <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="margin-top: 0; color: #374151;">פרטי ההפניה:</h3>

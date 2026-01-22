@@ -67,7 +67,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (referral.status !== 'consent_signed' && referral.status !== 'completed') {
+    // Allow both 'consent_signed' (file uploaded or digital) and 'consent_with_rep' (checkbox only)
+    const allowedStatuses = ['consent_signed', 'consent_with_rep', 'completed']
+    if (!allowedStatuses.includes(referral.status)) {
       return NextResponse.json(
         { error: 'Parent consent not yet provided' },
         { status: 400 }
@@ -322,6 +324,11 @@ export async function POST(request: NextRequest) {
     const houseManager = getHouseManagerContact(referral.warm_home_destination)
     const branding = getBrandingFromDestination(referral.warm_home_destination)
 
+    // Build consent warning if consent form wasn't actually received (consent_with_rep status means checkbox only)
+    const consentWarning = referral.status === 'consent_with_rep'
+      ? `טופס ויתור סודיות לא הוגש, יש לוודא קבלת הטופס מ-${referral.counselor_name}`
+      : undefined
+
     if (houseManager) {
       // Send email to house manager
       const managerEmailResult = await sendHouseManagerNotification({
@@ -335,6 +342,7 @@ export async function POST(request: NextRequest) {
         salesforceRecordId: referral.salesforce_contact_id,
         notificationType: 'registration_complete',
         organizationName: branding.organizationName,
+        consentWarning: consentWarning,
       })
 
       if (managerEmailResult.success) {

@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
       counselor_name,
       counselor_email,
       counselor_mobile,
+      rep_position,
       school_name,
       warm_home_destination,
       consent_method,
@@ -76,8 +77,23 @@ export async function POST(request: NextRequest) {
       student_last_name,
     } = validationResult.data
 
-    // Determine initial status based on consent method
-    const initialStatus = consent_method === 'manual' ? 'consent_signed' : 'pending_consent'
+    // Determine initial status based on consent method and whether file was uploaded
+    // - Digital consent: pending_consent
+    // - Manual consent WITH file: consent_signed (file proves consent was received)
+    // - Manual consent WITHOUT file (checkbox only): consent_with_rep (need to collect paper form)
+    let initialStatus: string
+    let consentFormSigned = false
+
+    if (consent_method === 'digital') {
+      initialStatus = 'pending_consent'
+    } else if (consentFile) {
+      // File uploaded - consent form is confirmed
+      initialStatus = 'consent_signed'
+      consentFormSigned = true
+    } else {
+      // Checkbox only - consent form is with the rep, not yet submitted
+      initialStatus = 'consent_with_rep'
+    }
 
     // Generate unique referral number
     const referral_number = generateReferralNumber()
@@ -93,12 +109,14 @@ export async function POST(request: NextRequest) {
       counselorName: counselor_name,
       counselorEmail: counselor_email,
       counselorMobile: counselor_mobile,
+      repPosition: rep_position,
       schoolName: school_name,
       warmHomeDestination: warm_home_destination,
       parentEmail: parent_email,
       parentPhone: parent_phone,
       consentMethod: consent_method,
       status: initialStatus,
+      consentFormSigned: consentFormSigned,
       // Include student name for manual consent
       ...(consent_method === 'manual' && student_first_name && {
         studentFirstName: student_first_name,
@@ -133,10 +151,14 @@ export async function POST(request: NextRequest) {
         status: initialStatus,
         consent_method: consent_method,
         salesforce_contact_id: salesforceRecordId, // Store SF record ID
-        // For manual consent, set consent_timestamp immediately
-        ...(consent_method === 'manual' && {
+        // Only set consent_timestamp when we actually have the consent form (file uploaded)
+        ...(consentFormSigned && {
           consent_timestamp: new Date().toISOString(),
           parent_names: 'הסכמה ידנית (טופס נייר)',
+        }),
+        // For consent_with_rep status, don't set timestamp - it's pending
+        ...(initialStatus === 'consent_with_rep' && {
+          parent_names: 'ויתור סודיות אצל הנציג',
         }),
       })
       .select()
@@ -238,6 +260,11 @@ export async function POST(request: NextRequest) {
       // Send notification to house manager about new referral
       const houseManager = getHouseManagerContact(warm_home_destination)
       if (houseManager && studentFullName) {
+        // Build consent warning if consent form wasn't uploaded
+        const consentWarning = initialStatus === 'consent_with_rep'
+          ? `טופס ויתור סודיות לא הוגש, יש לוודא קבלת הטופס מ-${counselor_name}`
+          : undefined
+
         // Send email to house manager
         const managerEmailResult = await sendHouseManagerNotification({
           managerEmail: houseManager.email,
@@ -250,6 +277,7 @@ export async function POST(request: NextRequest) {
           salesforceRecordId: salesforceRecordId,
           notificationType: 'new_referral',
           organizationName: branding.organizationName,
+          consentWarning: consentWarning,
         })
 
         if (managerEmailResult.success) {

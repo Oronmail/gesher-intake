@@ -188,6 +188,7 @@ export const secureFormSchemas = {
     counselor_name: z.string().min(2).max(100).transform(sanitizeInput),
     counselor_email: z.string().email(),  // Just use Zod's built-in email validation
     counselor_mobile: z.string().min(9).max(20),  // Phone validation
+    rep_position: z.string().max(100).optional().or(z.literal('')).transform(val => val ? sanitizeInput(val) : val),  // Rep position/role
     school_name: z.string().min(2).max(200).transform(sanitizeInput),
     warm_home_destination: z.string().min(1).max(100).transform(sanitizeInput),
     consent_method: z.enum(['digital', 'manual']),  // NEW: Consent method selection
