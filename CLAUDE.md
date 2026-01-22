@@ -575,6 +575,172 @@ NODE_ENV=production
 
 ---
 
+## 🌐 Multi-Environment Architecture (January 2025)
+
+### Environment Overview
+
+| Environment | Vercel URL | Salesforce Org | Git Branch |
+|-------------|------------|----------------|------------|
+| **Production** | `gesher-intake.vercel.app` | `geh.my.salesforce.com` | `main` |
+| **Preview/Staging** | `gesher-intake-preview.vercel.app` | `geh--partialsb.sandbox.my.salesforce.com` | `staging` |
+| **Local Development** | `localhost:3000` | Sandbox (or mock) | Any branch |
+
+### Certificate Organization
+```
+certs/
+├── production/
+│   ├── server.crt  (CN=gesher-intake-production, valid until Jan 2028)
+│   └── server.key  (Private key for Production Salesforce JWT)
+└── sandbox/
+    ├── server.crt  (CN=gesher-intake, valid until Sep 2027)
+    ├── server.csr
+    └── server.key  (Private key for Sandbox Salesforce JWT)
+```
+
+### Vercel Environment Variables - Per Environment
+
+#### Production Environment Variables (→ Production Salesforce)
+```env
+SALESFORCE_INSTANCE_URL=https://geh.my.salesforce.com
+SALESFORCE_LOGIN_URL=https://login.salesforce.com
+SALESFORCE_USERNAME=oronmail@geh.com
+SALESFORCE_CLIENT_ID=(Production Connected App Consumer Key)
+SALESFORCE_CLIENT_SECRET=(Production Connected App Consumer Secret)
+SALESFORCE_PRIVATE_KEY=(Contents of certs/production/server.key)
+```
+
+#### Preview Environment Variables (→ Sandbox Salesforce)
+```env
+SALESFORCE_INSTANCE_URL=https://geh--partialsb.sandbox.my.salesforce.com
+SALESFORCE_LOGIN_URL=https://test.salesforce.com
+SALESFORCE_USERNAME=oronmail@geh.com.partialsb
+SALESFORCE_CLIENT_ID=(Sandbox Connected App Consumer Key)
+SALESFORCE_CLIENT_SECRET=(Sandbox Connected App Consumer Secret)
+SALESFORCE_PRIVATE_KEY=(Contents of certs/sandbox/server.key)
+```
+
+#### Shared Environment Variables (Both Production & Preview)
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://fftnsfaakvahqyfwhtku.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=(Supabase anon key)
+SUPABASE_SERVICE_KEY=(Supabase service key)
+GMAIL_USER=gesheryouth@gmail.com
+GMAIL_APP_PASSWORD=(Gmail app password)
+JWT_SECRET=(32-byte hex string)
+ENCRYPTION_KEY=(32-byte hex string)
+API_SECRET_KEY=(32-byte hex string)
+```
+
+### Deployment Workflows
+
+#### Deploy to Production
+```bash
+# 1. Ensure you're on main branch
+git checkout main
+
+# 2. Merge changes from staging (if applicable)
+git merge staging
+
+# 3. Push to trigger Vercel Production deployment
+git push origin main
+
+# Deploys to: gesher-intake.vercel.app → geh.my.salesforce.com
+```
+
+#### Deploy to Preview/Staging
+```bash
+# 1. Checkout staging branch
+git checkout staging
+
+# 2. Merge your feature branch
+git merge feature/your-feature
+
+# 3. Push to trigger Vercel Preview deployment
+git push origin staging
+
+# Deploys to: gesher-intake-preview.vercel.app → Sandbox Salesforce
+```
+
+#### Local Development
+```bash
+# 1. Start development server
+npm run dev
+
+# 2. Access at http://localhost:3000
+# Uses .env.local configuration (typically points to Sandbox)
+```
+
+### Salesforce CLI Aliases
+```bash
+# List configured orgs
+sf org list
+
+# Deploy to Sandbox
+sf project deploy start -d force-app -o gesher-sandbox
+
+# Deploy to Production
+sf project deploy start -d force-app -o gesher-production
+
+# Query Sandbox records
+sf data query --query "SELECT Id, Name, Status__c FROM Registration_Request__c LIMIT 5" -o gesher-sandbox
+
+# Query Production records
+sf data query --query "SELECT Id, Name, Status__c FROM Registration_Request__c LIMIT 5" -o gesher-production
+```
+
+### Generate New Certificate
+```bash
+# Generate certificate for Production
+cd certs/production
+openssl req -x509 -nodes -days 730 -newkey rsa:2048 \
+  -keyout server.key -out server.crt \
+  -subj "/CN=gesher-intake-production/O=GesherAlHaNoar/L=TelAviv/ST=Israel/C=IL"
+
+# Generate certificate for Sandbox
+cd certs/sandbox
+openssl req -x509 -nodes -days 730 -newkey rsa:2048 \
+  -keyout server.key -out server.crt \
+  -subj "/CN=gesher-intake-sandbox/O=GesherAlHaNoar/L=TelAviv/ST=Israel/C=IL"
+```
+
+---
+
+## 📋 Recent Salesforce Updates (January 2025)
+
+### New Fields Added
+
+#### Consentform_signed__c (Checkbox)
+- **Type**: Checkbox
+- **Label**: טופס הסכמה התקבל
+- **Description**: Indicates whether the consent form has been received (digitally signed or uploaded)
+- **Default**: false
+
+#### Rep_Position__c (Text)
+- **Type**: Text(100)
+- **Label**: תפקיד נציג
+- **Description**: The position/role of the school representative (e.g., counselor, teacher)
+
+#### Status__c - New Value
+- Added picklist value: **"ויתור סודיות אצל הנציג"**
+- Used for checkbox-only consent (no file uploaded)
+
+### Upload Consent Flow
+A Screen Flow for uploading consent images directly from Salesforce:
+- **Flow Name**: `Upload_Consent_Image`
+- **Quick Action**: "העלאת טופס הסכמה" button on Registration Request records
+- **Functionality**:
+  - Accepts file upload from user
+  - Attaches file to the record
+  - Updates `Submission_Date__c` with current timestamp
+  - Sets `Consentform_signed__c` to true
+
+### Field Permissions Update
+- All 106 Registration_Request__c fields are now editable for all profiles
+- Implemented via Apex script (`scripts/update-field-permissions.apex`)
+- Successfully created 3,549 field permission records in Production
+
+---
+
 ## 🔧 Current Implementation Status
 
 ### ✅ Completed Features (Updated: January 2025)
@@ -1405,13 +1571,15 @@ This is a pro bono project developed for Gesher Al HaNoar. For technical questio
 
 ---
 
-*Last Updated: January 2025 (Manual Consent Flow)*
+*Last Updated: January 2025 (Multi-Environment Setup)*
 *Project Status: ✅ Fully Operational in Production with Complete Validation & Field Mappings*
-*Live URL: https://gesher-intake.vercel.app*
+*Live URL (Production): https://gesher-intake.vercel.app*
+*Preview URL (Staging): https://gesher-intake-preview.vercel.app*
 *Repository: https://github.com/Oronmail/gesher-intake (Private)*
 *Email Service: Gmail SMTP (gesheryouth@gmail.com)*
 *SMS Service: Inwise (Configured)*
 *Database: Supabase (Secured with RLS)*
-*Salesforce: ✅ Successfully integrated with file attachments (consent images + student documents)*
+*Salesforce Production: https://geh.my.salesforce.com*
+*Salesforce Sandbox: https://geh--partialsb.sandbox.my.salesforce.com*
 *Security Status: ✅ All vulnerabilities patched, field-level security configured*
 *File Uploads: ✅ Assessment files and grade sheets upload to Salesforce Notes & Attachments*
