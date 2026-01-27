@@ -170,7 +170,10 @@ export default function StudentDataForm({ referralNumber }: StudentDataFormProps
           }
           
           // If parent names are stored (from consent form)
-          if (data.parent_names) {
+          // Skip if it's the manual consent placeholder text or status text
+          if (data.parent_names &&
+              data.parent_names !== 'הסכמה ידנית (טופס נייר)' &&
+              data.parent_names !== 'ויתור סודיות אצל הנציג') {
             const parentNames = data.parent_names.split(', ')
             if (parentNames[0]) {
               const firstName = parentNames[0].split(' ')[0] || ''

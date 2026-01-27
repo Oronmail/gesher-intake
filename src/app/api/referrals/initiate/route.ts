@@ -156,10 +156,7 @@ export async function POST(request: NextRequest) {
           consent_timestamp: new Date().toISOString(),
           parent_names: 'הסכמה ידנית (טופס נייר)',
         }),
-        // For consent_with_rep status, don't set timestamp - it's pending
-        ...(initialStatus === 'consent_with_rep' && {
-          parent_names: 'ויתור סודיות אצל הנציג',
-        }),
+        // For consent_with_rep status, don't set timestamp or parent_names - it's pending
       })
       .select()
       .single()

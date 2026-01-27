@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -42,6 +42,13 @@ export default function ParentConsentForm({ referralNumber, warmHomeDestination 
   const [signature2, setSignature2] = useState<string>('')
   const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string } | null>(null)
   const [showSecondParent, setShowSecondParent] = useState(false)
+
+  // Scroll to top when success screen is shown
+  useEffect(() => {
+    if (submitResult?.success) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [submitResult])
 
   const {
     register,
@@ -158,7 +165,7 @@ export default function ParentConsentForm({ referralNumber, warmHomeDestination 
   // Show success page after successful submission
   if (submitResult?.success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 p-6">
+      <div className="py-12 bg-gradient-to-br from-green-50 via-white to-blue-50 px-6">
         <div className="max-w-3xl mx-auto">
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
             <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-2"></div>

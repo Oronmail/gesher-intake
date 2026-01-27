@@ -481,8 +481,10 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
           // Do NOT pre-populate from Supabase parent_phone (which is the consent signer's phone)
 
           // If parent names are stored (from consent form)
-          // Skip if it's the manual consent placeholder text
-          if (data.parent_names && data.parent_names !== 'הסכמה ידנית (טופס נייר)') {
+          // Skip if it's the manual consent placeholder text or status text
+          if (data.parent_names &&
+              data.parent_names !== 'הסכמה ידנית (טופס נייר)' &&
+              data.parent_names !== 'ויתור סודיות אצל הנציג') {
             const parentNames = data.parent_names.split(', ')
             if (parentNames[0]) {
               setValue('parent1_name', parentNames[0])

@@ -29,6 +29,13 @@ export default function ConsentPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Scroll to top when already signed screen is shown
+  useEffect(() => {
+    if (alreadySigned) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [alreadySigned])
+
   const checkConsentStatus = async () => {
     try {
       const { data, error } = await supabase
@@ -70,8 +77,8 @@ export default function ConsentPage({
       : ''
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="container mx-auto py-12">
+      <div className="py-12 bg-gradient-to-br from-blue-50 to-indigo-100 px-6">
+        <div className="container mx-auto">
           <div className="max-w-2xl mx-auto p-6">
             <div className="bg-white rounded-lg shadow-lg p-8">
               <div className="flex flex-col items-center text-center space-y-6">

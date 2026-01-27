@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -61,6 +61,13 @@ export default function CounselorInitialForm() {
   const [consentMethod, setConsentMethod] = useState<'digital' | 'manual'>('digital')
   const [consentFile, setConsentFile] = useState<File | null>(null)
   const [fileError, setFileError] = useState<string | null>(null)
+
+  // Scroll to top when success screen is shown
+  useEffect(() => {
+    if (submitResult?.success) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [submitResult])
 
   const {
     register,
@@ -288,7 +295,7 @@ export default function CounselorInitialForm() {
   // Show success message only after successful submission
   if (submitResult?.success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 p-6">
+      <div className="py-12 bg-gradient-to-br from-blue-50 via-white to-green-50 px-6">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
             <div className="bg-gradient-to-r from-green-500 to-green-600 p-2"></div>

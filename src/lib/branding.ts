@@ -20,19 +20,19 @@ export interface HouseManagerContact {
  */
 const houseManagerContacts: Record<string, HouseManagerContact> = {
   'נוה שרת': {
-    name: 'מנהל/ת נוה שרת',
-    email: 'oronmail@gmail.com', // TODO: Replace with real email for production
-    phone: '0506470578', // TODO: Replace with real phone for production
+    name: 'חנה',
+    email: 'm_nevesharet@geh.org.il',
+    phone: '0505235155',
   },
   'כפר שלם': {
-    name: 'מנהל/ת כפר שלם',
-    email: 'oronmail@gmail.com', // TODO: Replace with real email for production
-    phone: '0506470578', // TODO: Replace with real phone for production
+    name: 'נעם',
+    email: 'm_kfarshalem@geh.org.il',
+    phone: '0544304065',
   },
   'בן יהודה': {
-    name: 'מנהל/ת בן יהודה',
-    email: 'oronmail@gmail.com', // TODO: Replace with real email for production
-    phone: '0506470578', // TODO: Replace with real phone for production
+    name: 'נועה',
+    email: 'm_benyehuda@geh.org.il',
+    phone: '0527505969',
   },
 }
 
