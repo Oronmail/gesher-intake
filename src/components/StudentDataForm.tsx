@@ -743,7 +743,9 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                 console.log(`Processed ${key}: ${value[0].size} bytes -> ${processedFile.size} bytes`)
               } catch (err) {
                 console.error(`Error processing file ${key}:`, err)
-                // Skip this file if processing fails
+                // Fallback: send original file if processing fails
+                formData.append(key, value[0])
+                console.log(`Fallback: sending original ${key} without compression`)
               }
             }
           }

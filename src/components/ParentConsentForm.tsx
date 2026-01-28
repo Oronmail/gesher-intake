@@ -132,7 +132,7 @@ export default function ParentConsentForm({ referralNumber, warmHomeDestination 
 
       if (response.ok) {
         // Log the student form URL to console
-        const studentFormUrl = `http://localhost:3000/student-form/${referralNumber}`
+        const studentFormUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/student-form/${referralNumber}`
         console.log('====================================')
         console.log('✅ הטופס נשלח בהצלחה!')
         console.log('====================================')
