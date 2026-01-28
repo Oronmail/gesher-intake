@@ -3189,9 +3189,17 @@ export default function StudentDataForm({ referralNumber, warmHomeDestination }:
                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                       />
                     </FieldWrapper>
-                    <p className="mt-2 text-sm text-gray-500">
-                      חובה להעלות גליון ציונים עדכני (PDF, JPG, PNG - עד 10MB)
-                    </p>
+                    {errors.grade_sheet && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center animate-fadeIn">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-600 rounded-full ml-2"></span>
+                        נא להעלות גליון ציונים
+                      </p>
+                    )}
+                    {!errors.grade_sheet && (
+                      <p className="mt-2 text-sm text-gray-500">
+                        חובה להעלות גליון ציונים עדכני (PDF, JPG, PNG - עד 10MB)
+                      </p>
+                    )}
                   </div>
 
                   <div>
