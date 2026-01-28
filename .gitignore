@@ -48,8 +48,8 @@ sfdx-auth.json
 *.zip
 
 # Certificates - NEVER commit private keys
-certs/server.key
+certs/**/*.key
 certs/*.key
 
-# Keep certificate public part
-!certs/server.crt
+# Keep certificate public parts
+!certs/**/*.crt
